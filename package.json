@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@mangojs/core": "link:../mangojs",
-    "inversify": "^6.0.1"
+    "inversify": "^7.10.2",
+    "reflect-metadata": "^0.2.2"
   }
 }

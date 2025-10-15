@@ -1,68 +1,104 @@
-import {
-    Auth,
-    INVERSITY_TYPES,
-    Loggers,
-    CockroachPersistenceContext,
-    databasemanager,
-} from '@mangojs/core'
-import { IPersistenceContext } from '@mangojs/core'
-import { IDatabaseManagerFactory } from '@mangojs/core'
+// DO NOT WORK - USING DEFAULT CONTAINER FROM CORE
+// can't rebind services. Not sure where it loads components before this file
 
-import { services } from '@mangojs/core'
-
-//import { Containers } from '@mangojs/core'
-import { Container } from 'inversify'
-
-//const DefaultContainer:Container = Containers.getContainer() as unknown as Container
-const POSTGRES_PASSWORD = process.env.DATABASE_PASSWORD || ''
-const POSTGRES_USER = process.env.DATABASE_USER || ''
-const POSTGRES_DB = process.env.DATABASE_DB || ''
-
-const DefaultContainer:Container = services.iam_server.IAMDefautContainer as unknown as Container
-
-/**
- * Bind Logger Service
- */
-DefaultContainer.bind<Loggers.ILoggerFactory>(
-    INVERSITY_TYPES.LoggerFactory
-).toConstantValue(new Loggers.LoggerPino('iam-service', process.env.LOG_LEVEL || 'debug'))
-
-
-/**
- * Bind Database connector - Supabase
- * Configure via environment variables
- */
-DefaultContainer.bind<IDatabaseManagerFactory>(
-    INVERSITY_TYPES.DatabaseManagerFactory
-).toConstantValue(
-    new databasemanager.postgres.PostgresDBManagerFactory(
-        {
-            username: POSTGRES_USER,
-            password: POSTGRES_PASSWORD,
-            database: POSTGRES_DB,
-            host: process.env.DATABASE_HOST || 'localhost',
-            port: Number(process.env.DATABASE_PORT) || 5432,
-        },
-        [
-            services.iam_server.models.AdminUser,
-            services.iam_server.models.PartnerUser,
-            services.iam_server.models.Group
-        ]
-    )
-)
-
-/**
- * Bind Persistance Context - CockroachDB
- */
-DefaultContainer.bind<IPersistenceContext>(
-    INVERSITY_TYPES.PersistenceContext
-).to(CockroachPersistenceContext)
-
-/**
- * Bind Authorization Context
- */
-DefaultContainer.bind<Auth.IAuthProvider>(
-    INVERSITY_TYPES.AuthorizationContext
-).to(services.iam_server.services.AuthorizationService)
-
-export { DefaultContainer }
+//import {
+//  Auth,
+//  INVERSITY_TYPES,
+//  Loggers,
+//  persistanceContext,
+//  databasemanager,
+//} from "@mangojs/core";
+//import { IPersistenceContext } from "@mangojs/core";
+//import { IDatabaseManagerFactory } from "@mangojs/core";
+//
+//import { services } from "@mangojs/core";
+//import { Containers } from "@mangojs/core";
+//
+//// Import our custom service
+//import { AdminUserService } from "./services/adminUser.service";
+//
+//const POSTGRES_PASSWORD = process.env.DATABASE_PASSWORD || "";
+//const POSTGRES_USER = process.env.DATABASE_USER || "";
+//const POSTGRES_DB = process.env.DATABASE_DB || "";
+//
+//// Get the global container
+//const container = Containers.getContainer();
+//
+//console.log("[IAM Service] Configuring Inversify Container...");
+//console.log("[IAM Service] Current bindings in container:");
+//console.log(
+"  - DatabaseManagerFactory bound?",
+  container.isBound(INVERSITY_TYPES.DatabaseManagerFactory);
+//);
+//console.log(
+"  - PersistenceContext bound?",
+  container.isBound(INVERSITY_TYPES.PersistenceContext);
+//);
+//console.log(
+"  - LoggerFactory bound?", container.isBound(INVERSITY_TYPES.LoggerFactory);
+//);
+//console.log(
+"  - AuthorizationContext bound?",
+  container.isBound(INVERSITY_TYPES.AuthorizationContext);
+//);
+//
+///**
+// * Bind Persistance Context - PostgresDB
+// */
+////if (container.isBound(INVERSITY_TYPES.PersistenceContext)) {
+////  console.log("[IAM Service] Unbinding existing PersistenceContext");
+////  container.unbind(INVERSITY_TYPES.PersistenceContext);
+////}
+////
+////console.log("[IAM Service] Binding PostgresPersistenceContext");
+////container
+////  .bind<IPersistenceContext>(INVERSITY_TYPES.PersistenceContext)
+////  .to(persistanceContext.PostgresPersistenceContext);
+//
+///**
+// * Bind Database connector - Supabase
+// * Configure via environment variables
+// */
+////if (container.isBound(INVERSITY_TYPES.DatabaseManagerFactory)) {
+////  console.log("[IAM Service] Unbinding existing DatabaseManagerFactory");
+////  container.unbind(INVERSITY_TYPES.DatabaseManagerFactory);
+////}
+//
+//// ERROR ON REBIND
+////console.log("[IAM Service] Binding PostgresDBManagerFactory for Supabase");
+////container
+////  .bind<IDatabaseManagerFactory>(INVERSITY_TYPES.DatabaseManagerFactory)
+////  .toConstantValue(
+////    new databasemanager.postgres.PostgresDBManagerFactory(
+////      {
+////        username: POSTGRES_USER,
+////        password: POSTGRES_PASSWORD,
+////        database: POSTGRES_DB,
+////        host: process.env.DATABASE_HOST || "localhost",
+////        port: Number(process.env.DATABASE_PORT) || 5432,
+////      },
+////      [
+////        services.iam_server.models.AdminUser,
+////        services.iam_server.models.PartnerUser,
+////        services.iam_server.models.Group,
+////      ]
+////    )
+////  );
+//
+///**
+// * Bind Logger Service
+// */
+//if (container.isBound(INVERSITY_TYPES.LoggerFactory)) {
+//  console.log("[IAM Service] Unbinding existing LoggerFactory");
+//  container.unbind(INVERSITY_TYPES.LoggerFactory);
+//}
+//
+//console.log("[IAM Service] Binding LoggerPino");
+//container
+//  .bind<Loggers.ILoggerFactory>(INVERSITY_TYPES.LoggerFactory)
+//  .toConstantValue(
+//    new Loggers.LoggerPino("iam-service", process.env.LOG_LEVEL || "debug")
+//  );
+//
+//export { container as DefaultContainer };
+//
