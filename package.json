@@ -1,0 +1,33 @@
+{
+  "name": "pulkerbook-be",
+  "version": "1.0.0",
+  "description": "MangoJS Microservices Monorepo for Backend Services",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "start:dev": "pnpm --parallel --stream -r run start:dev",
+    "test": "pnpm -r test",
+    "clean": "pnpm -r clean && rm -rf node_modules",
+    "lint": "pnpm -r lint"
+  },
+  "keywords": [
+    "mangojs",
+    "microservices",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@mangojs/core": "link:../mangojs",
+    "inversify": "^6.0.1"
+  }
+}

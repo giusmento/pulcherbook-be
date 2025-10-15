@@ -1,0 +1,13 @@
+graph TB
+    subgraph "IAM Service"
+        AdminUser[AdminUser]
+        PartnerUser[PartnerUser]
+        Group[Group]
+
+        AdminUser ---|"many-to-many"| Group
+        PartnerUser -.-|"references"| Group
+    end
+
+    style AdminUser fill:#e1f5ff
+    style PartnerUser fill:#fff4e1
+    style Group fill:#e8f5e9

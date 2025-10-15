@@ -1,0 +1,40 @@
+{
+    "swaggerDefinition": {
+        "openapi": "3.0.0",
+        "info": {
+            "title": "IAM Service API",
+            "version": "0.1.0",
+            "description": "Identity and Access Management Service - Authentication, Authorization, and User Management API",
+            "contact": {
+                "name": "API Support"
+            }
+        },
+        "servers": [
+            {
+                "url": "http://localhost:3001",
+                "description": "Development server"
+            },
+            {
+                "url": "https://api.example.com",
+                "description": "Production server"
+            }
+        ],
+        "components": {
+            "securitySchemes": {
+                "adminCookieAuth": {
+                    "type": "apiKey",
+                    "in": "cookie",
+                    "name": "admin_session",
+                    "description": "Admin user JWT cookie authentication"
+                },
+                "partnerCookieAuth": {
+                    "type": "apiKey",
+                    "in": "cookie",
+                    "name": "partner_session",
+                    "description": "Partner user JWT cookie authentication"
+                }
+            }
+        }
+    },
+    "apis": ["**/src/routes/**/*.ts", "**/node_modules/@mangojs/core/src/services/iam_server/src/routes/**/*.ts"]
+}
