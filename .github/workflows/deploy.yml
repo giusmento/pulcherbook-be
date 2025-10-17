@@ -55,8 +55,10 @@ jobs:
 
       - name: Copy files to VPS
         run: |
-          scp -r -o StrictHostKeyChecking=no \
-            ./* \
+          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" \
+            --exclude '.git' \
+            --exclude 'node_modules' \
+            ./ \
             ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:~/pulkerbook-be/
 
       - name: Deploy on VPS
