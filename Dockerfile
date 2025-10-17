@@ -35,7 +35,7 @@ RUN echo "Checking GITHUB_TOKEN..." && \
       echo "Please run: docker build --build-arg GITHUB_TOKEN=\$GITHUB_TOKEN ..."; \
       exit 1; \
     fi && \
-    printf "//npm.pkg.github.com/:_authToken=%s\n" "$GITHUB_TOKEN" >> .npmrc
+    #printf "//npm.pkg.github.com/:_authToken=%s\n" "$GITHUB_TOKEN" >> .npmrc
 
 
 # Copy services directory (node_modules excluded by .dockerignore)
