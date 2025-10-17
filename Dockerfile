@@ -64,4 +64,5 @@ EXPOSE 3001 3002 3003 3004 3005
 # Copy source code files only (preserving pnpm workspace structure and node_modules)
 COPY tsconfig.json* ./
 
-CMD ["pnpm", "start:prod:docker"]
+ENTRYPOINT ["tail", "-f", "/dev/null"]
+#CMD ["pnpm", "start:prod:docker"]
