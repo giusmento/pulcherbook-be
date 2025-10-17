@@ -20,7 +20,6 @@ services:
     container_name: pulkerbook-nginx
     ports:
       - "8080:80"
-      - "443:443"
     depends_on:
       - app
     networks:
