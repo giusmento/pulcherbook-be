@@ -1,0 +1,145 @@
+version: "3.8"
+
+# Networks for service communication
+networks:
+  pulkerbook-network:
+    driver: bridge
+
+# Volumes for persistent data
+volumes:
+  postgres_data:
+
+services:
+  # ==========================================================================
+  # Nginx Reverse Proxy
+  # ==========================================================================
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    container_name: pulkerbook-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - app
+    networks:
+      - pulkerbook-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost/health",
+        ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # ==========================================================================
+  # Application Container (Single or Multi mode)
+  # ==========================================================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICES: ${SERVICES:-all}
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    container_name: pulkerbook-app
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - SERVICES=${SERVICES:-all}
+      # Database
+      - DB_HOST=${DB_HOST:-postgres}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-pulkerbook}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      # JWT
+      - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-1d}
+    networks:
+      - pulkerbook-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3001/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)}).on('error', () => process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+    profiles:
+      - all
+      - single
+
+  # ==========================================================================
+  # Individual Service Containers (Multi-container mode)
+  # ==========================================================================
+  iam-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICES: iam-service
+        NODE_VERSION: ${NODE_VERSION:-18-alpine}
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    container_name: pulkerbook-iam-service
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - SERVICES=iam-service
+      - DB_HOST=${DB_HOST:-postgres}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-pulkerbook}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-1d}
+    ports:
+      - "3001:3001"
+    networks:
+      - pulkerbook-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3001/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)}).on('error', () => process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+    profiles:
+      - multi
+
+  # Add more services here as needed
+  # payment-service:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     args:
+  #       SERVICES: payment-service
+  #   container_name: pulkerbook-payment-service
+  #   environment:
+  #     - NODE_ENV=${NODE_ENV:-production}
+  #     - SERVICES=payment-service
+  #   ports:
+  #     - "3002:3002"
+  #   networks:
+  #     - pulkerbook-network
+  #   restart: unless-stopped
+  #   profiles:
+  #     - multi

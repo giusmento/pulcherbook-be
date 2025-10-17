@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import "reflect-metadata";
-import { ServerBuilder } from "@mangojs/core";
+import { ServerBuilder } from "@giusmento/mangojs-core";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -51,7 +51,7 @@ const corsOriginFunction = function (origin, callback) {
 
     // Step 2: NOW import services after container is configured
     console.log("[IAM Service] Step 1: Loading services...");
-    const { services } = await import("@mangojs/core");
+    const { services } = await import("@giusmento/mangojs-core");
 
     console.log("[IAM Service] Step 2: Building server...");
 

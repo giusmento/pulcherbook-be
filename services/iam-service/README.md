@@ -84,20 +84,21 @@ erDiagram
 
 ### Health Check
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/api/iam/v1/health` | Service health check | No |
+| Method | Endpoint             | Description          | Auth Required |
+| ------ | -------------------- | -------------------- | ------------- |
+| GET    | `/api/iam/v1/health` | Service health check | No            |
 
 ### Authentication - Admin
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| POST | `/api/iam/v1/auth/admins/login` | Admin user login | No |
-| POST | `/api/iam/v1/auth/admins/logout` | Admin user logout | Yes |
-| POST | `/api/iam/v1/auth/admins/register` | Register new admin user | No |
-| POST | `/api/iam/v1/auth/admins/verify` | Verify admin JWT token | Yes |
+| Method | Endpoint                           | Description             | Auth Required |
+| ------ | ---------------------------------- | ----------------------- | ------------- |
+| POST   | `/api/iam/v1/auth/admins/login`    | Admin user login        | No            |
+| POST   | `/api/iam/v1/auth/admins/logout`   | Admin user logout       | Yes           |
+| POST   | `/api/iam/v1/auth/admins/register` | Register new admin user | No            |
+| POST   | `/api/iam/v1/auth/admins/verify`   | Verify admin JWT token  | Yes           |
 
 **Login Request Example:**
+
 ```json
 {
   "email": "admin@example.com",
@@ -106,6 +107,7 @@ erDiagram
 ```
 
 **Login Response Example:**
+
 ```json
 {
   "ok": true,
@@ -126,48 +128,48 @@ erDiagram
 
 ### Authentication - Partner
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| POST | `/api/iam/v1/auth/partners/login` | Partner user login | No |
-| POST | `/api/iam/v1/auth/partners/logout` | Partner user logout | Yes |
-| POST | `/api/iam/v1/auth/partners/register` | Register new partner user | No |
-| POST | `/api/iam/v1/auth/partners/verify` | Verify partner JWT token | Yes |
+| Method | Endpoint                             | Description               | Auth Required |
+| ------ | ------------------------------------ | ------------------------- | ------------- |
+| POST   | `/api/iam/v1/auth/partners/login`    | Partner user login        | No            |
+| POST   | `/api/iam/v1/auth/partners/logout`   | Partner user logout       | Yes           |
+| POST   | `/api/iam/v1/auth/partners/register` | Register new partner user | No            |
+| POST   | `/api/iam/v1/auth/partners/verify`   | Verify partner JWT token  | Yes           |
 
 ### Admin User Management
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/api/iam/v1/admins` | List all admin users | Yes |
-| POST | `/api/iam/v1/admins` | Create new admin user | Yes |
-| PUT | `/api/iam/v1/admins/:uid` | Update admin user | Yes |
-| PUT | `/api/iam/v1/admins/:uid/groups` | Update user groups | Yes |
-| GET | `/api/iam/v1/admins/magiclinks/:magiclink` | Get admin by magic link | No |
-| POST | `/api/iam/v1/admins/activate/:magiclink` | Activate admin account | No |
-| POST | `/api/iam/v1/admins/:uid/enable` | Enable admin account | Yes |
-| POST | `/api/iam/v1/admins/:uid/disable` | Disable admin account | Yes |
-| DELETE | `/api/iam/v1/admins/:uid/delete/hard` | Hard delete admin user | Yes |
+| Method | Endpoint                                   | Description             | Auth Required |
+| ------ | ------------------------------------------ | ----------------------- | ------------- |
+| GET    | `/api/iam/v1/admins`                       | List all admin users    | Yes           |
+| POST   | `/api/iam/v1/admins`                       | Create new admin user   | Yes           |
+| PUT    | `/api/iam/v1/admins/:uid`                  | Update admin user       | Yes           |
+| PUT    | `/api/iam/v1/admins/:uid/groups`           | Update user groups      | Yes           |
+| GET    | `/api/iam/v1/admins/magiclinks/:magiclink` | Get admin by magic link | No            |
+| POST   | `/api/iam/v1/admins/activate/:magiclink`   | Activate admin account  | No            |
+| POST   | `/api/iam/v1/admins/:uid/enable`           | Enable admin account    | Yes           |
+| POST   | `/api/iam/v1/admins/:uid/disable`          | Disable admin account   | Yes           |
+| DELETE | `/api/iam/v1/admins/:uid/delete/hard`      | Hard delete admin user  | Yes           |
 
 ### Partner User Management
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/api/iam/v1/partners` | List all partner users | Yes |
-| POST | `/api/iam/v1/partners` | Create new partner user | Yes |
-| GET | `/api/iam/v1/partners/:uid` | Get partner user by UID | Yes |
-| PUT | `/api/iam/v1/partners/:uid` | Update partner user | Yes |
-| DELETE | `/api/iam/v1/partners/:uid` | Delete partner user | Yes |
+| Method | Endpoint                    | Description             | Auth Required |
+| ------ | --------------------------- | ----------------------- | ------------- |
+| GET    | `/api/iam/v1/partners`      | List all partner users  | Yes           |
+| POST   | `/api/iam/v1/partners`      | Create new partner user | Yes           |
+| GET    | `/api/iam/v1/partners/:uid` | Get partner user by UID | Yes           |
+| PUT    | `/api/iam/v1/partners/:uid` | Update partner user     | Yes           |
+| DELETE | `/api/iam/v1/partners/:uid` | Delete partner user     | Yes           |
 
 ### Group Management
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/api/iam/v1/groups` | List all groups | Yes |
-| POST | `/api/iam/v1/groups` | Create new group | Yes |
-| GET | `/api/iam/v1/groups/admin` | List admin groups | Yes |
-| POST | `/api/iam/v1/groups/admin` | Create admin group | Yes |
-| GET | `/api/iam/v1/groups/partner` | List partner groups | Yes |
-| POST | `/api/iam/v1/groups/partner` | Create partner group | Yes |
-| DELETE | `/api/iam/v1/groups/:uid` | Delete group | Yes |
+| Method | Endpoint                     | Description          | Auth Required |
+| ------ | ---------------------------- | -------------------- | ------------- |
+| GET    | `/api/iam/v1/groups`         | List all groups      | Yes           |
+| POST   | `/api/iam/v1/groups`         | Create new group     | Yes           |
+| GET    | `/api/iam/v1/groups/admin`   | List admin groups    | Yes           |
+| POST   | `/api/iam/v1/groups/admin`   | Create admin group   | Yes           |
+| GET    | `/api/iam/v1/groups/partner` | List partner groups  | Yes           |
+| POST   | `/api/iam/v1/groups/partner` | Create partner group | Yes           |
+| DELETE | `/api/iam/v1/groups/:uid`    | Delete group         | Yes           |
 
 ## Setup Instructions
 
@@ -180,16 +182,19 @@ erDiagram
 ### Installation
 
 1. **Install dependencies from the monorepo root:**
+
    ```bash
    pnpm install
    ```
 
 2. **Create environment file:**
+
    ```bash
    cp services/iam-service/.env.example services/iam-service/.env
    ```
 
 3. **Configure environment variables in `.env`:**
+
    ```env
    # Database Configuration
    DATABASE_URL=postgresql://[USER]:[PASSWORD]@[HOST]:[PORT]/[DATABASE]
@@ -204,12 +209,14 @@ erDiagram
    ```
 
 4. **Copy source files from demo service:**
+
    ```bash
    # Run the existing copy script
    bash copy_iam.sh
    ```
 
    This copies:
+
    - All route controllers
    - Service layer implementations
    - Database models (entities)
@@ -225,11 +232,13 @@ erDiagram
 ### Development Mode
 
 Run with hot reload:
+
 ```bash
 pnpm --filter @mangojs/iam-service dev
 ```
 
 Or from the service directory:
+
 ```bash
 cd services/iam-service
 pnpm dev
@@ -294,6 +303,7 @@ pnpm --filter @mangojs/iam-service test
 ```
 
 Watch mode:
+
 ```bash
 pnpm --filter @mangojs/iam-service test:watch
 ```
@@ -360,6 +370,7 @@ public async protectedRoute(req: Request, res: Response) {
 ### Security Headers
 
 The service uses Helmet.js for security headers:
+
 - X-Frame-Options
 - X-Content-Type-Options
 - Strict-Transport-Security (in production)
@@ -369,19 +380,22 @@ The service uses Helmet.js for security headers:
 ### Common Issues
 
 **Database Connection Fails**
+
 - Verify `DATABASE_URL` is correct
 - Check database is running and accessible
 - Ensure database user has appropriate permissions
 
 **Authentication Not Working**
+
 - Check JWT secrets are set in `.env`
 - Verify cookie settings (domain, secure, sameSite)
 - Check CORS configuration
 
 **TypeScript Build Errors**
+
 - Run `pnpm install` to ensure dependencies are installed
 - Check `tsconfig.json` extends root configuration
-- Verify `@mangojs/core` is properly linked
+- Verify `@giusmento/mangojs-core` is properly linked
 
 ## Integration with Monorepo
 

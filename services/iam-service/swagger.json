@@ -36,5 +36,5 @@
             }
         }
     },
-    "apis": ["**/src/routes/**/*.ts", "**/node_modules/@mangojs/core/src/services/iam_server/src/routes/**/*.ts"]
+    "apis": ["**/src/routes/**/*.ts", "**/node_modules/@giusmento/mangojs-core/src/services/iam_server/src/routes/**/*.ts"]
 }

@@ -1,14 +1,14 @@
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
-import { services } from "@mangojs/core";
+import { services } from "@giusmento/mangojs-core";
 
 dotenv.config();
 
 const entities = [
-            services.iam_server.models.AdminUser,
-            services.iam_server.models.PartnerUser,
-            services.iam_server.models.Group
-        ]
+  services.iam_server.models.AdminUser,
+  services.iam_server.models.PartnerUser,
+  services.iam_server.models.Group,
+];
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -20,9 +20,9 @@ export const AppDataSource = new DataSource({
   ssl: {
     rejectUnauthorized: false,
   },
-   extra: {
+  extra: {
     max: 10, // Maximum pool size
-    min: 2,  // Minimum pool size
+    min: 2, // Minimum pool size
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000,
   },

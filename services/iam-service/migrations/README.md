@@ -36,7 +36,7 @@ Create a `ormconfig.json` or `data-source.ts` file in the service root (`service
   "ssl": {
     "rejectUnauthorized": false
   },
-  "entities": ["node_modules/@mangojs/core/src/services/iam_server/src/db/models/*.entity.ts"],
+  "entities": ["node_modules/@giusmento/mangojs-core/src/services/iam_server/src/db/models/*.entity.ts"],
   "migrations": ["src/db/migrations/*.ts"],
   "migrationsTableName": "migrations",
   "synchronize": false,
@@ -49,7 +49,7 @@ Option B: data-source.ts (TypeORM 0.3+)
 ```typescript
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
-import { services } from "@mangojs/core";
+import { services } from "@giusmento/mangojs-core";
 
 dotenv.config();
 

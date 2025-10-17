@@ -5,6 +5,7 @@ A pnpm workspace monorepo for building backend microservices using the MangoJS f
 ## Project Overview
 
 This monorepo uses MangoJS to build scalable microservices with:
+
 - **Architecture**: Independent microservices with shared utilities
 - **Framework**: MangoJS for dependency injection, routing, and middleware
 - **Package Manager**: pnpm workspaces for efficient dependency management
@@ -15,7 +16,7 @@ This monorepo uses MangoJS to build scalable microservices with:
 - **Node.js** (>=18.0.0)
 - **pnpm** (>=8.0.0)
 - **TypeScript** (5.x)
-- **MangoJS** (@mangojs/core)
+- **MangoJS** (@giusmento/mangojs-core)
 
 ## Project Structure
 
@@ -38,6 +39,7 @@ pulkerbook-be/
 - pnpm >= 8.0.0
 
 Install pnpm if you haven't:
+
 ```bash
 npm install -g pnpm
 ```
@@ -54,6 +56,7 @@ pnpm install
 ### Environment Setup
 
 Copy the environment template:
+
 ```bash
 cp .env.example .env
 ```
@@ -65,6 +68,7 @@ Edit `.env` and configure your service ports and credentials.
 ### Run All Services
 
 Run all services in development mode with hot reload:
+
 ```bash
 pnpm dev
 ```
@@ -72,6 +76,7 @@ pnpm dev
 ### Run Specific Service
 
 Run a specific service:
+
 ```bash
 pnpm --filter @pulkerbook/service-name dev
 ```
@@ -79,6 +84,7 @@ pnpm --filter @pulkerbook/service-name dev
 ### Build All Services
 
 Build all services:
+
 ```bash
 pnpm build
 ```
@@ -86,6 +92,7 @@ pnpm build
 ### Build Specific Service
 
 Build a specific service:
+
 ```bash
 pnpm --filter @pulkerbook/service-name build
 ```
@@ -93,17 +100,20 @@ pnpm --filter @pulkerbook/service-name build
 ## Adding a New Microservice
 
 1. Create a new directory under `services/`:
+
 ```bash
 mkdir services/my-service
 ```
 
 2. Initialize the service package:
+
 ```bash
 cd services/my-service
 pnpm init
 ```
 
 3. Configure `package.json`:
+
 ```json
 {
   "name": "@pulkerbook/my-service",
@@ -114,13 +124,14 @@ pnpm init
     "start": "node dist/index.ts"
   },
   "dependencies": {
-    "@mangojs/core": "workspace:*",
+    "@giusmento/mangojs-core": "workspace:*",
     "@pulkerbook/shared": "workspace:*"
   }
 }
 ```
 
 4. Create `tsconfig.json` extending base config:
+
 ```json
 {
   "extends": "../../tsconfig.json",
@@ -136,14 +147,14 @@ pnpm init
 
 ## Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm install` | Install all dependencies |
-| `pnpm dev` | Run all services in development mode |
-| `pnpm build` | Build all services |
-| `pnpm test` | Run tests across all packages |
-| `pnpm clean` | Clean build artifacts and dependencies |
-| `pnpm lint` | Lint all packages |
+| Command        | Description                            |
+| -------------- | -------------------------------------- |
+| `pnpm install` | Install all dependencies               |
+| `pnpm dev`     | Run all services in development mode   |
+| `pnpm build`   | Build all services                     |
+| `pnpm test`    | Run tests across all packages          |
+| `pnpm clean`   | Clean build artifacts and dependencies |
+| `pnpm lint`    | Lint all packages                      |
 
 ### Workspace-Specific Commands
 
@@ -163,6 +174,7 @@ pnpm --filter @pulkerbook/service-name <script-name>
 ### Microservices Pattern
 
 Each service in `services/` is an independent microservice that:
+
 - Owns its data and database
 - Exposes REST APIs
 - Can communicate with other services via HTTP
@@ -171,6 +183,7 @@ Each service in `services/` is an independent microservice that:
 ### Shared Package
 
 The `packages/shared` package contains:
+
 - Common TypeScript types and interfaces
 - Shared utility functions
 - Constants used across services
@@ -179,6 +192,7 @@ The `packages/shared` package contains:
 ### Port Allocation
 
 Configure unique ports for each service in `.env`:
+
 - Gateway: 3000
 - IAM Service: 3001
 - Other services: 3002+
@@ -186,6 +200,7 @@ Configure unique ports for each service in `.env`:
 ## MangoJS Features
 
 MangoJS provides:
+
 - **Dependency Injection**: Clean, testable code architecture
 - **Decorators**: Express-like routing with TypeScript decorators
 - **Middleware**: Request/response pipeline

@@ -7,12 +7,12 @@
 //  Loggers,
 //  persistanceContext,
 //  databasemanager,
-//} from "@mangojs/core";
-//import { IPersistenceContext } from "@mangojs/core";
-//import { IDatabaseManagerFactory } from "@mangojs/core";
+//} from "@giusmento/mangojs-core";
+//import { IPersistenceContext } from "@giusmento/mangojs-core";
+//import { IDatabaseManagerFactory } from "@giusmento/mangojs-core";
 //
-//import { services } from "@mangojs/core";
-//import { Containers } from "@mangojs/core";
+//import { services } from "@giusmento/mangojs-core";
+//import { Containers } from "@giusmento/mangojs-core";
 //
 //// Import our custom service
 //import { AdminUserService } from "./services/adminUser.service";
@@ -26,20 +26,13 @@
 //
 //console.log("[IAM Service] Configuring Inversify Container...");
 //console.log("[IAM Service] Current bindings in container:");
-//console.log(
-"  - DatabaseManagerFactory bound?",
-  container.isBound(INVERSITY_TYPES.DatabaseManagerFactory);
+//console.log("  - DatabaseManagerFactory bound?",container.isBound(INVERSITY_TYPES.DatabaseManagerFactory);
 //);
-//console.log(
-"  - PersistenceContext bound?",
-  container.isBound(INVERSITY_TYPES.PersistenceContext);
+//console.log(""  - PersistenceContext bound?", container.isBound(INVERSITY_TYPES.PersistenceContext);
 //);
-//console.log(
-"  - LoggerFactory bound?", container.isBound(INVERSITY_TYPES.LoggerFactory);
+//console.log("  - LoggerFactory bound?", container.isBound(INVERSITY_TYPES.LoggerFactory);
 //);
-//console.log(
-"  - AuthorizationContext bound?",
-  container.isBound(INVERSITY_TYPES.AuthorizationContext);
+//console.log("  - AuthorizationContext bound?",container.isBound(INVERSITY_TYPES.AuthorizationContext);
 //);
 //
 ///**
