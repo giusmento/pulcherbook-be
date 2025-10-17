@@ -68,7 +68,7 @@ services:
     restart: unless-stopped
     healthcheck:
       test:
-      [
+        [
           "CMD",
           "wget",
           "--quiet",
