@@ -3,7 +3,7 @@
 # Default environment variables
 SERVICES ?= all
 NODE_VERSION ?= 18-alpine
-DOCKER_REGISTRY ?= pulkerbook
+DOCKER_REGISTRY ?= pulcherbook
 IMAGE_TAG ?= latest
 
 # Colors for output
@@ -16,7 +16,7 @@ NC     := \033[0m # No Color
 # Help
 # =============================================================================
 help: ## Show this help message
-	@echo '$(GREEN)PulkerBook Backend - Docker Management$(NC)'
+	@echo '$(GREEN)PulcherBook Backend - Docker Management$(NC)'
 	@echo ''
 	@echo 'Usage:'
 	@echo '  make $(YELLOW)<target>$(NC)'
@@ -127,7 +127,7 @@ shell-nginx: ## Open shell in nginx container
 	docker-compose exec nginx sh
 
 db-shell: ## Open PostgreSQL shell
-	docker-compose exec postgres psql -U postgres -d pulkerbook
+	docker-compose exec postgres psql -U postgres -d pulcherbook
 
 # =============================================================================
 # Testing Commands
@@ -172,7 +172,7 @@ migrate-local: ## Run database migrations locally
 env: ## Create .env file from template
 	@if [ ! -f .env ]; then \
 		echo "$(GREEN)Creating .env file...$(NC)"; \
-		cp .env.example .env 2>/dev/null || echo "NODE_ENV=production\nSERVICES=all\nDB_HOST=postgres\nDB_PORT=5432\nDB_NAME=pulkerbook\nDB_USER=postgres\nDB_PASSWORD=postgres\nJWT_SECRET=change-me-in-production\nJWT_EXPIRES_IN=1d" > .env; \
+		cp .env.example .env 2>/dev/null || echo "NODE_ENV=production\nSERVICES=all\nDB_HOST=postgres\nDB_PORT=5432\nDB_NAME=pulcherbook\nDB_USER=postgres\nDB_PASSWORD=postgres\nJWT_SECRET=change-me-in-production\nJWT_EXPIRES_IN=1d" > .env; \
 		echo "$(GREEN)✓ .env file created$(NC)"; \
 	else \
 		echo "$(YELLOW).env file already exists$(NC)"; \

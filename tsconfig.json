@@ -18,7 +18,7 @@
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "paths": {
-      "@pulkerbook/*": ["packages/*/src"],
+      "@pulcherbook/*": ["packages/*/src"],
       "@services/*": ["services/*/src"]
     }
   },

@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-echo "Starting PulkerBook Backend Services..."
+echo "Starting PulcherBook Backend Services..."
 echo "Mode: $SERVICES"
 
 if [ "$SERVICES" = "all" ]; then

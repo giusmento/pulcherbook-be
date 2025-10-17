@@ -1,7 +1,7 @@
 {
-  "name": "@pulkerbook/shared",
+  "name": "@pulcherbook/shared",
   "version": "1.0.0",
-  "description": "Shared utilities and types for Pulkerbook services",
+  "description": "Shared utilities and types for PulcherBook services",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

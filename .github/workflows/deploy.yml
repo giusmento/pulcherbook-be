@@ -34,7 +34,7 @@ jobs:
           # Database
           DB_HOST=postgres
           DB_PORT=5432
-          DB_NAME=pulkerbook
+          DB_NAME=pulcherbook
           DB_USER=postgres
           DB_PASSWORD=${{ secrets.DB_PASSWORD }}
 
@@ -63,12 +63,12 @@ jobs:
             --exclude '.git' \
             --exclude 'node_modules' \
             ./ \
-            ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:~/pulkerbook-be/
+            ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:~/pulcherbook-be/
 
       - name: Deploy on VPS
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
-            cd ~/pulkerbook-be
+            cd ~/pulcherbook-be
 
             # source env variables
             source .env
@@ -101,4 +101,4 @@ jobs:
         if: always()
         run: |
           rm -f ~/.ssh/id_rsa
-          rm -f ~/pulkerbook-be/.npmrc
+          rm -f ~/pulcherbook-be/.npmrc

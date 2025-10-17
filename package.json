@@ -1,5 +1,5 @@
 {
-  "name": "pulkerbook-be",
+  "name": "pulcherbook-be",
   "version": "1.0.0",
   "description": "MangoJS Microservices Monorepo for Backend Services",
   "private": true,

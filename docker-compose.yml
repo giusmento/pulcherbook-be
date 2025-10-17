@@ -2,7 +2,7 @@ version: "3.8"
 
 # Networks for service communication
 networks:
-  pulkerbook-network:
+  pulcherbook-network:
     driver: bridge
 
 # Volumes for persistent data
@@ -17,13 +17,13 @@ services:
     build:
       context: .
       dockerfile: nginx/Dockerfile
-    container_name: pulkerbook-nginx
+    container_name: pulcherbook-nginx
     ports:
       - "8080:80"
     depends_on:
       - app
     networks:
-      - pulkerbook-network
+      - pulcherbook-network
     restart: unless-stopped
     healthcheck:
       test:
@@ -50,21 +50,21 @@ services:
       args:
         SERVICES: ${SERVICES:-all}
         GITHUB_TOKEN: ${GITHUB_TOKEN}
-    container_name: pulkerbook-app
+    container_name: pulcherbook-app
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - SERVICES=${SERVICES:-all}
       # Database
       - DB_HOST=${DB_HOST:-postgres}
       - DB_PORT=${DB_PORT:-5432}
-      - DB_NAME=${DB_NAME:-pulkerbook}
+      - DB_NAME=${DB_NAME:-pulcherbook}
       - DB_USER=${DB_USER:-postgres}
       - DB_PASSWORD=${DB_PASSWORD:-postgres}
       # JWT
       - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-1d}
     networks:
-      - pulkerbook-network
+      - pulcherbook-network
     restart: unless-stopped
     healthcheck:
       test:
@@ -95,13 +95,13 @@ services:
         SERVICES: iam-service
         NODE_VERSION: ${NODE_VERSION:-18-alpine}
         GITHUB_TOKEN: ${GITHUB_TOKEN}
-    container_name: pulkerbook-iam-service
+    container_name: pulcherbook-iam-service
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - SERVICES=iam-service
       - DB_HOST=${DB_HOST:-postgres}
       - DB_PORT=${DB_PORT:-5432}
-      - DB_NAME=${DB_NAME:-pulkerbook}
+      - DB_NAME=${DB_NAME:-pulcherbook}
       - DB_USER=${DB_USER:-postgres}
       - DB_PASSWORD=${DB_PASSWORD:-postgres}
       - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
@@ -109,7 +109,7 @@ services:
     ports:
       - "3001:3001"
     networks:
-      - pulkerbook-network
+      - pulcherbook-network
     restart: unless-stopped
     healthcheck:
       test:
@@ -133,14 +133,14 @@ services:
   #     dockerfile: Dockerfile
   #     args:
   #       SERVICES: payment-service
-  #   container_name: pulkerbook-payment-service
+  #   container_name: pulcherbook-payment-service
   #   environment:
   #     - NODE_ENV=${NODE_ENV:-production}
   #     - SERVICES=payment-service
   #   ports:
   #     - "3002:3002"
   #   networks:
-  #     - pulkerbook-network
+  #     - pulcherbook-network
   #   restart: unless-stopped
   #   profiles:
   #     - multi
