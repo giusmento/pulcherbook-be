@@ -59,7 +59,7 @@ FROM dependencies AS builder
 ARG SERVICES=all
 
 # Install dependencies
-RUN pnpm build --filter "${SERVICES}"
+RUN pnpm build
 
 # Expose ports (3001-3010 for multiple services)
 EXPOSE 3001 3002 3003 3004 3005
