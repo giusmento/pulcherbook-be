@@ -7,7 +7,8 @@ FROM docker.io/node:${NODE_VERSION} AS base
 WORKDIR /app
 
 # Update package lists and upgrade system packages
-RUN apt-get update && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get upgrade -y && apt-get clean && \
+    apt-get install -y wget && rm -rf /var/lib/apt/lists/*
 
 # Install pnpm globally
 RUN corepack enable && corepack prepare pnpm@latest --activate
