@@ -41,14 +41,17 @@ jobs:
           # GitHub Token for private packages
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           EOF
+
       - name: Create .pnpmrc file
         run: |
-          mkdir -p ~/pulkerbook-be
-          cd ~/pulkerbook-be
           cat > .npmrc << EOF
           @giusmento:registry=https://npm.pkg.github.com/
           //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
           EOF
+
+      - name: logs
+        run: |
+          ls -la
 
       - name: Copy files to VPS
         run: |
