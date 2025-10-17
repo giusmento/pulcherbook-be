@@ -43,6 +43,7 @@ jobs:
           EOF
       - name: Create .pnpmrc file
         run: |
+          mkdir -p ~/pulkerbook-be
           cd ~/pulkerbook-be
           cat > .npmrc << EOF
           @giusmento:registry=https://npm.pkg.github.com/
