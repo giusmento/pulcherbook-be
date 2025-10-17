@@ -58,11 +58,14 @@ FROM dependencies AS builder
 # Build all services by default
 ARG SERVICES=all
 
+# Install dependencies
+RUN pnpm build --filter "${SERVICES}"
+
 # Expose ports (3001-3010 for multiple services)
 EXPOSE 3001 3002 3003 3004 3005
 
 # Copy source code files only (preserving pnpm workspace structure and node_modules)
 COPY tsconfig.json* ./
 
-ENTRYPOINT ["tail", "-f", "/dev/null"]
-#CMD ["pnpm", "start:prod:docker"]
+#ENTRYPOINT ["tail", "-f", "/dev/null"]
+CMD ["pnpm", "start:prod:docker"]
