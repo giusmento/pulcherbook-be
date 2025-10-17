@@ -54,19 +54,19 @@ jobs:
             cd ~/pulkerbook-be
 
             # Stop existing containers
-            docker compose down
+            podman-compose down
 
             # Remove old images to force rebuild
-            docker compose build --no-cache
+            podman-compose build --no-cache
 
             # Start services
-            docker compose up -d
+            podman-compose up -d
 
             # Show running containers
-            docker compose ps
+            podman-compose ps
 
             # Show logs
-            docker compose logs --tail=50
+            podman-compose logs --tail=50
           EOF
 
       - name: Health check
