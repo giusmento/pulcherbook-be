@@ -13,7 +13,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Install PM2 globally
-RUN npm install pm2 -g
+RUN pnpm install pm2 -g
 
 # ============================================================================
 # Dependencies Stage - Install all dependencies
@@ -34,7 +34,7 @@ RUN echo "Checking GITHUB_TOKEN..." && \
       echo "ERROR: GITHUB_TOKEN is not set!"; \
       echo "Please run: docker build --build-arg GITHUB_TOKEN=\$GITHUB_TOKEN ..."; \
       exit 1; \
-    fi && \
+    fi
     #printf "//npm.pkg.github.com/:_authToken=%s\n" "$GITHUB_TOKEN" >> .npmrc
 
 

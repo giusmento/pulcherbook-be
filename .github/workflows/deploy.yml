@@ -73,7 +73,7 @@ jobs:
             podman compose down
 
             # Remove old images to force rebuild
-            podman compose build --build-arg SERVICES=all --build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) --no-cache
+            podman compose --env-file ./.env --profile single build  --no-cache
 
             # Start services
             podman compose --profile single up -d
