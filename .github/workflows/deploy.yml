@@ -23,7 +23,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H -p 26 ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
       - name: Create .env file
         run: |
@@ -59,7 +59,7 @@ jobs:
 
       - name: Copy files to VPS
         run: |
-          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" \
+          rsync -avz --delete -e "ssh -p 26 -o StrictHostKeyChecking=no" \
             --exclude '.git' \
             --exclude 'node_modules' \
             ./ \
@@ -67,7 +67,7 @@ jobs:
 
       - name: Deploy on VPS
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
+          ssh -p 26 -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
             cd ~/pulcherbook-be
 
             # source env variables
@@ -92,7 +92,7 @@ jobs:
       - name: Health check
         run: |
           sleep 10
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
+          ssh -p 26 -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
             curl -f http://localhost:8080/health || exit 1
             curl -f http://localhost:8080/api/iam/v1/health || exit 1
           EOF
