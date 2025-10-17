@@ -93,8 +93,8 @@ jobs:
         run: |
           sleep 10
           ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
-            curl -f http://localhost/health || exit 1
-            curl -f http://localhost/api/iam/v1/health || exit 1
+            curl -f http://localhost:8080/health || exit 1
+            curl -f http://localhost:8080/api/iam/v1/health || exit 1
           EOF
 
       - name: Cleanup
