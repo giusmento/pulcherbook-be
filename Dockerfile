@@ -3,7 +3,7 @@ ARG NODE_VERSION=lts-bookworm-slim
 # ============================================================================
 # Base Stage - Common dependencies
 # ============================================================================
-FROM node:${NODE_VERSION} AS base
+FROM docker.io/node:${NODE_VERSION} AS base
 WORKDIR /app
 
 # Update package lists and upgrade system packages
