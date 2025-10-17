@@ -12,8 +12,12 @@ RUN apt-get update && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt
 # Install pnpm globally
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Install PM2 globally
-RUN pnpm install pm2 -g
+# Set pnpm global bin directory
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+# Install PM2 globally using npm (more reliable for global installs)
+RUN npm install -g pm2
 
 # ============================================================================
 # Dependencies Stage - Install all dependencies
