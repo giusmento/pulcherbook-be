@@ -66,6 +66,9 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
             cd ~/pulkerbook-be
 
+            # source env variables
+            source .env
+
             # Stop existing containers
             podman compose down
 
@@ -94,4 +97,4 @@ jobs:
         if: always()
         run: |
           rm -f ~/.ssh/id_rsa
-          rm -f ~/pulkerbook-be/.pnpmrc
+          rm -f ~/pulkerbook-be/.npmrc
