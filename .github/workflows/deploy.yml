@@ -41,6 +41,13 @@ jobs:
           # GitHub Token for private packages
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           EOF
+      - name: Create .pnpmrc file
+        run: |
+          cd ~/pulkerbook-be
+          cat > .npmrc << EOF
+          @giusmento:registry=https://npm.pkg.github.com/
+          //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+          EOF
 
       - name: Copy files to VPS
         run: |
@@ -57,10 +64,10 @@ jobs:
             podman compose down
 
             # Remove old images to force rebuild
-            podman compose build --no-cache
+            podman compose build --build-arg SERVICES=all --build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) --no-cache
 
             # Start services
-            podman compose up -d
+            podman compose --profile single up -d
 
             # Show running containers
             podman compose ps
@@ -79,4 +86,6 @@ jobs:
 
       - name: Cleanup
         if: always()
-        run: rm -f ~/.ssh/id_rsa
+        run: |
+          rm -f ~/.ssh/id_rsa
+          rm -f ~/pulkerbook-be/.pnpmrc
