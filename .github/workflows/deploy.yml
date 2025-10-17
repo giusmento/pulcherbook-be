@@ -32,11 +32,11 @@ jobs:
           SERVICES=all
 
           # Database
-          DB_HOST=postgres
-          DB_PORT=5432
-          DB_NAME=pulcherbook
-          DB_USER=postgres
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DATABASE_HOST=postgres
+          DATABASE_PORT=5432
+          DATABASE_NAME=pulcherbook
+          DATABASE_USER=postgres
+          DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
 
           # JWT
           JWT_SECRET=${{ secrets.JWT_SECRET }}
