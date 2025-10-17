@@ -28,6 +28,7 @@ ARG GITHUB_TOKEN
 
 # Copy workspace configuration
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY tsconfig.json .nvmrc ./
 
 # Copy .npmrc for GitHub Packages authentication
 COPY .npmrc ./
