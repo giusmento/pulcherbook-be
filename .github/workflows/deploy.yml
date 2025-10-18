@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - release/app
-      - feat/github-action
 
 permissions:
   contents: read
