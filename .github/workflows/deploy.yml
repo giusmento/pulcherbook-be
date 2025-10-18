@@ -85,7 +85,7 @@ jobs:
 
             # Remove old images to force rebuild
             podman compose --profile single build --no-cache\
-              --build-arg GITHUB_TOKEN="${GITHUB_TOKEN}" \
+              --build-arg GITHUB_TOKEN="${{secrets.GITHUB_TOKEN}}" \
               --build-arg NODE_VERSION="${NODE_VERSION:-lts-bookworm-slim}"
 
             # Start services
