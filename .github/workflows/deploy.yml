@@ -42,6 +42,18 @@ jobs:
           # JWT Secrets (Admin)
           ADMIN_COOKIE_KEY_FIRST=awrasdcwer34fdanio4crh
           ADMIN_COOKIE_KEY_SECOND=09acj34fa942nfa491csd
+          # Cookie Configuration (Admin)
+          ADMIN_COOKIE_NAME=admin_session
+          ADMIN_COOKIE_DOMAIN=vps-c545510b.vps.ovh.net
+          ADMIN_COOKIE_MAX_AGE=86400000
+          ADMIN_COOKIE_SAMESITE=none
+          ADMIN_COOKIE_HTTPONLY=true
+          ADMIN_COOKIE_SECURE=false
+          ADMIN_COOKIE_SIGNED=false
+          ADMIN_COOKIE_OVERWRITE=true
+          ADMIN_COOKIE_PRIORITY=medium
+          ADMIN_COOKIE_PARTITIONED=false
+          ADMIN_COOKIE_PATH=/
           EOF
 
       - name: Create .pnpmrc file
