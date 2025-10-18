@@ -84,7 +84,9 @@ jobs:
             podman compose --profile single down -v || true
 
             # Remove old images to force rebuild
-            podman compose --profile single build --no-cache
+            podman compose --profile single build --no-cache\
+              --build-arg GITHUB_TOKEN="${GITHUB_TOKEN}" \
+              --build-arg NODE_VERSION="${NODE_VERSION:-lts-bookworm-slim}"
 
             # Start services
             podman compose --profile single up -d
@@ -108,4 +110,4 @@ jobs:
         if: always()
         run: |
           rm -f ~/.ssh/id_rsa
-          rm -f ~/pulcherbook-be/.npmrc
+          #rm -f ~/pulcherbook-be/.npmrc
