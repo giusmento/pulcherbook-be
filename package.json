@@ -1,5 +1,5 @@
 {
-  "name": "pulkerbook-be",
+  "name": "pulcherbook-be",
   "version": "1.0.0",
   "description": "MangoJS Microservices Monorepo for Backend Services",
   "private": true,
@@ -30,7 +30,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@giusmento/mangojs-core": "0.0.1-4",
+    "@giusmento/mangojs-core": "0.0.1-5",
     "inversify": "^7.10.2",
     "openapi-types": "^12.1.3",
     "pm2": "^6.0.13",

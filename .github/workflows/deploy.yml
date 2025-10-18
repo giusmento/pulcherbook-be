@@ -1,0 +1,112 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - release/app
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H -p 26 ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Create .env file
+        run: |
+          cat > .env << EOF
+          NODE_ENV=production
+          SERVICES=all
+
+          # Database
+          DATABASE_HOST=aws-1-eu-central-2.pooler.supabase.com
+          DATABASE_PORT=6543
+          DATABASE_DB=postgres
+          DATABASE_NAME=postgres
+          DATABASE_USER=postgres.vwuqxzvvvwpiievoghal
+          DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
+
+          # JWT Secrets (Admin)
+          ADMIN_COOKIE_KEY_FIRST=awrasdcwer34fdanio4crh
+          ADMIN_COOKIE_KEY_SECOND=09acj34fa942nfa491csd
+          # Cookie Configuration (Admin)
+          ADMIN_COOKIE_NAME=admin_session
+          ADMIN_COOKIE_DOMAIN=vps-c545510b.vps.ovh.net
+          ADMIN_COOKIE_MAX_AGE=86400000
+          ADMIN_COOKIE_SAMESITE=none
+          ADMIN_COOKIE_HTTPONLY=true
+          ADMIN_COOKIE_SECURE=false
+          ADMIN_COOKIE_SIGNED=false
+          ADMIN_COOKIE_OVERWRITE=true
+          ADMIN_COOKIE_PRIORITY=medium
+          ADMIN_COOKIE_PARTITIONED=false
+          ADMIN_COOKIE_PATH=/
+          EOF
+
+      - name: Create .pnpmrc file
+        run: |
+          cat > .npmrc << EOF
+          @giusmento:registry=https://npm.pkg.github.com/
+          //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+          EOF
+
+      - name: logs
+        run: |
+          ls -la
+
+      - name: Copy files to VPS
+        run: |
+          rsync -avz --delete -e "ssh -p 26 -o StrictHostKeyChecking=no" \
+            --exclude '.git' \
+            --exclude 'node_modules' \
+            ./ \
+            ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:~/pulcherbook-be/
+
+      - name: Deploy on VPS
+        run: |
+          ssh -p 26 -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
+            cd ~/pulcherbook-be
+
+            # Stop and remove existing containers, networks, volumes
+            podman compose --profile single down -v || true
+
+            # Remove old images to force rebuild
+            podman compose --profile single build --no-cache\
+              --build-arg GITHUB_TOKEN="${{secrets.GITHUB_TOKEN}}" \
+              --build-arg NODE_VERSION="${NODE_VERSION:-lts-bookworm-slim}"
+
+            # Start services
+            podman compose --profile single up -d
+
+            # Show running containers
+            podman compose ps
+
+            # Show logs
+            podman compose logs --tail=50
+          EOF
+
+      - name: Health check
+        run: |
+          sleep 10
+          ssh -p 26 -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
+            curl -f http://localhost:8080/health || exit 1
+            curl -f http://localhost:8080/api/iam/v1/health || exit 1
+          EOF
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f ~/.ssh/id_rsa
+          #rm -f ~/pulcherbook-be/.npmrc

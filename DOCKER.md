@@ -1,6 +1,6 @@
-# PulkerBook Backend - Docker Deployment Guide
+# PulcherBook Backend - Docker Deployment Guide
 
-This guide explains how to deploy the PulkerBook backend services using Docker with flexible single-container or multi-container architecture.
+This guide explains how to deploy the PulcherBook backend services using Docker with flexible single-container or multi-container architecture.
 
 ## 📋 Table of Contents
 
@@ -61,7 +61,7 @@ Since this project uses private `@giusmento` packages from GitHub Packages, you 
 
 1. Go to [GitHub Settings > Developer settings > Personal access tokens](https://github.com/settings/tokens)
 2. Click "Generate new token (classic)"
-3. Give it a name (e.g., "PulkerBook Docker Build")
+3. Give it a name (e.g., "PulcherBook Docker Build")
 4. Select scopes: **`read:packages`**
 5. Click "Generate token"
 6. **Copy the token** (you won't see it again!)
@@ -216,7 +216,7 @@ SERVICES=all                # all | iam-service | payment-service
 # Database
 DB_HOST=postgres
 DB_PORT=5432
-DB_NAME=pulkerbook
+DB_NAME=pulcherbook
 DB_USER=postgres
 DB_PASSWORD=your-secure-password
 
@@ -225,7 +225,7 @@ JWT_SECRET=your-secret-key-min-32-chars
 JWT_EXPIRES_IN=1d
 
 # Docker
-DOCKER_REGISTRY=pulkerbook
+DOCKER_REGISTRY=pulcherbook
 IMAGE_TAG=latest
 ```
 
@@ -256,14 +256,14 @@ payment-service:
     dockerfile: Dockerfile
     args:
       SERVICES: payment-service
-  container_name: pulkerbook-payment-service
+  container_name: pulcherbook-payment-service
   environment:
     - NODE_ENV=${NODE_ENV:-production}
     - SERVICES=payment-service
   ports:
     - "3002:3002"
   networks:
-    - pulkerbook-network
+    - pulcherbook-network
   profiles:
     - multi
 ```

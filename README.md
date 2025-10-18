@@ -1,4 +1,4 @@
-# Pulkerbook Backend - MangoJS Microservices Monorepo
+# PulcherBook Backend - MangoJS Microservices Monorepo
 
 A pnpm workspace monorepo for building backend microservices using the MangoJS framework.
 
@@ -21,7 +21,7 @@ This monorepo uses MangoJS to build scalable microservices with:
 ## Project Structure
 
 ```
-pulkerbook-be/
+pulcherbook-be/
 ├── services/              # Microservice applications
 ├── packages/
 │   └── shared/           # Shared utilities, types, and constants
@@ -78,7 +78,7 @@ pnpm dev
 Run a specific service:
 
 ```bash
-pnpm --filter @pulkerbook/service-name dev
+pnpm --filter @pulcherbook/service-name dev
 ```
 
 ### Build All Services
@@ -94,7 +94,7 @@ pnpm build
 Build a specific service:
 
 ```bash
-pnpm --filter @pulkerbook/service-name build
+pnpm --filter @pulcherbook/service-name build
 ```
 
 ## Adding a New Microservice
@@ -116,7 +116,7 @@ pnpm init
 
 ```json
 {
-  "name": "@pulkerbook/my-service",
+  "name": "@pulcherbook/my-service",
   "version": "1.0.0",
   "scripts": {
     "dev": "ts-node src/index.ts",
@@ -125,7 +125,7 @@ pnpm init
   },
   "dependencies": {
     "@giusmento/mangojs-core": "workspace:*",
-    "@pulkerbook/shared": "workspace:*"
+    "@pulcherbook/shared": "workspace:*"
   }
 }
 ```
@@ -160,13 +160,13 @@ pnpm init
 
 ```bash
 # Add dependency to specific service
-pnpm --filter @pulkerbook/service-name add package-name
+pnpm --filter @pulcherbook/service-name add package-name
 
 # Add dependency to all workspaces
 pnpm add -w package-name
 
 # Run script in specific service
-pnpm --filter @pulkerbook/service-name <script-name>
+pnpm --filter @pulcherbook/service-name <script-name>
 ```
 
 ## Architecture
