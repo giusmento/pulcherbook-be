@@ -64,19 +64,14 @@ jobs:
           ssh -p 26 -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
             cd ~/pulcherbook-be
 
-            # source env variables
-            source .env
-
-            # Stop existing containers
-            podman compose down
+            # Stop and remove existing containers, networks, volumes
+            podman compose --profile single down -v || true
 
             # Remove old images to force rebuild
-            podman compose --env-file ./.env --profile single build --no-cache \
-              --build-arg GITHUB_TOKEN="${GITHUB_TOKEN}" \
-              --build-arg NODE_VERSION="${NODE_VERSION:-lts-bookworm-slim}"
+            podman compose --profile single build --no-cache
 
             # Start services
-            podman compose --env-file ./.env --profile single up -d
+            podman compose --profile single up -d
 
             # Show running containers
             podman compose ps

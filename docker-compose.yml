@@ -51,18 +51,11 @@ services:
         SERVICES: ${SERVICES:-all}
         GITHUB_TOKEN: ${GITHUB_TOKEN}
     container_name: pulcherbook-app
+    env_file:
+      - .env
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - SERVICES=${SERVICES:-all}
-      # Database
-      - DB_HOST=${DB_HOST:-postgres}
-      - DB_PORT=${DB_PORT:-5432}
-      - DB_NAME=${DB_NAME:-pulcherbook}
-      - DB_USER=${DB_USER:-postgres}
-      - DB_PASSWORD=${DB_PASSWORD:-postgres}
-      # JWT
-      - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
-      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-1d}
     networks:
       - pulcherbook-network
     restart: unless-stopped
@@ -96,6 +89,8 @@ services:
         NODE_VERSION: ${NODE_VERSION:-18-alpine}
         GITHUB_TOKEN: ${GITHUB_TOKEN}
     container_name: pulcherbook-iam-service
+    env_file:
+      - .env
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - SERVICES=iam-service
