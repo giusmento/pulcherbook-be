@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@giusmento/mangojs-core':
-        specifier: 0.0.1-4
-        version: 0.0.1-4(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
+        specifier: 0.0.1-5
+        version: 0.0.1-5(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
       inversify:
         specifier: ^7.10.2
         version: 7.10.2(reflect-metadata@0.2.2)
@@ -296,8 +296,8 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@giusmento/mangojs-core@0.0.1-4':
-    resolution: {integrity: sha512-G/1iIhIaF7c0JYRopyveNPf7qMywQyi7jAahl2GvYfv4CwMJfkvvXnTcEEvgfDlhRZCt2rg51CFgZQRRJso7kg==, tarball: https://npm.pkg.github.com/download/@giusmento/mangojs-core/0.0.1-4/19a15069f26c8118400f32bd9d966a1ecc5b2fe0}
+  '@giusmento/mangojs-core@0.0.1-5':
+    resolution: {integrity: sha512-y7FFE3roNEee+oki6qOKKSUtDK30V0tTG1W8dTZk8htMnD7Gi7Q8GyI6aEjUau5QoOJCMl9eT7+ySrCP3isLjQ==, tarball: https://npm.pkg.github.com/download/@giusmento/mangojs-core/0.0.1-5/4e7934c28b7284519e3fc6b51aa89c3094ac2b3f}
     engines: {node: '>=18.0.0', pnpm: '>=8.0.0'}
     peerDependencies:
       express: ^4.18.0
@@ -3542,7 +3542,7 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@giusmento/mangojs-core@0.0.1-4(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))':
+  '@giusmento/mangojs-core@0.0.1-5(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))':
     dependencies:
       console-table-printer: 2.14.6
       cookie-parser: 1.4.7
