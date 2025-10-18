@@ -39,6 +39,9 @@ jobs:
           DATABASE_USER=postgres.vwuqxzvvvwpiievoghal
           DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
 
+          # JWT Secrets (Admin)
+          ADMIN_COOKIE_KEY_FIRST=awrasdcwer34fdanio4crh
+          ADMIN_COOKIE_KEY_SECOND=09acj34fa942nfa491csd
           EOF
 
       - name: Create .pnpmrc file
