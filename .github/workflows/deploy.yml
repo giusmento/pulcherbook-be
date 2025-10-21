@@ -4,18 +4,61 @@ on:
   push:
     branches:
       - release/app
+      - test/deploy
 
 permissions:
   contents: read
   packages: write
 
+env:
+  IMAGE_NAME: pulcherbook-be
+  REGISTRY: ghcr.io
+
 jobs:
   deploy:
+    name: Build and Deploy Application
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Create production environment file
+        run: |
+          cat > .env << EOF
+          NODE_ENV=production
+          SERVICES=all
+
+          # Database
+          DATABASE_HOST=aws-1-eu-central-2.pooler.supabase.com
+          DATABASE_PORT=6543
+          DATABASE_DB=postgres
+          DATABASE_NAME=postgres
+          DATABASE_USER=postgres.vwuqxzvvvwpiievoghal
+          DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
+
+          # JWT Secrets (Admin)
+          ADMIN_COOKIE_KEY_FIRST=awrasdcwer34fdanio4crh
+          ADMIN_COOKIE_KEY_SECOND=09acj34fa942nfa491csd
+          # Cookie Configuration (Admin)
+          ADMIN_COOKIE_NAME=admin_session
+          ADMIN_COOKIE_DOMAIN=vps-c545510b.vps.ovh.net
+          ADMIN_COOKIE_MAX_AGE=86400000
+          ADMIN_COOKIE_SAMESITE=none
+          ADMIN_COOKIE_HTTPONLY=true
+          ADMIN_COOKIE_SECURE=false
+          ADMIN_COOKIE_SIGNED=false
+          ADMIN_COOKIE_OVERWRITE=true
+          ADMIN_COOKIE_PRIORITY=medium
+          ADMIN_COOKIE_PARTITIONED=false
+          ADMIN_COOKIE_PATH=/
+          EOF
 
       - name: Set up SSH
         run: |
@@ -55,6 +98,11 @@ jobs:
           ADMIN_COOKIE_PATH=/
           EOF
 
+          cat > .npmrc << EOF
+          @giusmento:registry=https://npm.pkg.github.com/
+          //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+          EOF
+
       - name: Create .pnpmrc file
         run: |
           cat > .npmrc << EOF
@@ -62,51 +110,186 @@ jobs:
           //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
           EOF
 
-      - name: logs
-        run: |
-          ls -la
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Copy files to VPS
-        run: |
-          rsync -avz --delete -e "ssh -p 26 -o StrictHostKeyChecking=no" \
-            --exclude '.git' \
-            --exclude 'node_modules' \
-            ./ \
-            ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:~/pulcherbook-be/
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=,format=short
+            type=ref,event=branch
+            type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Deploy on VPS
-        run: |
-          ssh -p 26 -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            NODE_ENV=production
+
+      - name: Get short SHA
+        id: short-sha
+        run: echo "sha=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      - name: Copy configuration files to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          source: "docker-compose.yml,nginx/default.conf"
+          target: "~/pulcherbook-be/"
+
+      - name: Deploy to VPS using Podman Compose
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          IMAGE_TAG: ${{ steps.short-sha.outputs.sha }}
+          REGISTRY_IMAGE: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          envs: IMAGE_TAG,REGISTRY_IMAGE
+          script: |
+            # Log in to GitHub Container Registry
+            echo "${{ secrets.GITHUB_TOKEN }}" | podman login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+
+            # Navigate to deployment directory
             cd ~/pulcherbook-be
 
-            # Stop and remove existing containers, networks, volumes
-            podman compose --profile single down -v || true
+            # Create .env file with production variables
+            cat > .env << EOF
+            NODE_ENV=production
+            REGISTRY_IMAGE=${REGISTRY_IMAGE}
+            IMAGE_TAG=${IMAGE_TAG}
+            EOF
 
-            # Remove old images to force rebuild
-            podman compose --profile single build --no-cache\
-              --build-arg GITHUB_TOKEN="${{secrets.GITHUB_TOKEN}}" \
-              --build-arg NODE_VERSION="${NODE_VERSION:-lts-bookworm-slim}"
+            # Debug: Show environment variables
+            echo "=== Environment Variables ==="
+            echo "IMAGE_TAG: ${IMAGE_TAG}"
+            echo "REGISTRY_IMAGE: ${REGISTRY_IMAGE}"
+            echo "Full image: ${REGISTRY_IMAGE}:${IMAGE_TAG}"
 
-            # Start services
-            podman compose --profile single up -d
+            # Pull the latest image
+            echo "=== Pulling image ==="
+            podman pull ${REGISTRY_IMAGE}:${IMAGE_TAG}
 
-            # Show running containers
-            podman compose ps
+            # Verify image exists
+            echo "=== Verifying image ==="
+            podman images | grep ${IMAGE_TAG}
 
-            # Show logs
-            podman compose logs --tail=50
-          EOF
+            # Stop and remove existing containers
+            echo "=== Stopping existing containers ==="
+            podman-compose down 2>/dev/null || true
 
-      - name: Health check
+            # Show docker-compose.yml content
+            echo "=== Docker Compose Configuration ==="
+            cat docker-compose.yml
+
+            echo "=== .env file ==="
+            cat .env
+
+            # Start containers with podman-compose
+            echo "=== Starting containers ==="
+            podman-compose up -d
+
+            # Wait a moment for container to start
+            sleep 3
+
+            # Check container status
+            echo "=== Container Status ==="
+            podman ps -a
+
+            # Show container logs if it exists
+            if podman ps -a --format "{{.Names}}" | grep -q "pulcherbook-web"; then
+              echo "=== Container Logs ==="
+              podman logs --tail 50 pulcherbook-web
+            else
+              echo "=== ERROR: Container pulcherbook-web not found ==="
+              echo "Available containers:"
+              podman ps -a
+            fi
+
+            # Clean up old images (keep last 3)
+            podman image prune -af --filter "until=72h" || true
+
+      - name: Verify deployment
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          script: |
+            # Wait for container to be healthy
+            echo "Waiting for container to be healthy..."
+            for i in {1..30}; do
+              if podman healthcheck run pulcherbook-web > /dev/null 2>&1; then
+                echo "Container is healthy!"
+                exit 0
+              fi
+              echo "Waiting... ($i/30)"
+              sleep 2
+            done
+            echo "Container failed to become healthy"
+            podman logs pulcherbook-web
+            exit 1
+
+      - name: Cleanup old GHCR images
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          sleep 10
-          ssh -p 26 -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
-            curl -f http://localhost:8080/health || exit 1
-            curl -f http://localhost:8080/api/iam/v1/health || exit 1
-          EOF
+          # Get package versions for this image
+          PACKAGE_NAME="${{ env.IMAGE_NAME }}"
 
-      - name: Cleanup
+          echo "Fetching package versions for ${PACKAGE_NAME}..."
+
+          # Get all versions, excluding latest, production, and staging tags
+          # Keep the most recent 3 versions, delete older ones
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/user/packages/container/${PACKAGE_NAME}/versions" \
+            --paginate \
+            --jq '.[] | select(.metadata.container.tags | length > 0) | select(.metadata.container.tags[] | . as $tag | ["latest", "production", "staging"] | index($tag) | not) | {id: .id, tags: .metadata.container.tags, created: .created_at}' \
+            | jq -s 'sort_by(.created) | reverse | .[3:]' \
+            > old_versions.json
+
+          # Delete old versions
+          cat old_versions.json | jq -r '.[] | .id' | while read version_id; do
+            if [ -n "$version_id" ]; then
+              echo "Deleting version ${version_id}..."
+              gh api \
+                --method DELETE \
+                -H "Accept: application/vnd.github+json" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
+                "/user/packages/container/${PACKAGE_NAME}/versions/${version_id}" \
+                && echo "✓ Deleted version ${version_id}" \
+                || echo "✗ Failed to delete version ${version_id}"
+            fi
+          done
+
+          echo "Cleanup completed!"
+
+      - name: Deployment notification
         if: always()
         run: |
-          rm -f ~/.ssh/id_rsa
-          #rm -f ~/pulcherbook-be/.npmrc
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Deployment successful! Image tag: ${{ steps.short-sha.outputs.sha }}"
+          else
+            echo "❌ Deployment failed!"
+          fi
