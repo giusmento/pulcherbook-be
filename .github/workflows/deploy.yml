@@ -148,7 +148,7 @@ jobs:
         id: meta-nginx
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}-nginx/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-nginx
           tags: |
             type=sha,prefix=,format=short
             type=ref,event=branch
