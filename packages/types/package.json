@@ -4,8 +4,9 @@
   "description": "Shared types for PulcherBook backend services",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "packageManager": "pnpm@8.0.0",
   "files": [
-    "dist"
+    "dist/**/*"
   ],
   "scripts": {
     "build": "tsc",

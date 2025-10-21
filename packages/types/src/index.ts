@@ -1,1 +1,1 @@
-export * from "./api";
+export * as iam from "./iam";
