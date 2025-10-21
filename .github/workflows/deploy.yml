@@ -23,37 +23,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create production environment file
-        run: |
-          cat > .env << EOF
-          NODE_ENV=production
-          SERVICES=all
-
-          # Database
-          DATABASE_HOST=aws-1-eu-central-2.pooler.supabase.com
-          DATABASE_PORT=6543
-          DATABASE_DB=postgres
-          DATABASE_NAME=postgres
-          DATABASE_USER=postgres.vwuqxzvvvwpiievoghal
-          DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
-
-          # JWT Secrets (Admin)
-          ADMIN_COOKIE_KEY_FIRST=awrasdcwer34fdanio4crh
-          ADMIN_COOKIE_KEY_SECOND=09acj34fa942nfa491csd
-          # Cookie Configuration (Admin)
-          ADMIN_COOKIE_NAME=admin_session
-          ADMIN_COOKIE_DOMAIN=vps-c545510b.vps.ovh.net
-          ADMIN_COOKIE_MAX_AGE=86400000
-          ADMIN_COOKIE_SAMESITE=none
-          ADMIN_COOKIE_HTTPONLY=true
-          ADMIN_COOKIE_SECURE=false
-          ADMIN_COOKIE_SIGNED=false
-          ADMIN_COOKIE_OVERWRITE=true
-          ADMIN_COOKIE_PRIORITY=medium
-          ADMIN_COOKIE_PARTITIONED=false
-          ADMIN_COOKIE_PATH=/
-          EOF
-
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
@@ -166,7 +135,7 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_SSH_PORT }}
-          source: "docker-compose.yml,nginx/default.conf"
+          source: "docker-compose.yml,nginx/default.conf,.env"
           target: "~/pulcherbook-be/"
 
       - name: Deploy to VPS using Podman Compose
@@ -187,13 +156,6 @@ jobs:
             # Navigate to deployment directory
             cd ~/pulcherbook-be
 
-            # Create .env file with production variables
-            cat > .env << EOF
-            NODE_ENV=production
-            REGISTRY_IMAGE=${REGISTRY_IMAGE}
-            IMAGE_TAG=${IMAGE_TAG}
-            EOF
-
             # Debug: Show environment variables
             echo "=== Environment Variables ==="
             echo "IMAGE_TAG: ${IMAGE_TAG}"
@@ -212,10 +174,6 @@ jobs:
             # Stop and remove existing containers
             echo "=== Stopping existing containers ==="
             podman-compose down 2>/dev/null || true
-
-            # Force cleanup if containers still exist
-            echo "=== .env file ==="
-            cat .env
 
             # Start containers with podman-compose
             echo "=== Starting containers ==="
