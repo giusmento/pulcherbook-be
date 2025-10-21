@@ -17,7 +17,7 @@ services:
     build:
       context: .
       dockerfile: nginx/Dockerfile
-    image: ${REGISTRY_IMAGE:-pulcherbook-web-nginx}:${IMAGE_TAG:-latest}
+    image: ${REGISTRY_IMAGE:-pulcherbook-web}-nginx:${IMAGE_TAG:-latest}
     container_name: pulcherbook-be-nginx
     ports:
       - "3000:3000"
