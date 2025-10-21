@@ -199,18 +199,16 @@ jobs:
 
             # Stop and remove existing containers
             echo "=== Stopping existing containers ==="
-            podman-compose down --remove-orphans 2>/dev/null || true
+            podman-compose down 2>/dev/null || true
 
             # Force cleanup if containers still exist
-            podman rm -f pulcherbook-web 2>/dev/null || true
-            podman network rm -f pulcherbook-be_pulcherbook-network 2>/dev/null || true
-
+            podman 
             echo "=== .env file ==="
             cat .env
 
             # Start containers with podman-compose
             echo "=== Starting containers ==="
-            podman-compose up -d
+            podman-compose --profile single up -d
 
             # Wait a moment for container to start
             sleep 3
@@ -220,17 +218,12 @@ jobs:
             podman ps -a
 
             # Show container logs if it exists
-            if podman ps -a --format "{{.Names}}" | grep -q "pulcherbook-web"; then
-              echo "=== Container Logs ==="
-              podman logs --tail 50 pulcherbook-web
-            else
-              echo "=== ERROR: Container pulcherbook-web not found ==="
-              echo "Available containers:"
-              podman ps -a
-            fi
+            echo "=== Container Logs ==="
+            podman logs --tail 50 pulcherbook-be
 
-            # Clean up old images (keep last 3)
-            podman image prune -af --filter "until=72h" || true
+            # Clean up old pulcherbook-be images (keep current one)
+            podman images --filter "reference=${REGISTRY_IMAGE}" --format "{{.ID}} {{.CreatedAt}}" | \
+              tail -n +4 | awk '{print $1}' | xargs -r podman rmi -f || true
 
       - name: Verify deployment
         uses: appleboy/ssh-action@v1.0.3
