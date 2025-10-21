@@ -1,0 +1,29 @@
+{
+  "name": "@giusmento/pulcherbook-types",
+  "version": "0.0.1-1",
+  "description": "Shared types for PulcherBook backend services",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "pnpm run build",
+    "publish": "npm publish"
+  },
+  "keywords": ["shared", "utilities"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+    "repository": {
+    "type": "git",
+    "url": "https://github.com/giusmento/pulcherbook-be.git",
+    "directory": "packages/types"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}
