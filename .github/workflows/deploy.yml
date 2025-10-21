@@ -132,13 +132,25 @@ jobs:
             type=ref,event=branch
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image - App
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            NODE_ENV=production
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image - Nginx
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./nginx/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}-nginx:{{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             NODE_ENV=production
@@ -192,6 +204,7 @@ jobs:
             # Pull the latest image
             echo "=== Pulling image ==="
             podman pull ${REGISTRY_IMAGE}:${IMAGE_TAG}
+            podman pull ${REGISTRY_IMAGE}-nginx:${IMAGE_TAG}
 
             # Verify image exists
             echo "=== Verifying image ==="
@@ -202,7 +215,6 @@ jobs:
             podman-compose down 2>/dev/null || true
 
             # Force cleanup if containers still exist
-            podman 
             echo "=== .env file ==="
             cat .env
 
