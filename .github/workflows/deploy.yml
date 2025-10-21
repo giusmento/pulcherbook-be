@@ -199,11 +199,11 @@ jobs:
 
             # Stop and remove existing containers
             echo "=== Stopping existing containers ==="
-            podman-compose down 2>/dev/null || true
+            podman-compose down --remove-orphans 2>/dev/null || true
 
-            # Show docker-compose.yml content
-            echo "=== Docker Compose Configuration ==="
-            cat docker-compose.yml
+            # Force cleanup if containers still exist
+            podman rm -f pulcherbook-web 2>/dev/null || true
+            podman network rm -f pulcherbook-be_pulcherbook-network 2>/dev/null || true
 
             echo "=== .env file ==="
             cat .env
