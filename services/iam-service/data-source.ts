@@ -4,11 +4,7 @@ import { services } from "@giusmento/mangojs-core";
 
 dotenv.config();
 
-const entities = [
-  services.iam_server.models.AdminUser,
-  services.iam_server.models.PartnerUser,
-  services.iam_server.models.Group,
-];
+const entities = services.iam_server.models.IAMEntities;
 
 export const AppDataSource = new DataSource({
   type: "postgres",

@@ -101,6 +101,15 @@ DB_NAME=postgres
 
 ## Migration Commands
 
+### Pnpm command
+
+```bash
+cd services/iam-service
+pnpm migration:generate
+pnpm migration:show
+pnpm migration:run
+```
+
 ### Generate Migration from Entities
 
 Automatically generate migration based on entity changes:
