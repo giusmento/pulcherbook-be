@@ -54,7 +54,7 @@ jobs:
           ADMIN_COOKIE_NAME=admin_session
           ADMIN_COOKIE_DOMAIN=pulcherbook.com
           ADMIN_COOKIE_MAX_AGE=86400000
-          ADMIN_COOKIE_SAMESITE=none
+          ADMIN_COOKIE_SAMESITE=STRICT
           ADMIN_COOKIE_HTTPONLY=true
           ADMIN_COOKIE_SECURE=true
           ADMIN_COOKIE_SIGNED=false
