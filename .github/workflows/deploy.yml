@@ -36,6 +36,9 @@ jobs:
           NODE_ENV=production
           SERVICES=all
 
+          # CORS Configuration
+          ALLOWED_ORIGINS=https://pulcherbook.com
+
           # Database
           DATABASE_HOST=aws-1-eu-central-2.pooler.supabase.com
           DATABASE_PORT=6543
