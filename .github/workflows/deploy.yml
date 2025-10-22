@@ -56,7 +56,7 @@ jobs:
           ADMIN_COOKIE_MAX_AGE=86400000
           ADMIN_COOKIE_SAMESITE=none
           ADMIN_COOKIE_HTTPONLY=true
-          ADMIN_COOKIE_SECURE=false
+          ADMIN_COOKIE_SECURE=true
           ADMIN_COOKIE_SIGNED=false
           ADMIN_COOKIE_OVERWRITE=true
           ADMIN_COOKIE_PRIORITY=medium
