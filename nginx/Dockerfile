@@ -6,8 +6,8 @@ COPY nginx/nginx.conf /etc/nginx/nginx.conf
 # Create log directory
 RUN mkdir -p /var/log/nginx
 
-# Expose port 80
-EXPOSE 80
+# Expose port 3000
+EXPOSE 3000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
