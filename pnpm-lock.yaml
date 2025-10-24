@@ -7,14 +7,15 @@ settings:
 overrides:
   mangojs: link:../../mangojs
   mangojs-core: link:../../Library/pnpm/global/5/node_modules/@giusmento/mangojs-core
+  dist: link:../mangojs/dist
 
 importers:
 
   .:
     dependencies:
       '@giusmento/mangojs-core':
-        specifier: 0.0.1-6
-        version: 0.0.1-6(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
+        specifier: 0.0.1-7
+        version: 0.0.1-7(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
       inversify:
         specifier: ^7.10.2
         version: 7.10.2(reflect-metadata@0.2.2)
@@ -300,8 +301,8 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@giusmento/mangojs-core@0.0.1-6':
-    resolution: {integrity: sha512-4I1WGQOSv/fpk82qUJ2ng3zE3BUI7nOJ2LCClwtLqKZsXcVzi+i+/tQCEbF5iMJ3Hp6u1tQ5Wq0tkj0REJ1a4g==, tarball: https://npm.pkg.github.com/download/@giusmento/mangojs-core/0.0.1-6/8465e4e1c1276a0bd62a727f1162fe41dfc69341}
+  '@giusmento/mangojs-core@0.0.1-7':
+    resolution: {integrity: sha512-paVI/rbNwlaUZU9akH+lHYcGECQ9/doUe/CsTQZE3fMShrTYrfM4wZ8qk5GPU4gF2kHHLZgs3NPHqr1BgfTuRQ==, tarball: https://npm.pkg.github.com/download/@giusmento/mangojs-core/0.0.1-7/e4238335375b5ff5914bf3679992abd8c7029ff1}
     engines: {node: '>=18.0.0', pnpm: '>=8.0.0'}
     peerDependencies:
       express: ^4.18.0
@@ -3546,7 +3547,7 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@giusmento/mangojs-core@0.0.1-6(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))':
+  '@giusmento/mangojs-core@0.0.1-7(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))':
     dependencies:
       console-table-printer: 2.15.0
       cookie-parser: 1.4.7
