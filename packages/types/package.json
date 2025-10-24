@@ -11,15 +11,20 @@
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "pnpm run build",
-    "publish": "npm publish"
+    "release": "release-it",
+    "publish": "pnpm publish"
   },
-  "keywords": ["shared", "utilities"],
+  "keywords": [
+    "shared",
+    "utilities"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "release-it": "^19.0.5",
     "typescript": "^5.9.3"
   },
-    "repository": {
+  "repository": {
     "type": "git",
     "url": "https://github.com/giusmento/pulcherbook-be.git",
     "directory": "packages/types"

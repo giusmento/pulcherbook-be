@@ -1,2 +1,4 @@
 // Shared types for PulcherBook IAM services
-export * from "@giusmento/mangojs-core/services/iam_server/src/types/api";
+import { services } from "@giusmento/mangojs-core";
+
+export import iam = services.iam_server.types;

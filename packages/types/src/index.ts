@@ -1,1 +1,1 @@
-export * as iam from "./iam";
+export * from "./iam";
