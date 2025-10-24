@@ -7,7 +7,6 @@ settings:
 overrides:
   mangojs: link:../../mangojs
   mangojs-core: link:../../Library/pnpm/global/5/node_modules/@giusmento/mangojs-core
-  dist: link:../mangojs/dist
 
 importers:
 
