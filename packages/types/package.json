@@ -20,6 +20,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@giusmento/mangojs-core": "0.0.1-7",
     "release-it": "^19.0.5",
     "typescript": "^5.9.3"
   },
