@@ -5,8 +5,16 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "packageManager": "pnpm@8.0.0",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./docs/*": "./src/docs/*"
+  },
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "src/docs/**/*"
   ],
   "scripts": {
     "build": "tsc",
@@ -32,6 +40,6 @@
     "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@giusmento/mangojs-core": "0.0.1-7"
+    "@giusmento/mangojs-core": "0.0.1-8"
   }
 }

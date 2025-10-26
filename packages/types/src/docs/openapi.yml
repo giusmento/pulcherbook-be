@@ -1,0 +1,1785 @@
+openapi: 3.0.3
+info:
+  title: PulcherBook IAM API
+  description: Identity and Access Management API for PulcherBook
+  version: 1.0.0
+  contact:
+    name: PulcherBook Team
+
+servers:
+  - url: /api/iam/v1
+    description: IAM API v1
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: Authentication
+    description: Authentication endpoints for admins, partners, and users
+  - name: Admins
+    description: Admin user management
+  - name: Groups
+    description: Group management for different user types
+  - name: Partners
+    description: Partner company management
+  - name: Partner Users
+    description: Partner user management
+  - name: Users
+    description: User management
+
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      description: Returns server health status
+      operationId: getHealth
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+
+  /auth/admin/login:
+    post:
+      tags:
+        - Authentication
+      summary: Admin login
+      description: Authenticate admin user and return session cookie
+      operationId: adminLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: admin@example.com
+                password:
+                  type: string
+                  format: password
+                  example: hash256('mypassword')
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "12345"
+
+  /auth/admin/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Admin logout
+      description: Logout admin user and clear session
+      operationId: adminLogout
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /auth/admin/verify:
+    post:
+      tags:
+        - Authentication
+      summary: Verify admin token
+      description: Verify if admin session cookie is valid
+      operationId: adminVerify
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Token is valid
+
+  /auth/partners/login:
+    post:
+      tags:
+        - Authentication
+      summary: Partner login
+      description: Authenticate partner user and return session cookie
+      operationId: partnerLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: partner@example.com
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+
+  /auth/partner/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Partner logout
+      description: Logout partner user and clear session
+      operationId: partnerLogout
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Logout successful
+
+  /auth/partner/verify:
+    post:
+      tags:
+        - Authentication
+      summary: Verify partner token
+      description: Verify if partner session cookie is valid
+      operationId: partnerVerify
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Token is valid
+
+  /auth/users/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user and return session cookie
+      operationId: userLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+
+  /auth/users/logout:
+    post:
+      tags:
+        - Authentication
+      summary: User logout
+      description: Logout user and clear session
+      operationId: userLogout
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Logout successful
+
+  /auth/users/verify:
+    post:
+      tags:
+        - Authentication
+      summary: Verify user token
+      description: Verify if user session cookie is valid
+      operationId: userVerify
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Token is valid
+
+  /admins/:
+    get:
+      tags:
+        - Admins
+      summary: Get all admins
+      description: Get list of active admin users
+      operationId: getAdmins
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of admin users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AdminUser'
+    post:
+      tags:
+        - Admins
+      summary: Create admin user
+      description: Creates a new admin user
+      operationId: createAdmin
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstName
+                - lastName
+                - email
+                - password
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                username:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                age:
+                  type: number
+                groups:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Admin user created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uid:
+                    type: string
+
+  /admins/magiclinks/{magiclink}:
+    get:
+      tags:
+        - Admins
+      summary: Get admin by magic link
+      description: Get admin user by magic link token
+      operationId: getAdminByMagicLink
+      parameters:
+        - name: magiclink
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Admin user data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUser'
+
+  /admins/activate/{magiclink}:
+    post:
+      tags:
+        - Admins
+      summary: Activate admin by magic link
+      description: Activate admin user account via magic link
+      operationId: activateAdmin
+      parameters:
+        - name: magiclink
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstName
+                - lastName
+                - password
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Admin activated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUser'
+
+  /admins/{uid}:
+    put:
+      tags:
+        - Admins
+      summary: Update admin user
+      description: Update admin user information
+      operationId: updateAdmin
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                phoneNumber:
+                  type: string
+      responses:
+        '200':
+          description: Admin updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /admins/{uid}/groups:
+    post:
+      tags:
+        - Admins
+      summary: Update admin groups
+      description: Add one or more groups to an admin user
+      operationId: updateAdminGroups
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groups:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      value:
+                        type: string
+                      name:
+                        type: string
+      responses:
+        '200':
+          description: Groups updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /admins/{uid}/disable:
+    post:
+      tags:
+        - Admins
+      summary: Disable admin user
+      description: Disable an admin user account
+      operationId: disableAdmin
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Admin disabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /admins/{uid}/enable:
+    post:
+      tags:
+        - Admins
+      summary: Enable admin user
+      description: Enable a disabled admin user account
+      operationId: enableAdmin
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Admin enabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /groups/:
+    get:
+      tags:
+        - Groups
+      summary: Get all groups
+      description: Get list of all groups
+      operationId: getAllGroups
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of all groups
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Group'
+    delete:
+      tags:
+        - Groups
+      summary: Delete group
+      description: Delete a group by UID
+      operationId: deleteGroup
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - uid
+              properties:
+                uid:
+                  type: string
+      responses:
+        '200':
+          description: Group deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /groups/admin:
+    get:
+      tags:
+        - Groups
+      summary: Get admin groups
+      description: Get list of groups for admin users
+      operationId: getAdminGroups
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of admin groups
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Group'
+    post:
+      tags:
+        - Groups
+      summary: Create admin group
+      description: Create a group for admin users
+      operationId: createAdminGroup
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - uid
+                - name
+              properties:
+                uid:
+                  type: string
+                name:
+                  type: string
+                description:
+                  type: string
+                permissions:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Admin group created
+
+  /groups/partner:
+    get:
+      tags:
+        - Groups
+      summary: Get partner groups
+      description: Get list of groups for partner users
+      operationId: getPartnerGroups
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of partner groups
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Group'
+    post:
+      tags:
+        - Groups
+      summary: Create partner group
+      description: Create a group for partner users
+      operationId: createPartnerGroup
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - uid
+                - name
+              properties:
+                uid:
+                  type: string
+                name:
+                  type: string
+                description:
+                  type: string
+                permissions:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Partner group created
+
+  /groups/user:
+    get:
+      tags:
+        - Groups
+      summary: Get user groups
+      description: Get list of groups for regular users
+      operationId: getUserGroups
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of user groups
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Group'
+    post:
+      tags:
+        - Groups
+      summary: Create user group
+      description: Create a group for regular users
+      operationId: createUserGroup
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - uid
+                - name
+              properties:
+                uid:
+                  type: string
+                name:
+                  type: string
+                description:
+                  type: string
+                permissions:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: User group created
+
+  /partners:
+    get:
+      tags:
+        - Partners
+      summary: Get all partners
+      description: Get list of all partner companies (Admin only)
+      operationId: getPartners
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of partners
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Partner'
+    post:
+      tags:
+        - Partners
+      summary: Create partner
+      description: Create a new partner company
+      operationId: createPartner
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - companyName
+                - email
+              properties:
+                companyName:
+                  type: string
+                  example: Acme Corporation
+                email:
+                  type: string
+                  format: email
+                  example: contact@acme.com
+                phoneNumber:
+                  type: string
+                businessType:
+                  type: string
+                  example: Technology
+                taxId:
+                  type: string
+                  example: "123456789"
+                addressStreet:
+                  type: string
+                addressCity:
+                  type: string
+                addressState:
+                  type: string
+                addressCountry:
+                  type: string
+                addressPostalCode:
+                  type: string
+                websiteUrl:
+                  type: string
+                  format: uri
+                logoUrl:
+                  type: string
+                  format: uri
+                subscriptionTier:
+                  type: string
+                contractStartDate:
+                  type: string
+                  format: date
+                contractEndDate:
+                  type: string
+                  format: date
+      responses:
+        '200':
+          description: Partner created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uid:
+                    type: string
+
+  /partners/{uid}:
+    get:
+      tags:
+        - Partners
+      summary: Get partner by ID
+      description: Get a single partner company with its users
+      operationId: getPartnerById
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Partner data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+    put:
+      tags:
+        - Partners
+      summary: Update partner
+      description: Update partner company information
+      operationId: updatePartner
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                companyName:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phoneNumber:
+                  type: string
+                businessType:
+                  type: string
+                taxId:
+                  type: string
+      responses:
+        '200':
+          description: Partner updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /partners/{uid}/disable:
+    post:
+      tags:
+        - Partners
+      summary: Disable partner
+      description: Disable a partner company (Admin only)
+      operationId: disablePartner
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Partner disabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /partners/{uid}/enable:
+    post:
+      tags:
+        - Partners
+      summary: Enable partner
+      description: Enable a disabled partner company (Admin only)
+      operationId: enablePartner
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Partner enabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /partners/{uid}/delete/hard:
+    delete:
+      tags:
+        - Partners
+      summary: Hard delete partner
+      description: Permanently delete a partner company (Admin only)
+      operationId: hardDeletePartner
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Partner deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /partners/users:
+    get:
+      tags:
+        - Partner Users
+      summary: Get partner users
+      description: Get list of active partner users
+      operationId: getPartnerUsers
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of partner users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PartnerUser'
+    post:
+      tags:
+        - Partner Users
+      summary: Create partner user
+      description: Create a new partner user
+      operationId: createPartnerUser
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstName
+                - lastName
+                - email
+                - password
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                username:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                age:
+                  type: number
+                groups:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Partner user created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uid:
+                    type: string
+
+  /partners/users/magiclinks/{magiclink}:
+    get:
+      tags:
+        - Partner Users
+      summary: Get partner user by magic link
+      description: Get partner user by magic link token
+      operationId: getPartnerUserByMagicLink
+      parameters:
+        - name: magiclink
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Partner user data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerUser'
+
+  /partners/users/activate/{magiclink}:
+    post:
+      tags:
+        - Partner Users
+      summary: Activate partner user
+      description: Activate partner user account via magic link
+      operationId: activatePartnerUser
+      parameters:
+        - name: magiclink
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstName
+                - lastName
+                - password
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Partner user activated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerUser'
+
+  /partners/users/{uid}:
+    put:
+      tags:
+        - Partner Users
+      summary: Update partner user
+      description: Update partner user information
+      operationId: updatePartnerUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                phoneNumber:
+                  type: string
+      responses:
+        '200':
+          description: Partner user updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /partners/users/{uid}/groups:
+    put:
+      tags:
+        - Partner Users
+      summary: Update partner user groups
+      description: Add one or more groups to a partner user
+      operationId: updatePartnerUserGroups
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groups:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      value:
+                        type: string
+                      name:
+                        type: string
+      responses:
+        '200':
+          description: Groups updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /partners/users/{uid}/disable:
+    post:
+      tags:
+        - Partner Users
+      summary: Disable partner user
+      description: Disable a partner user account
+      operationId: disablePartnerUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Partner user disabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /partners/users/{uid}/enable:
+    post:
+      tags:
+        - Partner Users
+      summary: Enable partner user
+      description: Enable a disabled partner user account
+      operationId: enablePartnerUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Partner user enabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /partners/users/{uid}/delete/hard:
+    delete:
+      tags:
+        - Partner Users
+      summary: Hard delete partner user
+      description: Permanently delete a partner user
+      operationId: hardDeletePartnerUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Partner user deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /users/:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      description: Get list of active users
+      operationId: getUsers
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+    post:
+      tags:
+        - Users
+      summary: Create user
+      description: Create a new user
+      operationId: createUser
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstName
+                - lastName
+                - email
+                - password
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                username:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                age:
+                  type: number
+                groups:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: User created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uid:
+                    type: string
+
+  /users/magiclinks/{magiclink}:
+    get:
+      tags:
+        - Users
+      summary: Get user by magic link
+      description: Get user by magic link token
+      operationId: getUserByMagicLink
+      parameters:
+        - name: magiclink
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/activate/{magiclink}:
+    post:
+      tags:
+        - Users
+      summary: Activate user
+      description: Activate user account via magic link
+      operationId: activateUser
+      parameters:
+        - name: magiclink
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstName
+                - lastName
+                - password
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: User activated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/{uid}:
+    put:
+      tags:
+        - Users
+      summary: Update user
+      description: Update user information
+      operationId: updateUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                phoneNumber:
+                  type: string
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /users/{uid}/groups:
+    post:
+      tags:
+        - Users
+      summary: Update user groups
+      description: Add one or more groups to a user
+      operationId: updateUserGroups
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groups:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      value:
+                        type: string
+                      name:
+                        type: string
+      responses:
+        '200':
+          description: Groups updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /users/{uid}/disable:
+    post:
+      tags:
+        - Users
+      summary: Disable user
+      description: Disable a user account
+      operationId: disableUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User disabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /users/{uid}/enable:
+    post:
+      tags:
+        - Users
+      summary: Enable user
+      description: Enable a disabled user account
+      operationId: enableUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User enabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+  /users/{uid}/delete/hard:
+    delete:
+      tags:
+        - Users
+      summary: Hard delete user
+      description: Permanently delete a user
+      operationId: hardDeleteUser
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session
+
+  schemas:
+    Group:
+      type: object
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        default:
+          type: boolean
+        permissions:
+          type: array
+          items:
+            type: string
+        userType:
+          type: string
+
+    AdminUser:
+      type: object
+      properties:
+        uid:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        age:
+          type: number
+        phoneNumber:
+          type: string
+        status:
+          type: string
+        isActive:
+          type: boolean
+        isVerified:
+          type: boolean
+        magicLink:
+          type: string
+        magicLinkExpireDate:
+          type: string
+          format: date-time
+        verifiedAt:
+          type: string
+          format: date-time
+        disabledAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        groups:
+          type: array
+          items:
+            type: object
+            properties:
+              uid:
+                type: string
+              name:
+                type: string
+              description:
+                type: string
+              permissions:
+                type: array
+                items:
+                  type: string
+
+    Partner:
+      type: object
+      properties:
+        uid:
+          type: string
+        companyName:
+          type: string
+        email:
+          type: string
+          format: email
+        status:
+          type: string
+          enum:
+            - PENDING
+            - UNDER_REVIEW
+            - ACTIVE
+            - DISABLED
+        isVerified:
+          type: boolean
+        subscriptionTier:
+          type: string
+        phoneNumber:
+          type: string
+        businessType:
+          type: string
+        taxId:
+          type: string
+        addressStreet:
+          type: string
+        addressCity:
+          type: string
+        addressState:
+          type: string
+        addressCountry:
+          type: string
+        addressPostalCode:
+          type: string
+        websiteUrl:
+          type: string
+          format: uri
+        logoUrl:
+          type: string
+          format: uri
+        contractStartDate:
+          type: string
+          format: date
+        contractEndDate:
+          type: string
+          format: date
+
+    PartnerUser:
+      type: object
+      properties:
+        uid:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        age:
+          type: number
+        phoneNumber:
+          type: string
+        status:
+          type: string
+        isActive:
+          type: boolean
+        isVerified:
+          type: boolean
+        magicLink:
+          type: string
+        magicLinkExpireDate:
+          type: string
+          format: date-time
+        verifiedAt:
+          type: string
+          format: date-time
+        disabledAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        groups:
+          type: array
+          items:
+            type: object
+            properties:
+              uid:
+                type: string
+              name:
+                type: string
+              description:
+                type: string
+              permissions:
+                type: array
+                items:
+                  type: string
+
+    User:
+      type: object
+      properties:
+        uid:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        age:
+          type: number
+        phoneNumber:
+          type: string
+        status:
+          type: string
+        isActive:
+          type: boolean
+        isVerified:
+          type: boolean
+        magicLink:
+          type: string
+        magicLinkExpireDate:
+          type: string
+          format: date-time
+        verifiedAt:
+          type: string
+          format: date-time
+        disabledAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        groups:
+          type: array
+          items:
+            type: object
+            properties:
+              uid:
+                type: string
+              name:
+                type: string
+              description:
+                type: string
+              permissions:
+                type: array
+                items:
+                  type: string
