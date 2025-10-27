@@ -19,7 +19,8 @@
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "pnpm run build",
-    "release": "release-it"
+    "release": "release-it",
+    "publish": "pnpm publish"
   },
   "keywords": [
     "shared",
@@ -40,6 +41,6 @@
     "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@giusmento/mangojs-core": "0.0.1-9"
+    "@giusmento/mangojs-core": "0.0.1-10"
   }
 }

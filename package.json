@@ -13,6 +13,11 @@
     "start:prod": "pnpm --parallel --stream -r run start:prod",
     "stop:prod": "pnpm --parallel --stream -r run stop:prod",
     "start:prod:docker": "pnpm --parallel --stream -r run start:prod:docker",
+    "migration:generate": "pnpm --parallel --stream -r run migration:generate",
+    "migration:show": "pnpm --parallel --stream -r run migration:show",
+    "migration:run": "pnpm --parallel --stream -r run migration:run",
+    "release": "pnpm --parallel --stream -r run release",
+    "publish": "pnpm --parallel --stream -r run publish",
     "test": "pnpm -r test",
     "clean": "pnpm -r clean && rm -rf node_modules",
     "lint": "pnpm -r lint"
@@ -30,7 +35,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@giusmento/mangojs-core": "0.0.1-8",
+    "@giusmento/mangojs-core": "0.0.1-10",
     "inversify": "^7.10.2",
     "openapi-types": "^12.1.3",
     "pm2": "^6.0.13",
