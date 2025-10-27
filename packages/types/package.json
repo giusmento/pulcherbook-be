@@ -1,6 +1,6 @@
 {
   "name": "@giusmento/pulcherbook-types",
-  "version": "0.0.1-13",
+  "version": "0.0.1-14",
   "description": "Shared types for PulcherBook backend services",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,8 +19,7 @@
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "pnpm run build",
-    "release": "release-it",
-    "publish": "pnpm publish"
+    "release": "release-it"
   },
   "keywords": [
     "shared",
