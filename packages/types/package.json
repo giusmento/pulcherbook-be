@@ -1,6 +1,6 @@
 {
   "name": "@giusmento/pulcherbook-types",
-  "version": "0.0.1-15",
+  "version": "0.0.1-16",
   "description": "Shared types for PulcherBook backend services",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
