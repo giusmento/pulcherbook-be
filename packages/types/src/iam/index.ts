@@ -1,6 +1,7 @@
 // Shared types for PulcherBook IAM services
-import { services, Types } from "@giusmento/mangojs-core";
+import { services } from "@giusmento/mangojs-core";
+import * as mjcore from "@giusmento/mangojs-core";
 
 export import iam = services.iam_server.types;
 
-export import enums = Types.enums;
+export import enums = mjcore.Enums;

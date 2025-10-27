@@ -4,7 +4,7 @@
     "commitMessage": "chore: release package:type v${version}"
   },
   "github": {
-    "release": true
+    "release": false
   },
   "npm": {
     "publish": false
