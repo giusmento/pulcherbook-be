@@ -74,7 +74,7 @@ jobs:
 
           # Cookie Configuration (Partner)
           PARTNER_COOKIE_NAME=partner_session
-          PARTNER_COOKIE_DOMAIN=localhost
+          PARTNER_COOKIE_DOMAIN=pulcherbook.com
           PARTNER_COOKIE_MAX_AGE=86400000
           PARTNER_COOKIE_SAMESITE=none
           PARTNER_COOKIE_HTTPONLY=true
@@ -87,7 +87,7 @@ jobs:
 
           # Cookie Configuration (User)
           USER_COOKIE_NAME=user_session
-          USER_COOKIE_DOMAIN=localhost
+          USER_COOKIE_DOMAIN=pulcherbook.com
           USER_COOKIE_MAX_AGE=86400000
           USER_COOKIE_SAMESITE=none
           USER_COOKIE_HTTPONLY=true
