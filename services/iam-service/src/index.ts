@@ -2,7 +2,8 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as iamContainer from "./inversify.config";
+import { setIAMContainer } from "./inversify.config";
+setIAMContainer();
 
 // IMPORTS
 import "reflect-metadata";

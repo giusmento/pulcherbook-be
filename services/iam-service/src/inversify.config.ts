@@ -15,30 +15,32 @@
 //const POSTGRES_DB = process.env.DATABASE_DB || "";
 //
 
-import { Container } from "inversify";
-//// Get the global container
-const conta = new Container();
-
 import { INVERSITY_TYPES, Providers, services } from "@giusmento/mangojs-core";
 
-/**
- * BIND Services
- * */
+export const setIAMContainer = () => {
+  /**
+   * BIND Services
+   * */
 
-// Bind Email Service - Brevo
-console.log("[IAM Service] Binding EmailService...");
+  // Bind Email Service - Brevo
+  console.log("[IAM Service] Binding EmailService...");
 
-//get env variables
-const brevoApikey = process.env.BREVO_APIKEY || "";
-const emailFromAddress = process.env.EMAIL_SENDER_ADDRESS || "";
-const appName = process.env.APP_NAME;
+  //get env variables
+  const brevoApikey = process.env.BREVO_APIKEY || "";
+  const emailFromAddress = process.env.EMAIL_SENDER_ADDRESS || "";
+  const appName = process.env.APP_NAME;
 
-services.iam_server.IAMDefaultContainer.unbind(INVERSITY_TYPES.EmailService);
-services.iam_server.IAMDefaultContainer.bind<Providers.email.IEmailService>(
-  INVERSITY_TYPES.EmailService
-).toConstantValue(
-  new Providers.email.EmailServiceBrevo(emailFromAddress, appName, brevoApikey)
-);
+  services.iam_server.IAMDefaultContainer.unbind(INVERSITY_TYPES.EmailService);
+  services.iam_server.IAMDefaultContainer.bind<Providers.email.IEmailService>(
+    INVERSITY_TYPES.EmailService
+  ).toConstantValue(
+    new Providers.email.EmailServiceBrevo(
+      emailFromAddress,
+      appName,
+      brevoApikey
+    )
+  );
+};
 
 // Also bind with string identifier for backward compatibility
 
