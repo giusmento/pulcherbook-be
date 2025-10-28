@@ -2,6 +2,9 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+import * as iamContainer from "./inversify.config";
+
+// IMPORTS
 import "reflect-metadata";
 import { ServerBuilder } from "@giusmento/mangojs-core";
 import helmet from "helmet";

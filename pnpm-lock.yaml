@@ -13,8 +13,8 @@ importers:
   .:
     dependencies:
       '@giusmento/mangojs-core':
-        specifier: 0.0.1-15
-        version: 0.0.1-15(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
+        specifier: ^0.0.1-16
+        version: 0.0.1-16(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
       inversify:
         specifier: ^7.10.2
         version: 7.10.2(reflect-metadata@0.2.2)
@@ -41,8 +41,8 @@ importers:
   packages/types:
     dependencies:
       '@giusmento/mangojs-core':
-        specifier: 0.0.1-15
-        version: 0.0.1-15(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
+        specifier: ^0.0.1-16
+        version: 0.0.1-16(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
     devDependencies:
       release-it:
         specifier: ^19.0.5
@@ -307,8 +307,8 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@giusmento/mangojs-core@0.0.1-15':
-    resolution: {integrity: sha512-yxwyAjBC966YbjSg4CnGfnizNXlzBFZWC68Of4m4Pieoo/8t92ZifvwzwfgER09V0Vvw7ezzLbCFfxvtPAaP7g==, tarball: https://npm.pkg.github.com/download/@giusmento/mangojs-core/0.0.1-15/91abad88399a8c88f6094656ec8e6a4dc3ae0491}
+  '@giusmento/mangojs-core@0.0.1-16':
+    resolution: {integrity: sha512-Gcs/5faEieC8vdb3xmzKulquGHHqvf0OICrIdCogInEfeRwEyUyP8bb0tdSynTR12KTf48Li5VF0P1yzy1wG0g==, tarball: https://npm.pkg.github.com/download/@giusmento/mangojs-core/0.0.1-16/001a05803a564bc127a4cd2f11fa77634b41e049}
     engines: {node: '>=22.0.0', pnpm: '>=8.0.0'}
     peerDependencies:
       express: ^4.18.0
@@ -3553,7 +3553,7 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@giusmento/mangojs-core@0.0.1-15(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))':
+  '@giusmento/mangojs-core@0.0.1-16(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))':
     dependencies:
       console-table-printer: 2.15.0
       cookie-parser: 1.4.7
