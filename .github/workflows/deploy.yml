@@ -100,9 +100,14 @@ jobs:
           USER_COOKIE_PRIORITY=medium
           USER_COOKIE_PARTITIONED=false
           USER_COOKIE_PATH=/
-
-          BREVO_APIKEY={{ secrets.EMAIL_BREVO_API_KEY }}
+          # Brevo Email Service
           EMAIL_SENDER_ADDRESS=info@pulcherbook.com
+          EOF
+
+      - name: Create secrets file
+        run: |
+          cat > ./secrets/email_brevo << EOF
+          ${{ secrets.EMAIL_BREVO_API_KEY }}
           EOF
 
       - name: Create .pnpmrc file

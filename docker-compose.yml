@@ -56,8 +56,11 @@ services:
     env_file:
       - .env
     environment:
-      - NODE_ENV=${NODE_ENV:-production}
-      - SERVICES=${SERVICES:-all}
+      - NODE_ENV: ${NODE_ENV:-production}
+      - SERVICES: ${SERVICES:-all}
+      - BREVO_APIKEY: /run/secrets/brevo_apikey
+    secrets:
+      - brevo_apikey
     networks:
       - pulcherbook-network
     restart: unless-stopped
@@ -141,3 +144,7 @@ services:
   #   restart: unless-stopped
   #   profiles:
   #     - multi
+
+secrets:
+  brevo_apikey:
+    file: ./secrets/email_brevo
