@@ -24,11 +24,12 @@ export const setIAMContainer = () => {
 
   // Bind Email Service - Brevo
   console.log("[IAM Service] Binding EmailService...");
-
   //get env variables
   const brevoApikey = process.env.BREVO_APIKEY || "";
   const emailFromAddress = process.env.EMAIL_SENDER_ADDRESS || "";
   const appName = process.env.APP_NAME;
+
+  console.log(`${brevoApikey}, ${emailFromAddress}, ${appName}`);
 
   services.iam_server.IAMDefaultContainer.unbind(INVERSITY_TYPES.EmailService);
   services.iam_server.IAMDefaultContainer.bind<Providers.email.IEmailService>(
