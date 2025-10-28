@@ -56,9 +56,9 @@ services:
     env_file:
       - .env
     environment:
-      - NODE_ENV: ${NODE_ENV:-production}
-      - SERVICES: ${SERVICES:-all}
-      - BREVO_APIKEY: /run/secrets/brevo_apikey
+      - NODE_ENV=${NODE_ENV:-production}
+      - SERVICES=${SERVICES:-all}
+      - BREVO_APIKEY=/run/secrets/brevo_apikey
     secrets:
       - brevo_apikey
     networks:
