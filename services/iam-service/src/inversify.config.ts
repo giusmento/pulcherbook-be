@@ -1,18 +1,11 @@
 // DO NOT WORK - USING DEFAULT CONTAINER FROM CORE
 // can't rebind services. Not sure where it loads components before this file
-
-//import {
-//  Auth,
-//  INVERSITY_TYPES,
-//  Loggers,
-//  persistanceContext,
-//  databasemanager,
-//} from "@giusmento/mangojs-core";
+//import { Containers } from "@giusmento/mangojs-core";
 //import { IPersistenceContext } from "@giusmento/mangojs-core";
 //import { IDatabaseManagerFactory } from "@giusmento/mangojs-core";
 //
 //import { services } from "@giusmento/mangojs-core";
-//import { Containers } from "@giusmento/mangojs-core";
+
 //
 //// Import our custom service
 //import { AdminUserService } from "./services/adminUser.service";
@@ -21,8 +14,38 @@
 //const POSTGRES_USER = process.env.DATABASE_USER || "";
 //const POSTGRES_DB = process.env.DATABASE_DB || "";
 //
+
+import { Container } from "inversify";
 //// Get the global container
-//const container = Containers.getContainer();
+const conta = new Container();
+
+import { INVERSITY_TYPES, Providers, services } from "@giusmento/mangojs-core";
+
+/**
+ * BIND Services
+ * */
+
+// Bind Email Service - Brevo
+console.log("[IAM Service] Binding EmailService...");
+
+//get env variables
+const brevoApikey = process.env.BREVO_APIKEY || "";
+const emailFromAddress = process.env.EMAIL_SENDER_ADDRESS; || ""
+const appName = process.env.APP_NAME;
+
+services.iam_server.IAMDefaultContainer.unbind(INVERSITY_TYPES.EmailService);
+services.iam_server.IAMDefaultContainer.bind<Providers.email.IEmailService>(
+  INVERSITY_TYPES.EmailService
+).toConstantValue(
+  new Providers.email.EmailServiceBrevo(
+    emailFromAddress,
+    appName,
+    brevoApikey
+  )
+);
+
+// Also bind with string identifier for backward compatibility
+
 //
 //console.log("[IAM Service] Configuring Inversify Container...");
 //console.log("[IAM Service] Current bindings in container:");

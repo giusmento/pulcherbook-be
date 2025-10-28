@@ -36,6 +36,9 @@ jobs:
           NODE_ENV=production
           SERVICES=all
 
+          APP_NAME=PulcherBook
+          APP_DOMAIN_URL=https://pulcherbook.com
+
           # CORS Configuration
           ALLOWED_ORIGINS=https://pulcherbook.com
 
@@ -97,6 +100,9 @@ jobs:
           USER_COOKIE_PRIORITY=medium
           USER_COOKIE_PARTITIONED=false
           USER_COOKIE_PATH=/
+
+          BREVO_APIKEY={{ secrets.EMAIL_BREVO_API_KEY }}
+          EMAIL_SENDER_ADDRESS=info@pulcherbook.com
           EOF
 
       - name: Create .pnpmrc file
