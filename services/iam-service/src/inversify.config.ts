@@ -16,6 +16,32 @@
 //
 
 import { INVERSITY_TYPES, Providers, services } from "@giusmento/mangojs-core";
+import fs from "fs";
+
+/**
+ * Helper function to read Docker secrets from file
+ * Docker mounts secrets as files, not environment variables
+ */
+const readDockerSecret = (envVarName: string): string => {
+  const secretPath = process.env[envVarName];
+
+  if (!secretPath) {
+    return "";
+  }
+
+  // Check if it's a file path (Docker secret)
+  if (secretPath.startsWith("/run/secrets/")) {
+    try {
+      return fs.readFileSync(secretPath, "utf8").trim();
+    } catch (error) {
+      console.error(`Failed to read secret from ${secretPath}:`, error);
+      return "";
+    }
+  }
+
+  // Otherwise, it's a direct value (for local development)
+  return secretPath;
+};
 
 export const setIAMContainer = () => {
   /**
@@ -25,7 +51,7 @@ export const setIAMContainer = () => {
   // Bind Email Service - Brevo
   console.log("[IAM Service] Binding EmailService...");
   //get env variables
-  const brevoApikey = process.env.BREVO_APIKEY || "";
+  const brevoApikey = readDockerSecret("BREVO_APIKEY_FILE");
   const emailFromAddress = process.env.EMAIL_SENDER_ADDRESS || "";
   const appName = process.env.APP_NAME;
 
