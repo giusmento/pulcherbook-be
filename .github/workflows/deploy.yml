@@ -106,6 +106,7 @@ jobs:
 
       - name: Create secrets file
         run: |
+          mkdir -p ./secrets
           cat > ./secrets/email_brevo << EOF
           ${{ secrets.EMAIL_BREVO_API_KEY }}
           EOF
@@ -179,7 +180,7 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_SSH_PORT }}
-          source: "docker-compose.yml,nginx/default.conf,.env"
+          source: "docker-compose.yml,nginx/default.conf,.env,./secrets/email_brevo"
           target: "~/pulcherbook-be/"
 
       - name: Deploy to VPS using Podman Compose
