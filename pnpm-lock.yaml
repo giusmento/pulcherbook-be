@@ -13,8 +13,8 @@ importers:
   .:
     dependencies:
       '@giusmento/mangojs-core':
-        specifier: 0.0.1-19
-        version: 0.0.1-19(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
+        specifier: 0.0.1-20
+        version: 0.0.1-20(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
       inversify:
         specifier: ^7.10.2
         version: 7.10.2(reflect-metadata@0.2.2)
@@ -313,8 +313,8 @@ packages:
     peerDependencies:
       express: ^4.18.0
 
-  '@giusmento/mangojs-core@0.0.1-19':
-    resolution: {integrity: sha512-/t09HsOo45VgugVd2eCV/MSx6HP2/RJX/tZPnu9Zb/YDAs6r/KR2ZwtKhBUY7/Rzliv+OK5B77Uv6z/XiLOqHQ==, tarball: https://npm.pkg.github.com/download/@giusmento/mangojs-core/0.0.1-19/0a3c50c0dfa7d27cc4309a02567647d454f33c9b}
+  '@giusmento/mangojs-core@0.0.1-20':
+    resolution: {integrity: sha512-Am6jwXXR7An7HyaAHrEyPeHSN0jNsNcVSU0rF2lrto21zQz5BCpHIC1xoHIA5KtqWhGZC6h90MDFiAnrYZosIQ==, tarball: https://npm.pkg.github.com/download/@giusmento/mangojs-core/0.0.1-20/d4d88903dc733142095ec17dc54deb0c0944e48d}
     engines: {node: '>=22.0.0', pnpm: '>=8.0.0'}
     peerDependencies:
       express: ^4.18.0
@@ -3608,7 +3608,7 @@ snapshots:
       - ts-node
       - typeorm-aurora-data-api-driver
 
-  '@giusmento/mangojs-core@0.0.1-19(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))':
+  '@giusmento/mangojs-core@0.0.1-20(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))':
     dependencies:
       console-table-printer: 2.15.0
       cookie-parser: 1.4.7
