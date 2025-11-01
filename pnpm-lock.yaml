@@ -13,8 +13,8 @@ importers:
   .:
     dependencies:
       '@giusmento/mangojs-core':
-        specifier: 0.0.1-20
-        version: 0.0.1-20(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
+        specifier: 0.0.1-21
+        version: 0.0.1-21(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
       inversify:
         specifier: ^7.10.2
         version: 7.10.2(reflect-metadata@0.2.2)
@@ -41,8 +41,8 @@ importers:
   packages/types:
     dependencies:
       '@giusmento/mangojs-core':
-        specifier: ^0.0.1-16
-        version: 0.0.1-16(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
+        specifier: ^0.0.1-21
+        version: 0.0.1-21(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
     devDependencies:
       release-it:
         specifier: ^19.0.5
@@ -307,14 +307,8 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@giusmento/mangojs-core@0.0.1-16':
-    resolution: {integrity: sha512-Gcs/5faEieC8vdb3xmzKulquGHHqvf0OICrIdCogInEfeRwEyUyP8bb0tdSynTR12KTf48Li5VF0P1yzy1wG0g==, tarball: https://npm.pkg.github.com/download/@giusmento/mangojs-core/0.0.1-16/001a05803a564bc127a4cd2f11fa77634b41e049}
-    engines: {node: '>=22.0.0', pnpm: '>=8.0.0'}
-    peerDependencies:
-      express: ^4.18.0
-
-  '@giusmento/mangojs-core@0.0.1-20':
-    resolution: {integrity: sha512-Am6jwXXR7An7HyaAHrEyPeHSN0jNsNcVSU0rF2lrto21zQz5BCpHIC1xoHIA5KtqWhGZC6h90MDFiAnrYZosIQ==, tarball: https://npm.pkg.github.com/download/@giusmento/mangojs-core/0.0.1-20/d4d88903dc733142095ec17dc54deb0c0944e48d}
+  '@giusmento/mangojs-core@0.0.1-21':
+    resolution: {integrity: sha512-aCrtvO+T7NjJuINt3ToSv0wfxDq2Oy+/bvGidYMY1xLDaFBi8I6qt60DAHi0JoIegoBDyptYLWTSbKcWDTwQwg==, tarball: https://npm.pkg.github.com/download/@giusmento/mangojs-core/0.0.1-21/a6797b1a07b7897f088bc38f179a831265c44216}
     engines: {node: '>=22.0.0', pnpm: '>=8.0.0'}
     peerDependencies:
       express: ^4.18.0
@@ -3560,55 +3554,7 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@giusmento/mangojs-core@0.0.1-16(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))':
-    dependencies:
-      console-table-printer: 2.15.0
-      cookie-parser: 1.4.7
-      cookie-session: 2.1.1
-      dotenv: 16.6.1
-      express: 4.21.2
-      inversify: 7.10.2(reflect-metadata@0.2.2)
-      mongodb: 5.9.2
-      mongoose: 8.19.2(socks@2.8.7)
-      openapi-types: 12.1.3
-      passport: 0.5.3
-      passport-google-oauth20: 2.0.0
-      pino: 9.14.0
-      reflect-metadata: 0.2.2
-      release-it: 19.0.5(@types/node@24.7.2)
-      swagger-jsdoc: 6.2.8(openapi-types@12.1.3)
-      swagger-ui-express: 5.0.1(express@4.21.2)
-      typeorm: 0.3.27(mongodb@5.9.2)(pg@8.16.3)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))
-      uuid: 11.1.0
-    transitivePeerDependencies:
-      - '@aws-sdk/credential-providers'
-      - '@google-cloud/spanner'
-      - '@mongodb-js/zstd'
-      - '@sap/hana-client'
-      - '@types/node'
-      - babel-plugin-macros
-      - better-sqlite3
-      - gcp-metadata
-      - ioredis
-      - kerberos
-      - magicast
-      - mongodb-client-encryption
-      - mssql
-      - mysql2
-      - oracledb
-      - pg
-      - pg-native
-      - pg-query-stream
-      - redis
-      - snappy
-      - socks
-      - sql.js
-      - sqlite3
-      - supports-color
-      - ts-node
-      - typeorm-aurora-data-api-driver
-
-  '@giusmento/mangojs-core@0.0.1-20(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))':
+  '@giusmento/mangojs-core@0.0.1-21(@types/node@24.7.2)(express@4.21.2)(pg@8.16.3)(socks@2.8.7)(ts-node@10.9.2(@types/node@24.7.2)(typescript@5.9.3))':
     dependencies:
       console-table-printer: 2.15.0
       cookie-parser: 1.4.7
