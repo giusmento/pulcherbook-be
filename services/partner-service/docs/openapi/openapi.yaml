@@ -1,0 +1,406 @@
+openapi: 3.0.0
+info:
+  title: Partner Service API
+  version: 0.1.0
+  description: |
+    Partner and booking management service for Pulcherbook platform.
+
+    This service manages:
+    - Partners (companies) registration and information
+    - Teams and team members
+    - Services offered by partners
+    - Company media (logos, images)
+    - Appointment booking system
+    - Team member availability
+
+    **Note**: Authentication is currently public. Authentication/authorization will be implemented in a future update.
+
+servers:
+  - url: http://localhost:3002
+    description: Development server
+  - url: https://api.pulcherbook.com
+    description: Production server
+
+tags:
+  - name: Partners
+    description: Partner/company management
+  - name: Teams
+    description: Team management (TODO)
+  - name: TeamMembers
+    description: Team member management (TODO)
+  - name: Services
+    description: Service management (TODO)
+  - name: CompanyMedia
+    description: Company media management (TODO)
+  - name: Appointments
+    description: Appointment booking and management (TODO)
+  - name: Availability
+    description: Team member availability management (TODO)
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      tags: [System]
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  service:
+                    type: string
+                    example: partner-service
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /api/v1/partners:
+    post:
+      summary: Create a new partner
+      tags: [Partners]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePartnerRequest'
+      responses:
+        '201':
+          description: Partner created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      summary: Get all partners
+      tags: [Partners]
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of partners
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Partner'
+
+  /api/v1/partners/search:
+    get:
+      summary: Search partners by location and services
+      tags: [Partners]
+      parameters:
+        - name: latitude
+          in: query
+          schema:
+            type: number
+            format: double
+        - name: longitude
+          in: query
+          schema:
+            type: number
+            format: double
+        - name: radius
+          in: query
+          description: Search radius in kilometers
+          schema:
+            type: number
+            format: double
+        - name: city
+          in: query
+          schema:
+            type: string
+        - name: service_id
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Partner'
+
+  /api/v1/partners/{id}:
+    get:
+      summary: Get partner by ID
+      tags: [Partners]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Partner details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+        '404':
+          description: Partner not found
+
+    put:
+      summary: Update partner
+      tags: [Partners]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePartnerRequest'
+      responses:
+        '200':
+          description: Partner updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+        '404':
+          description: Partner not found
+
+    delete:
+      summary: Delete partner (soft delete)
+      tags: [Partners]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Partner deleted
+        '404':
+          description: Partner not found
+
+  /api/v1/partners/{id}/availability:
+    get:
+      summary: Get full availability for a partner
+      description: Returns all teams, team members, and their availability schedules
+      tags: [Partners]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Availability details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerAvailability'
+        '404':
+          description: Partner not found
+
+components:
+  schemas:
+    Partner:
+      type: object
+      properties:
+        id:
+          type: string
+        owner_user_id:
+          type: string
+        company_name:
+          type: string
+        description:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        postal_code:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        phone:
+          type: string
+        email:
+          type: string
+        website:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, pending]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreatePartnerRequest:
+      type: object
+      required:
+        - owner_user_id
+        - company_name
+      properties:
+        owner_user_id:
+          type: string
+        company_name:
+          type: string
+        description:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        postal_code:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        phone:
+          type: string
+        email:
+          type: string
+        website:
+          type: string
+
+    UpdatePartnerRequest:
+      type: object
+      properties:
+        company_name:
+          type: string
+        description:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        postal_code:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        phone:
+          type: string
+        email:
+          type: string
+        website:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, pending]
+
+    PartnerAvailability:
+      type: object
+      properties:
+        partner:
+          type: object
+          properties:
+            id:
+              type: string
+            company_name:
+              type: string
+        teams:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              services:
+                type: array
+                items:
+                  type: object
+              members:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    user_id:
+                      type: string
+                    role:
+                      type: string
+                    availabilities:
+                      type: array
+                      items:
+                        type: object
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT authentication (TODO - to be implemented)

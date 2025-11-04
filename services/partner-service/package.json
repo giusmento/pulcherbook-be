@@ -1,0 +1,57 @@
+{
+  "name": "partner-service",
+  "version": "0.1.0",
+  "description": "Partner and booking management service for Pulcherbook platform",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev src/index.ts",
+    "build": "tsc",
+    "start": "node ./dist/index.js",
+    "start:dev": "npx ts-node-dev ./src/index.ts",
+    "start:prod:docker": "pm2-runtime start ./dist/index.js",
+    "start:prod": "pm2 start ./dist/index.js",
+    "stop:prod": "pm2 stop index",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:generate": "npx typeorm-ts-node-commonjs migration:generate ./migrations/Migration -d src/data-source.ts",
+    "migration:show": "npx typeorm-ts-node-commonjs migration:show -d src/data-source.ts",
+    "migration:run": "npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "keywords": [
+    "partner",
+    "booking",
+    "appointment",
+    "mangojs"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "typeorm": "^0.3.26"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.11",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.10.0",
+    "@types/pg": "^8.15.5",
+    "@types/supertest": "^6.0.2",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.3"
+  }
+}
