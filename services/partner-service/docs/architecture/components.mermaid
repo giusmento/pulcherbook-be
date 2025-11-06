@@ -1,0 +1,136 @@
+---
+config:
+  layout: elk
+---
+graph TB
+    subgraph "Client Layer"
+        WebApp[Web Application]
+        MobileApp[Mobile Application]
+    end
+
+    subgraph "Partner Service - Port 3002"
+        subgraph "Controller Layer"
+            PartnerCtrl[PartnerController]
+            TeamCtrl[TeamController]
+            TeamMemberCtrl[TeamMemberController]
+            ServiceCtrl[ServiceController]
+            TeamServiceCtrl[TeamServiceController]
+            MediaCtrl[CompanyMediaController]
+            AppointmentCtrl[AppointmentController]
+            AvailabilityCtrl[AvailabilityController]
+        end
+
+        subgraph "Service Layer - Business Logic"
+            PartnerSvc[PartnerService]
+            TeamSvc[TeamService]
+            TeamMemberSvc[TeamMemberService]
+            ServiceSvc[ServiceService]
+            TeamServiceSvc[TeamServiceService]
+            MediaSvc[CompanyMediaService]
+            AppointmentSvc[AppointmentService]
+            AvailabilitySvc[AvailabilityService]
+        end
+
+        subgraph "Data Access Layer"
+            TypeORM[TypeORM DataSource]
+            Repositories[(Repositories)]
+        end
+
+        subgraph "Dependency Injection"
+            InversifyContainer[Inversify Container]
+        end
+
+        subgraph "Middleware & Infrastructure"
+            SwaggerUI[Swagger UI]
+            Helmet[Helmet Security]
+            CORS[CORS]
+            CookieParser[Cookie Parser]
+            ErrorHandler[Error Handler]
+            Logger[Request Logger]
+        end
+    end
+
+    subgraph "External Services"
+        IAMService[IAM Service<br/>Port 3001<br/>User Authentication]
+        Supabase[(Supabase PostgreSQL<br/>Database)]
+    end
+
+    subgraph "MangoJS Core Framework"
+        ServerBuilder[ServerBuilder]
+        Decorators[@Controller, @Get, @Post, etc.]
+        Utils[utils.LogRequest]
+        Errors[errors.errorHandler]
+    end
+
+    %% Client connections
+    WebApp -->|HTTP/REST| PartnerCtrl
+    WebApp -->|HTTP/REST| TeamCtrl
+    WebApp -->|HTTP/REST| AppointmentCtrl
+    MobileApp -->|HTTP/REST| PartnerCtrl
+    MobileApp -->|HTTP/REST| AppointmentCtrl
+
+    %% Controller to Service connections
+    PartnerCtrl --> PartnerSvc
+    TeamCtrl --> TeamSvc
+    TeamMemberCtrl --> TeamMemberSvc
+    ServiceCtrl --> ServiceSvc
+    TeamServiceCtrl --> TeamServiceSvc
+    MediaCtrl --> MediaSvc
+    AppointmentCtrl --> AppointmentSvc
+    AvailabilityCtrl --> AvailabilitySvc
+
+    %% Service to Repository connections
+    PartnerSvc --> TypeORM
+    TeamSvc --> TypeORM
+    TeamMemberSvc --> TypeORM
+    ServiceSvc --> TypeORM
+    TeamServiceSvc --> TypeORM
+    MediaSvc --> TypeORM
+    AppointmentSvc --> TypeORM
+    AvailabilitySvc --> TypeORM
+
+    %% Repository to Database
+    TypeORM --> Repositories
+    Repositories --> Supabase
+
+    %% Dependency Injection
+    InversifyContainer -.->|Provides| PartnerSvc
+    InversifyContainer -.->|Provides| TeamSvc
+    InversifyContainer -.->|Provides| AppointmentSvc
+
+    %% Framework components
+    ServerBuilder -.->|Builds| PartnerCtrl
+    ServerBuilder -.->|Builds| TeamCtrl
+    ServerBuilder -.->|Registers| Helmet
+    ServerBuilder -.->|Registers| CORS
+    Decorators -.->|Annotates| PartnerCtrl
+    Utils -.->|Used by| PartnerCtrl
+    Errors -.->|Used by| PartnerCtrl
+
+    %% Middleware flow
+    WebApp -->|Requests| Helmet
+    Helmet --> CORS
+    CORS --> CookieParser
+    CookieParser --> Logger
+
+    %% External service integration
+    PartnerSvc -.->|user_id validation| IAMService
+    TeamMemberSvc -.->|user_id validation| IAMService
+    AppointmentSvc -.->|customer_user_id validation| IAMService
+
+    %% Documentation
+    SwaggerUI -.->|Documents| PartnerCtrl
+    SwaggerUI -.->|Documents| TeamCtrl
+    SwaggerUI -.->|Documents| AppointmentCtrl
+
+    classDef controller fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    classDef service fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef data fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef external fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+    classDef framework fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+
+    class PartnerCtrl,TeamCtrl,TeamMemberCtrl,ServiceCtrl,TeamServiceCtrl,MediaCtrl,AppointmentCtrl,AvailabilityCtrl controller
+    class PartnerSvc,TeamSvc,TeamMemberSvc,ServiceSvc,TeamServiceSvc,MediaSvc,AppointmentSvc,AvailabilitySvc service
+    class TypeORM,Repositories,Supabase data
+    class IAMService,WebApp,MobileApp external
+    class ServerBuilder,Decorators,Utils,Errors,InversifyContainer framework

@@ -1,0 +1,33 @@
+---
+config:
+  layout: elk
+---
+flowchart TD
+    subgraph PartnerDomain [Partner Management Domain]
+        Partner[Partner]
+        CompanyMedia[Company Media]
+        Partner -->|has| CompanyMedia
+    end
+
+    subgraph TeamDomain [Team Management Domain]
+        Team[Team]
+        TeamMember[Team Member]
+        Partner -->|has| Team
+        Team -->|contains| TeamMember
+    end
+
+    subgraph ServiceDomain [Service Management Domain]
+        Service[Service]
+        TeamService[Team-Service Assignment]
+        Partner -->|offers| Service
+        Team -->|provides| TeamService
+        Service -->|assigned to| TeamService
+    end
+
+    subgraph BookingDomain [Booking & Scheduling Domain]
+        Appointment[Appointment]
+        Availability[Team Member Availability]
+        TeamMember -->|has| Availability
+        TeamMember -->|assigned to| Appointment
+        Service -->|booked for| Appointment
+    end

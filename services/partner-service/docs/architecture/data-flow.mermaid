@@ -1,0 +1,93 @@
+sequenceDiagram
+    participant Client
+    participant Controller
+    participant Service
+    participant Repository
+    participant Database
+
+    Note over Client,Database: Example: Create Partner Request
+
+    Client->>Controller: POST /api/v1/partners
+    activate Controller
+    Controller->>Controller: Create LogRequest
+    Controller->>Service: create(partnerData)
+    activate Service
+    Service->>Repository: getRepository(Partner)
+    Service->>Repository: create(partnerData)
+    Service->>Repository: save(partner)
+    activate Repository
+    Repository->>Database: INSERT INTO partners
+    Database-->>Repository: Partner record
+    deactivate Repository
+    Repository-->>Service: Partner entity
+    deactivate Service
+    Service-->>Controller: Partner
+    Controller->>Controller: Build API response
+    Controller-->>Client: 201 Created { ok, timestamp, requestId, data }
+    deactivate Controller
+
+    Note over Client,Database: Example: Get Partner with Relations
+
+    Client->>Controller: GET /api/v1/partners/:id
+    activate Controller
+    Controller->>Controller: Create LogRequest
+    Controller->>Service: findById(id)
+    activate Service
+    Service->>Repository: findOne(id, relations)
+    activate Repository
+    Repository->>Database: SELECT with JOINs
+    Database-->>Repository: Partner with teams & services
+    deactivate Repository
+    Repository-->>Service: Partner entity
+    Service-->>Controller: Partner
+    deactivate Service
+    Controller->>Controller: Check if exists
+    alt Partner found
+        Controller->>Controller: Build API response
+        Controller-->>Client: 200 OK { ok, timestamp, requestId, data }
+    else Partner not found
+        Controller-->>Client: 404 Not Found { ok: false, error }
+    end
+    deactivate Controller
+
+    Note over Client,Database: Example: Check Appointment Availability
+
+    Client->>Controller: POST /api/v1/appointments/check-availability
+    activate Controller
+    Controller->>Controller: Create LogRequest
+    Controller->>Service: checkAvailability(params)
+    activate Service
+    Service->>Repository: Find availability schedules
+    activate Repository
+    Repository->>Database: SELECT availability rules
+    Database-->>Repository: Availability schedules
+    deactivate Repository
+    Service->>Repository: Find existing appointments
+    activate Repository
+    Repository->>Database: SELECT appointments for date/time
+    Database-->>Repository: Existing appointments
+    deactivate Repository
+    Service->>Service: Calculate time slots
+    Service->>Service: Filter out booked slots
+    Service-->>Controller: Available slots
+    deactivate Service
+    Controller->>Controller: Build API response
+    Controller-->>Client: 200 OK { ok, timestamp, requestId, data: slots }
+    deactivate Controller
+
+    Note over Client,Database: Error Handling Flow
+
+    Client->>Controller: POST /api/v1/partners (invalid data)
+    activate Controller
+    Controller->>Controller: Create LogRequest
+    Controller->>Service: create(invalidData)
+    activate Service
+    Service->>Repository: save(invalid)
+    Repository->>Database: INSERT (validation fails)
+    Database-->>Repository: Error
+    Repository-->>Service: Exception
+    Service-->>Controller: throw Error
+    deactivate Service
+    Controller->>Controller: errors.errorHandler()
+    Controller-->>Client: 400/500 { ok: false, error, timestamp, requestId }
+    deactivate Controller
