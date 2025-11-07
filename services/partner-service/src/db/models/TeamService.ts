@@ -14,14 +14,14 @@ import { Service } from "./Service";
 @Entity("team_services")
 @Unique(["team_id", "service_id"])
 export class TeamService {
-  @PrimaryGeneratedColumn("increment", { type: "bigint" })
-  id: string;
+  @PrimaryGeneratedColumn("uuid")
+  uid: string;
 
-  @Column({ type: "bigint" })
+  @Column({ type: "uuid" })
   @Index()
   team_id: string;
 
-  @Column({ type: "bigint" })
+  @Column({ type: "uuid" })
   @Index()
   service_id: string;
 

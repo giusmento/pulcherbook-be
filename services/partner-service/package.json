@@ -1,5 +1,5 @@
 {
-  "name": "partner-service",
+  "name": "@giusmento/mangojs-partner-service",
   "version": "0.1.0",
   "description": "Partner and booking management service for Pulcherbook platform",
   "main": "dist/index.js",

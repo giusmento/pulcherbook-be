@@ -4,14 +4,13 @@ dotenv.config();
 
 // IMPORTS
 import "reflect-metadata";
+import { initializePartnerContainer } from "./inversify.config";
 import { ServerBuilder } from "@giusmento/mangojs-core";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import swaggerJSDoc from "swagger-jsdoc";
 
-import { AppDataSource } from "./data-source";
-import { initializePartnerContainer } from "./inversify.config";
 import { routes } from "./routes";
 
 ///////////////////
@@ -48,7 +47,8 @@ const swaggerOptions = {
     info: {
       title: "Partner Service API",
       version: "0.1.0",
-      description: "Partner and booking management service for Pulcherbook platform",
+      description:
+        "Partner and booking management service for Pulcherbook platform",
     },
     servers: [
       {
@@ -79,7 +79,7 @@ const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
     // Step 1: Initialize database connection
     console.log("[Partner Service] Step 1: Connecting to database...");
-    await AppDataSource.initialize();
+    //await AppDataSource.initialize();
     console.log("[Partner Service] Database connected successfully");
 
     // Step 2: Initialize Inversify container

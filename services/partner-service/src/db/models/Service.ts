@@ -20,10 +20,10 @@ export enum ServiceStatus {
 
 @Entity("services")
 export class Service {
-  @PrimaryGeneratedColumn("increment", { type: "bigint" })
-  id: string;
+  @PrimaryGeneratedColumn("uuid")
+  uid: string;
 
-  @Column({ type: "bigint" })
+  @Column({ type: "uuid" })
   @Index()
   partner_id: string;
 

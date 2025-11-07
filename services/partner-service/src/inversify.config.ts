@@ -1,4 +1,3 @@
-import { Container } from "inversify";
 import {
   INVERSITY_TYPES,
   Types,
@@ -7,43 +6,41 @@ import {
   ApplicationPreCheck,
   IDatabaseManagerFactory,
   persistanceContext,
+  Containers,
 } from "@giusmento/mangojs-core";
 // Import service classes
-import { PartnerService } from "./service/partner.service";
-import { TeamService } from "./service/team.service";
-import { TeamMemberService } from "./service/team-member.service";
-import { ServiceService } from "./service/service.service";
-import { TeamServiceService } from "./service/team-service.service";
-import { CompanyMediaService } from "./service/company-media.service";
-import { AppointmentService } from "./service/appointment.service";
-import { AvailabilityService } from "./service/availability.service";
-
-// Create IoC container
-export const PartnerContainer = new Container({ defaultScope: "Singleton" });
+import { PartnerService } from "./services/partner.service";
+import { TeamService } from "./services/team.service";
+import { TeamMemberService } from "./services/team-member.service";
+import { ServiceService } from "./services/service.service";
+import { TeamServiceService } from "./services/team-service.service";
+import { CompanyMediaService } from "./services/company-media.service";
+import { AppointmentService } from "./services/appointment.service";
+import { AvailabilityService } from "./services/availability.service";
 
 /**
  * Initialize the partner service container
  * This should be called AFTER database initialization
  */
-export const initializePartnerContainer = () => {
+export const initializePartnerContainer = async () => {
   console.log("[Partner Service] Initializing Inversify container...");
 
+  // Get global IoC container
+  const PartnerContainer = Containers.getContainer();
   // Bind Database Manager Factory - Using Dummy since we manage DB with TypeORM AppDataSource
+  // NOTE: Future upgrade path: Replace with PostgresDBManagerFactory when fully migrating to mangojs persistence
+  await PartnerContainer.unbind(INVERSITY_TYPES.DatabaseManagerFactory);
   PartnerContainer.bind<IDatabaseManagerFactory>(
     INVERSITY_TYPES.DatabaseManagerFactory
-  ).toConstantValue(new databasemanager.DummyDBManagerFactory("dummy-connection"));
+  ).toConstantValue(new databasemanager.DummyDBManagerFactory("partner-db"));
 
   // Bind Persistence Context - Using Dummy since we manage persistence with TypeORM
+  // NOTE: Services use AppDataSource.transaction() directly for proper transaction handling
   PartnerContainer.bind<IPersistenceContext>(
     INVERSITY_TYPES.PersistenceContext
   ).to(persistanceContext.DummyPersistenceContext);
 
   // Bind application pre-check
-  PartnerContainer.bind<Types.IApplicationPreCheck>(
-    INVERSITY_TYPES.ApplicationPreCheck
-  )
-    .to(ApplicationPreCheck)
-    .inSingletonScope();
 
   // TODO: Bind authentication validator when IAM integration is ready
   // PartnerContainer.bind<Auth.IAuthValidator>(Auth.RemoteAuthValidator)

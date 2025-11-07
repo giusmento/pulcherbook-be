@@ -7,16 +7,21 @@ import {
   Delete,
   utils,
   errors,
+  Containers,
 } from "@giusmento/mangojs-core";
-import { PartnerContainer } from "../../../inversify.config";
-import { CompanyMediaService } from "../../../service/company-media.service";
+import { CompanyMediaService } from "../../../services/company-media.service";
 import {
   CreateCompanyMediaRequest,
   UpdateCompanyMediaRequest,
 } from "../../../types/types";
 
 // Resolve service from container
-const companyMediaService = PartnerContainer.get<CompanyMediaService>(CompanyMediaService);
+const companyMediaService = Containers.getContainer().get<CompanyMediaService>(
+  CompanyMediaService,
+  {
+    autobind: true,
+  }
+);
 
 /**
  * @swagger
@@ -89,7 +94,7 @@ export class CompanyMediaController {
 
   /**
    * @swagger
-   * /api/v1/company-media/{id}:
+   * /api/v1/company-media/{uid}:
    *   get:
    *     summary: Get company media by ID
    *     tags: [CompanyMedia]
@@ -97,7 +102,7 @@ export class CompanyMediaController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -108,12 +113,12 @@ export class CompanyMediaController {
    *       404:
    *         description: Media not found
    */
-  @Get("/:id")
+  @Get("/:uid")
   public async findById(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const media = await this.companyMediaService.findById(id);
+      const { uid } = req.params;
+      const media = await this.companyMediaService.findById(uid);
 
       if (!media) {
         const apiResponse = {
@@ -203,7 +208,7 @@ export class CompanyMediaController {
 
   /**
    * @swagger
-   * /api/v1/company-media/{id}:
+   * /api/v1/company-media/{uid}:
    *   put:
    *     summary: Update company media
    *     tags: [CompanyMedia]
@@ -211,7 +216,7 @@ export class CompanyMediaController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -233,13 +238,13 @@ export class CompanyMediaController {
    *       404:
    *         description: Media not found
    */
-  @Put("/:id")
+  @Put("/:uid")
   public async update(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
+      const { uid } = req.params;
       const data: UpdateCompanyMediaRequest = req.body;
-      const media = await this.companyMediaService.update(id, data);
+      const media = await this.companyMediaService.update(uid, data);
 
       if (!media) {
         const apiResponse = {
@@ -265,7 +270,7 @@ export class CompanyMediaController {
 
   /**
    * @swagger
-   * /api/v1/company-media/{id}:
+   * /api/v1/company-media/{uid}:
    *   delete:
    *     summary: Delete company media
    *     tags: [CompanyMedia]
@@ -273,7 +278,7 @@ export class CompanyMediaController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -284,12 +289,12 @@ export class CompanyMediaController {
    *       404:
    *         description: Media not found
    */
-  @Delete("/:id")
+  @Delete("/:uid")
   public async delete(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const success = await this.companyMediaService.delete(id);
+      const { uid } = req.params;
+      const success = await this.companyMediaService.delete(uid);
 
       if (!success) {
         const apiResponse = {

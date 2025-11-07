@@ -7,13 +7,16 @@ import {
   Delete,
   utils,
   errors,
+  Containers,
+  Decorators,
 } from "@giusmento/mangojs-core";
-import { PartnerContainer } from "../../../inversify.config";
-import { TeamService } from "../../../service/team.service";
+import { TeamService } from "../../../services/team.service";
 import { CreateTeamRequest, UpdateTeamRequest } from "../../../types/types";
 
 // Resolve service from container
-const teamService = PartnerContainer.get<TeamService>(TeamService);
+const teamService = Containers.getContainer().get<TeamService>(TeamService, {
+  autobind: true,
+});
 
 /**
  * @swagger
@@ -60,6 +63,7 @@ export class TeamController {
    *         description: Invalid request data
    */
   @Post("/")
+  @Decorators.auth.HasGroups(["Admin", "Partner"])
   public async create(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
@@ -80,7 +84,7 @@ export class TeamController {
 
   /**
    * @swagger
-   * /api/v1/teams/{id}:
+   * /api/v1/teams/{uid}:
    *   get:
    *     summary: Get team by ID
    *     tags: [Teams]
@@ -88,7 +92,7 @@ export class TeamController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -99,12 +103,12 @@ export class TeamController {
    *       404:
    *         description: Team not found
    */
-  @Get("/:id")
+  @Get("/:uid")
   public async findById(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const team = await this.teamService.findById(id);
+      const { uid } = req.params;
+      const team = await this.teamService.findById(uid);
 
       if (!team) {
         const apiResponse = {
@@ -159,6 +163,7 @@ export class TeamController {
    *         description: List of teams
    */
   @Get("/")
+  @Decorators.auth.HasGroups(["Admin", "Partner"])
   public async findAll(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
@@ -182,7 +187,7 @@ export class TeamController {
 
   /**
    * @swagger
-   * /api/v1/teams/{id}:
+   * /api/v1/teams/{uid}:
    *   put:
    *     summary: Update team
    *     tags: [Teams]
@@ -190,7 +195,7 @@ export class TeamController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -214,13 +219,14 @@ export class TeamController {
    *       404:
    *         description: Team not found
    */
-  @Put("/:id")
+  @Put("/:uid")
+  @Decorators.auth.HasGroups(["Admin", "Partner"])
   public async update(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
+      const { uid } = req.params;
       const data: UpdateTeamRequest = req.body;
-      const team = await this.teamService.update(id, data);
+      const team = await this.teamService.update(uid, data);
 
       if (!team) {
         const apiResponse = {
@@ -246,7 +252,7 @@ export class TeamController {
 
   /**
    * @swagger
-   * /api/v1/teams/{id}:
+   * /api/v1/teams/{uid}:
    *   delete:
    *     summary: Delete team
    *     tags: [Teams]
@@ -254,7 +260,7 @@ export class TeamController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -265,12 +271,13 @@ export class TeamController {
    *       404:
    *         description: Team not found
    */
-  @Delete("/:id")
+  @Delete("/:uid")
+  @Decorators.auth.HasGroups(["Admin", "Partner"])
   public async delete(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const success = await this.teamService.delete(id);
+      const { uid } = req.params;
+      const success = await this.teamService.delete(uid);
 
       if (!success) {
         const apiResponse = {

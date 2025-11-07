@@ -2,6 +2,8 @@
 
 This document describes all error scenarios for the Partner Service.
 
+All errors use the MangoJS `errors.APIError` class from `@giusmento/mangojs-core` for consistent error handling and response formatting.
+
 ## HTTP 400 - Bad Request
 
 | HTTP Error Code | Error Code               | Error Name              | Message                                         | Cause                                   | Resolution                             |

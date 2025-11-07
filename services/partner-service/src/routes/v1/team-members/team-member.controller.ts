@@ -6,13 +6,18 @@ import {
   Delete,
   utils,
   errors,
+  Containers,
 } from "@giusmento/mangojs-core";
-import { PartnerContainer } from "../../../inversify.config";
-import { TeamMemberService } from "../../../service/team-member.service";
+import { TeamMemberService } from "../../../services/team-member.service";
 import { CreateTeamMemberRequest } from "../../../types/types";
 
 // Resolve service from container
-const teamMemberService = PartnerContainer.get<TeamMemberService>(TeamMemberService);
+const teamMemberService = Containers.getContainer().get<TeamMemberService>(
+  TeamMemberService,
+  {
+    autobind: true,
+  }
+);
 
 /**
  * @swagger
@@ -79,7 +84,7 @@ export class TeamMemberController {
 
   /**
    * @swagger
-   * /api/v1/team-members/{id}:
+   * /api/v1/team-members/{uid}:
    *   get:
    *     summary: Get team member by ID
    *     tags: [TeamMembers]
@@ -87,7 +92,7 @@ export class TeamMemberController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -98,12 +103,12 @@ export class TeamMemberController {
    *       404:
    *         description: Team member not found
    */
-  @Get("/:id")
+  @Get("/:uid")
   public async findById(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const teamMember = await this.teamMemberService.findById(id);
+      const { uid } = req.params;
+      const teamMember = await this.teamMemberService.findById(uid);
 
       if (!teamMember) {
         const apiResponse = {
@@ -185,7 +190,7 @@ export class TeamMemberController {
 
   /**
    * @swagger
-   * /api/v1/team-members/{id}:
+   * /api/v1/team-members/{uid}:
    *   delete:
    *     summary: Delete team member
    *     tags: [TeamMembers]
@@ -193,7 +198,7 @@ export class TeamMemberController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -204,12 +209,12 @@ export class TeamMemberController {
    *       404:
    *         description: Team member not found
    */
-  @Delete("/:id")
+  @Delete("/:uid")
   public async delete(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const success = await this.teamMemberService.delete(id);
+      const { uid } = req.params;
+      const success = await this.teamMemberService.delete(uid);
 
       if (!success) {
         const apiResponse = {
@@ -235,7 +240,7 @@ export class TeamMemberController {
 
   /**
    * @swagger
-   * /api/v1/team-members/{id}/upcoming-appointments:
+   * /api/v1/team-members/{uid}/upcoming-appointments:
    *   get:
    *     summary: Get upcoming appointments for a team member
    *     tags: [TeamMembers]
@@ -243,7 +248,7 @@ export class TeamMemberController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -254,16 +259,17 @@ export class TeamMemberController {
    *       404:
    *         description: Team member not found
    */
-  @Get("/:id/upcoming-appointments")
+  @Get("/:uid/upcoming-appointments")
   public async getUpcomingAppointments(
     req: Request,
     res: Response
   ): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const appointments =
-        await this.teamMemberService.getUpcomingAppointments(id);
+      const { uid } = req.params;
+      const appointments = await this.teamMemberService.getUpcomingAppointments(
+        uid
+      );
 
       if (!appointments) {
         const apiResponse = {

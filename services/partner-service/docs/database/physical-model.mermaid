@@ -17,7 +17,7 @@ erDiagram
     team_members ||--o{ team_member_availability : "team_member_id"
 
     partners {
-        bigint id PK "Auto-increment"
+        uuid uid PK "UUID"
         varchar owner_user_id UK "Index"
         varchar company_name "NOT NULL"
         text description
@@ -37,8 +37,8 @@ erDiagram
     }
 
     teams {
-        bigint id PK "Auto-increment"
-        bigint partner_id FK "Index"
+        uuid uid PK "UUID"
+        uuid partner_id FK "Index"
         varchar name "NOT NULL"
         text description
         enum status "active/inactive"
@@ -47,8 +47,8 @@ erDiagram
     }
 
     team_members {
-        bigint id PK "Auto-increment"
-        bigint team_id FK "Index"
+        uuid uid PK "UUID"
+        uuid team_id FK "Index"
         varchar user_id UK "Index, UNIQUE(team_id,user_id)"
         varchar role "member/admin"
         timestamp joined_at
@@ -57,8 +57,8 @@ erDiagram
     }
 
     services {
-        bigint id PK "Auto-increment"
-        bigint partner_id FK "Index"
+        uuid uid PK "UUID"
+        uuid partner_id FK "Index"
         varchar name "NOT NULL"
         text description
         integer duration_minutes "NOT NULL"
@@ -70,15 +70,15 @@ erDiagram
     }
 
     team_services {
-        bigint id PK "Auto-increment"
-        bigint team_id FK "Index, UNIQUE(team_id,service_id)"
-        bigint service_id FK "Index"
+        uuid uid PK "UUID"
+        uuid team_id FK "Index, UNIQUE(team_id,service_id)"
+        uuid service_id FK "Index"
         timestamp created_at
     }
 
     company_media {
-        bigint id PK "Auto-increment"
-        bigint partner_id FK "Index"
+        uuid uid PK "UUID"
+        uuid partner_id FK "Index"
         varchar url "NOT NULL"
         enum type "logo/cover/gallery"
         integer display_order
@@ -88,10 +88,10 @@ erDiagram
     }
 
     appointments {
-        bigint id PK "Auto-increment"
+        uuid uid PK "UUID"
         varchar customer_user_id "Index"
-        bigint team_member_id FK "Index"
-        bigint service_id FK "Index"
+        uuid team_member_id FK "Index"
+        uuid service_id FK "Index"
         date appointment_date "Index"
         time start_time
         time end_time
@@ -105,8 +105,8 @@ erDiagram
     }
 
     team_member_availability {
-        bigint id PK "Auto-increment"
-        bigint team_member_id FK "Index"
+        uuid uid PK "UUID"
+        uuid team_member_id FK "Index"
         integer day_of_week "0-6 for recurring"
         date specific_date "Index, for one-time"
         time start_time

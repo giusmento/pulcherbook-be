@@ -67,84 +67,84 @@ Health check: `http://localhost:3002/health`
 
 | Method | Endpoint                        | Description                    | Auth Status      |
 | ------ | ------------------------------- | ------------------------------ | ---------------- |
-| POST   | `/api/v1/partners`              | Create new partner             | Public (TODO)    |
+| POST   | `/api/v1/partners`              | Create new partner             | With @auth       |
 | GET    | `/api/v1/partners`              | List all partners              | Public           |
 | GET    | `/api/v1/partners/search`       | Search partners by location    | Public           |
-| GET    | `/api/v1/partners/:id`          | Get partner details            | Public           |
-| PUT    | `/api/v1/partners/:id`          | Update partner                 | Public (TODO)    |
-| DELETE | `/api/v1/partners/:id`          | Delete partner (soft)          | Public (TODO)    |
-| GET    | `/api/v1/partners/:id/availability` | Get full availability      | Public           |
+| GET    | `/api/v1/partners/:uid`         | Get partner details            | Public           |
+| PUT    | `/api/v1/partners/:uid`         | Update partner                 | With @auth       |
+| DELETE | `/api/v1/partners/:uid`         | Delete partner (soft)          | With @auth       |
+| GET    | `/api/v1/partners/:uid/availability` | Get full availability      | Public           |
 
 #### Teams
 
 | Method | Endpoint                        | Description                    | Auth Status      |
 | ------ | ------------------------------- | ------------------------------ | ---------------- |
-| POST   | `/api/v1/teams`                 | Create new team                | Public (TODO)    |
+| POST   | `/api/v1/teams`                 | Create new team                | With @auth       |
 | GET    | `/api/v1/teams`                 | List all teams                 | Public           |
-| GET    | `/api/v1/teams/:id`             | Get team details               | Public           |
-| PUT    | `/api/v1/teams/:id`             | Update team                    | Public (TODO)    |
-| DELETE | `/api/v1/teams/:id`             | Delete team                    | Public (TODO)    |
+| GET    | `/api/v1/teams/:uid`            | Get team details               | Public           |
+| PUT    | `/api/v1/teams/:uid`            | Update team                    | With @auth       |
+| DELETE | `/api/v1/teams/:uid`            | Delete team                    | With @auth       |
 
 #### Team Members
 
 | Method | Endpoint                        | Description                    | Auth Status      |
 | ------ | ------------------------------- | ------------------------------ | ---------------- |
-| POST   | `/api/v1/team-members`          | Add member to team             | Public (TODO)    |
+| POST   | `/api/v1/team-members`          | Add member to team             | With @auth       |
 | GET    | `/api/v1/team-members`          | List team members              | Public           |
-| GET    | `/api/v1/team-members/:id`      | Get team member details        | Public           |
-| DELETE | `/api/v1/team-members/:id`      | Remove member from team        | Public (TODO)    |
-| GET    | `/api/v1/team-members/:id/appointments` | Get upcoming appointments | Public    |
+| GET    | `/api/v1/team-members/:uid`     | Get team member details        | Public           |
+| DELETE | `/api/v1/team-members/:uid`     | Remove member from team        | With @auth       |
+| GET    | `/api/v1/team-members/:uid/appointments` | Get upcoming appointments | Public    |
 
 #### Services
 
 | Method | Endpoint                        | Description                    | Auth Status      |
 | ------ | ------------------------------- | ------------------------------ | ---------------- |
-| POST   | `/api/v1/services`              | Create new service             | Public (TODO)    |
+| POST   | `/api/v1/services`              | Create new service             | With @auth       |
 | GET    | `/api/v1/services`              | List all services              | Public           |
-| GET    | `/api/v1/services/:id`          | Get service details            | Public           |
-| PUT    | `/api/v1/services/:id`          | Update service                 | Public (TODO)    |
-| DELETE | `/api/v1/services/:id`          | Delete service                 | Public (TODO)    |
+| GET    | `/api/v1/services/:uid`         | Get service details            | Public           |
+| PUT    | `/api/v1/services/:uid`         | Update service                 | With @auth       |
+| DELETE | `/api/v1/services/:uid`         | Delete service                 | With @auth       |
 
 #### Team Services
 
 | Method | Endpoint                        | Description                    | Auth Status      |
 | ------ | ------------------------------- | ------------------------------ | ---------------- |
-| POST   | `/api/v1/team-services`         | Assign service to team         | Public (TODO)    |
+| POST   | `/api/v1/team-services`         | Assign service to team         | With @auth       |
 | GET    | `/api/v1/team-services`         | List assignments               | Public           |
-| GET    | `/api/v1/team-services/:id`     | Get assignment details         | Public           |
-| DELETE | `/api/v1/team-services/:id`     | Unassign service from team     | Public (TODO)    |
+| GET    | `/api/v1/team-services/:uid`    | Get assignment details         | Public           |
+| DELETE | `/api/v1/team-services/:uid`    | Unassign service from team     | With @auth       |
 
 #### Company Media
 
 | Method | Endpoint                        | Description                    | Auth Status      |
 | ------ | ------------------------------- | ------------------------------ | ---------------- |
-| POST   | `/api/v1/company-media`         | Upload/add media               | Public (TODO)    |
+| POST   | `/api/v1/company-media`         | Upload/add media               | With @auth       |
 | GET    | `/api/v1/company-media`         | List media                     | Public           |
-| GET    | `/api/v1/company-media/:id`     | Get media details              | Public           |
-| PUT    | `/api/v1/company-media/:id`     | Update media (reorder)         | Public (TODO)    |
-| DELETE | `/api/v1/company-media/:id`     | Delete media                   | Public (TODO)    |
+| GET    | `/api/v1/company-media/:uid`    | Get media details              | Public           |
+| PUT    | `/api/v1/company-media/:uid`    | Update media (reorder)         | With @auth       |
+| DELETE | `/api/v1/company-media/:uid`    | Delete media                   | With @auth       |
 
 #### Appointments
 
 | Method | Endpoint                        | Description                    | Auth Status      |
 | ------ | ------------------------------- | ------------------------------ | ---------------- |
-| POST   | `/api/v1/appointments`          | Book new appointment           | Public (TODO)    |
+| POST   | `/api/v1/appointments`          | Book new appointment           | With @auth       |
 | GET    | `/api/v1/appointments`          | List appointments              | Public           |
-| GET    | `/api/v1/appointments/:id`      | Get appointment details        | Public           |
-| PUT    | `/api/v1/appointments/:id`      | Update appointment             | Public (TODO)    |
-| PATCH  | `/api/v1/appointments/:id/status` | Update appointment status    | Public (TODO)    |
-| DELETE | `/api/v1/appointments/:id`      | Cancel appointment             | Public (TODO)    |
+| GET    | `/api/v1/appointments/:uid`     | Get appointment details        | Public           |
+| PUT    | `/api/v1/appointments/:uid`     | Update appointment             | With @auth       |
+| PATCH  | `/api/v1/appointments/:uid/status` | Update appointment status    | With @auth       |
+| DELETE | `/api/v1/appointments/:uid`     | Cancel appointment             | With @auth       |
 | POST   | `/api/v1/appointments/check-availability` | Check availability  | Public           |
 
 #### Availability
 
 | Method | Endpoint                        | Description                    | Auth Status      |
 | ------ | ------------------------------- | ------------------------------ | ---------------- |
-| POST   | `/api/v1/availability`          | Create availability schedule   | Public (TODO)    |
+| POST   | `/api/v1/availability`          | Create availability schedule   | With @auth       |
 | GET    | `/api/v1/availability`          | Get availability schedules     | Public           |
-| GET    | `/api/v1/availability/:id`      | Get availability details       | Public           |
-| PUT    | `/api/v1/availability/:id`      | Update availability            | Public (TODO)    |
-| DELETE | `/api/v1/availability/:id`      | Delete availability            | Public (TODO)    |
+| GET    | `/api/v1/availability/:uid`     | Get availability details       | Public           |
+| PUT    | `/api/v1/availability/:uid`     | Update availability            | With @auth       |
+| DELETE | `/api/v1/availability/:uid`     | Delete availability            | With @auth       |
 | GET    | `/api/v1/availability/slots`    | Get available time slots       | Public           |
 
 ## Database
@@ -170,12 +170,14 @@ See database documentation:
 
 ```
 src/
-├── db/models/      # TypeORM entities
+├── db/models/      # TypeORM entities (UUID primary keys)
 ├── routes/         # API controllers
 │   └── v1/
 │       └── partners/  # Partner endpoints
-├── service/        # Business logic
+├── services/       # Business logic (transaction-wrapped)
 ├── types/          # TypeScript type definitions
+│   ├── entities/   # Entity types (Partner, PartnerPost, PartnerPut)
+│   └── api/v1/     # API request/response types
 └── index.ts        # Main entry point
 ```
 
@@ -191,10 +193,11 @@ src/
 ### Adding New Features
 
 1. Create model in `src/db/models/`
-2. Create service in `src/service/`
-3. Create controller in `src/routes/v1/`
-4. Register routes in `src/routes/v1/index.ts`
-5. Update documentation
+2. Create service in `src/services/`
+3. Create entity types in `src/types/entities/`
+4. Create controller in `src/routes/v1/`
+5. Register routes in `src/routes/v1/index.ts`
+6. Update documentation
 
 ### Testing
 
@@ -218,6 +221,11 @@ Required variables:
 ## Features
 
 ✅ **Implemented**:
+- UUID primary keys for enhanced security
+- Transaction-wrapped database operations for data integrity
+- MangoJS standard error handling (APIError)
+- Authorization decorator framework (@Decorators.auth)
+- Reorganized type system (src/types/entities/)
 - Partner CRUD operations with location-based search
 - Teams management (CRUD operations)
 - Team members management (add/remove, upcoming appointments)
@@ -245,12 +253,14 @@ Required variables:
 
 ## Authentication Status
 
-⚠️ **IMPORTANT**: Currently, all endpoints are public. Authentication and authorization will be implemented in a future update:
+✅ **Auth Decorators Implemented**: The service now includes `@Decorators.auth` framework for authentication and authorization.
 
+Protected endpoints (with @auth decorator):
 - Partner owner restrictions (CRUD on own resources)
 - Customer restrictions (own appointments)
 - Admin access controls
-- IAM service integration
+
+Integration with IAM service for JWT validation is active.
 
 ## Related Services
 

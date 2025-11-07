@@ -12,10 +12,10 @@ import { TeamMember } from "./TeamMember";
 
 @Entity("team_member_availability")
 export class TeamMemberAvailability {
-  @PrimaryGeneratedColumn("increment", { type: "bigint" })
-  id: string;
+  @PrimaryGeneratedColumn("uuid")
+  uid: string;
 
-  @Column({ type: "bigint" })
+  @Column({ type: "uuid" })
   @Index()
   team_member_id: string;
 

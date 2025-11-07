@@ -7,9 +7,10 @@ import {
   Delete,
   utils,
   errors,
+  Containers,
+  Decorators,
 } from "@giusmento/mangojs-core";
-import { PartnerContainer } from "../../../inversify.config";
-import { PartnerService } from "../../../service/partner.service";
+import { PartnerService } from "../../../services/partner.service";
 import {
   CreatePartnerRequest,
   UpdatePartnerRequest,
@@ -17,7 +18,12 @@ import {
 } from "../../../types/types";
 
 // Resolve service from container
-const partnerService = PartnerContainer.get<PartnerService>(PartnerService);
+const partnerService = Containers.getContainer().get<PartnerService>(
+  PartnerService,
+  {
+    autobind: true,
+  }
+);
 
 /**
  * @swagger
@@ -84,6 +90,7 @@ export class PartnerController {
    *         description: Invalid request data
    */
   @Post("/")
+  @Decorators.auth.HasGroups(["Admin", "Partner"])
   public async create(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
@@ -104,7 +111,7 @@ export class PartnerController {
 
   /**
    * @swagger
-   * /api/v1/partners/{id}:
+   * /api/v1/partners/{uid}:
    *   get:
    *     summary: Get partner by ID
    *     tags: [Partners]
@@ -112,7 +119,7 @@ export class PartnerController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -123,12 +130,12 @@ export class PartnerController {
    *       404:
    *         description: Partner not found
    */
-  @Get("/:id")
+  @Get("/:uid")
   public async findById(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const partner = await this.partnerService.findById(id);
+      const { uid } = req.params;
+      const partner = await this.partnerService.findById(uid);
 
       if (!partner) {
         const apiResponse = {
@@ -178,6 +185,7 @@ export class PartnerController {
    *         description: List of partners
    */
   @Get("/")
+  @Decorators.auth.HasGroups(["Admin", "Partner"])
   public async findAll(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
@@ -200,7 +208,7 @@ export class PartnerController {
 
   /**
    * @swagger
-   * /api/v1/partners/{id}:
+   * /api/v1/partners/{uid}:
    *   put:
    *     summary: Update partner
    *     tags: [Partners]
@@ -208,7 +216,7 @@ export class PartnerController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -252,13 +260,14 @@ export class PartnerController {
    *       404:
    *         description: Partner not found
    */
-  @Put("/:id")
+  @Put("/:uid")
+  @Decorators.auth.HasGroups(["Admin", "Partner"])
   public async update(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
+      const { uid } = req.params;
       const data: UpdatePartnerRequest = req.body;
-      const partner = await this.partnerService.update(id, data);
+      const partner = await this.partnerService.update(uid, data);
 
       if (!partner) {
         const apiResponse = {
@@ -284,7 +293,7 @@ export class PartnerController {
 
   /**
    * @swagger
-   * /api/v1/partners/{id}:
+   * /api/v1/partners/{uid}:
    *   delete:
    *     summary: Delete partner (soft delete)
    *     tags: [Partners]
@@ -292,7 +301,7 @@ export class PartnerController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -303,12 +312,13 @@ export class PartnerController {
    *       404:
    *         description: Partner not found
    */
-  @Delete("/:id")
+  @Delete("/:uid")
+  @Decorators.auth.HasGroups(["Admin", "Partner"])
   public async delete(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const success = await this.partnerService.delete(id);
+      const { uid } = req.params;
+      const success = await this.partnerService.delete(uid);
 
       if (!success) {
         const apiResponse = {
@@ -367,6 +377,7 @@ export class PartnerController {
    *         description: Search results
    */
   @Post("/search")
+  @Decorators.auth.NoAuth()
   public async search(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
@@ -387,7 +398,7 @@ export class PartnerController {
 
   /**
    * @swagger
-   * /api/v1/partners/{id}/availability:
+   * /api/v1/partners/{uid}/availability:
    *   get:
    *     summary: Get partner availability
    *     tags: [Partners]
@@ -395,7 +406,7 @@ export class PartnerController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -406,12 +417,12 @@ export class PartnerController {
    *       404:
    *         description: Partner not found
    */
-  @Get("/:id/availability")
+  @Get("/:uid/availability")
   public async getAvailability(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const availability = await this.partnerService.getAvailability(id);
+      const { uid } = req.params;
+      const availability = await this.partnerService.getAvailability(uid);
 
       if (!availability) {
         const apiResponse = {

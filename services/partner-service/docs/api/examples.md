@@ -39,7 +39,7 @@ curl -X POST http://localhost:3002/api/v1/partners \
   "timestamp": 1699123456789,
   "requestId": "req_abc123",
   "data": {
-    "id": "1",
+    "uid": "550e8400-e29b-41d4-a716-446655440000",
     "owner_user_id": "user_123",
     "company_name": "Bella Beauty Salon",
     "description": "Premium beauty and wellness services",
@@ -60,10 +60,10 @@ curl -X POST http://localhost:3002/api/v1/partners \
 }
 ```
 
-### Get Partner by ID
+### Get Partner by UID
 
 ```bash
-curl http://localhost:3002/api/v1/partners/1
+curl http://localhost:3002/api/v1/partners/550e8400-e29b-41d4-a716-446655440000
 ```
 
 **Response** (200 OK):
@@ -73,18 +73,18 @@ curl http://localhost:3002/api/v1/partners/1
   "timestamp": 1699123456789,
   "requestId": "req_def456",
   "data": {
-    "id": "1",
+    "uid": "550e8400-e29b-41d4-a716-446655440000",
     "company_name": "Bella Beauty Salon",
     "teams": [
       {
-        "id": "1",
+        "uid": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
         "name": "Downtown Team",
         "status": "ACTIVE"
       }
     ],
     "services": [
       {
-        "id": "1",
+        "uid": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
         "name": "Haircut",
         "price": 50.00,
         "duration_minutes": 60
@@ -108,13 +108,13 @@ curl "http://localhost:3002/api/v1/partners/search?latitude=37.7749&longitude=-1
   "requestId": "req_ghi789",
   "data": [
     {
-      "id": "1",
+      "uid": "550e8400-e29b-41d4-a716-446655440000",
       "company_name": "Bella Beauty Salon",
       "city": "San Francisco",
       "distance": 2.5
     },
     {
-      "id": "2",
+      "uid": "6ba7b812-9dad-11d1-80b4-00c04fd430c8",
       "company_name": "Urban Spa",
       "city": "San Francisco",
       "distance": 5.2
@@ -126,7 +126,7 @@ curl "http://localhost:3002/api/v1/partners/search?latitude=37.7749&longitude=-1
 ### Update Partner
 
 ```bash
-curl -X PUT http://localhost:3002/api/v1/partners/1 \
+curl -X PUT http://localhost:3002/api/v1/partners/550e8400-e29b-41d4-a716-446655440000 \
   -H "Content-Type: application/json" \
   -d '{
     "description": "Award-winning beauty and wellness services",
@@ -137,7 +137,7 @@ curl -X PUT http://localhost:3002/api/v1/partners/1 \
 ### Delete Partner (Soft Delete)
 
 ```bash
-curl -X DELETE http://localhost:3002/api/v1/partners/1
+curl -X DELETE http://localhost:3002/api/v1/partners/550e8400-e29b-41d4-a716-446655440000
 ```
 
 ---
@@ -150,7 +150,7 @@ curl -X DELETE http://localhost:3002/api/v1/partners/1
 curl -X POST http://localhost:3002/api/v1/teams \
   -H "Content-Type: application/json" \
   -d '{
-    "partner_id": "1",
+    "partner_id": "550e8400-e29b-41d4-a716-446655440000",
     "name": "Downtown Team",
     "description": "Main team for downtown location"
   }'
@@ -163,8 +163,8 @@ curl -X POST http://localhost:3002/api/v1/teams \
   "timestamp": 1699123456789,
   "requestId": "req_team123",
   "data": {
-    "id": "1",
-    "partner_id": "1",
+    "uid": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+    "partner_id": "550e8400-e29b-41d4-a716-446655440000",
     "name": "Downtown Team",
     "description": "Main team for downtown location",
     "status": "ACTIVE",
@@ -180,10 +180,10 @@ curl -X POST http://localhost:3002/api/v1/teams \
 curl http://localhost:3002/api/v1/teams
 ```
 
-### Get Team by ID
+### Get Team by UID
 
 ```bash
-curl http://localhost:3002/api/v1/teams/1
+curl http://localhost:3002/api/v1/teams/6ba7b810-9dad-11d1-80b4-00c04fd430c8
 ```
 
 ---
@@ -196,7 +196,7 @@ curl http://localhost:3002/api/v1/teams/1
 curl -X POST http://localhost:3002/api/v1/team-members \
   -H "Content-Type: application/json" \
   -d '{
-    "team_id": "1",
+    "team_id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
     "user_id": "user_456",
     "role": "stylist"
   }'
@@ -209,8 +209,8 @@ curl -X POST http://localhost:3002/api/v1/team-members \
   "timestamp": 1699123456789,
   "requestId": "req_member123",
   "data": {
-    "id": "1",
-    "team_id": "1",
+    "uid": "6ba7b813-9dad-11d1-80b4-00c04fd430c8",
+    "team_id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
     "user_id": "user_456",
     "role": "stylist",
     "joined_at": "2024-11-04T10:40:00.000Z",
@@ -223,7 +223,7 @@ curl -X POST http://localhost:3002/api/v1/team-members \
 ### Get Team Member's Upcoming Appointments
 
 ```bash
-curl http://localhost:3002/api/v1/team-members/1/appointments
+curl http://localhost:3002/api/v1/team-members/6ba7b813-9dad-11d1-80b4-00c04fd430c8/appointments
 ```
 
 **Response** (200 OK):
@@ -234,14 +234,14 @@ curl http://localhost:3002/api/v1/team-members/1/appointments
   "requestId": "req_appts123",
   "data": [
     {
-      "id": "1",
+      "uid": "6ba7b814-9dad-11d1-80b4-00c04fd430c8",
       "customer_user_id": "user_789",
       "appointment_date": "2024-11-10",
       "start_time": "14:00",
       "end_time": "15:00",
       "status": "CONFIRMED",
       "service": {
-        "id": "1",
+        "uid": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
         "name": "Haircut"
       }
     }
@@ -259,7 +259,7 @@ curl http://localhost:3002/api/v1/team-members/1/appointments
 curl -X POST http://localhost:3002/api/v1/services \
   -H "Content-Type: application/json" \
   -d '{
-    "partner_id": "1",
+    "partner_id": "550e8400-e29b-41d4-a716-446655440000",
     "name": "Haircut",
     "description": "Professional haircut and styling",
     "duration_minutes": 60,
@@ -275,8 +275,8 @@ curl -X POST http://localhost:3002/api/v1/services \
   "timestamp": 1699123456789,
   "requestId": "req_service123",
   "data": {
-    "id": "1",
-    "partner_id": "1",
+    "uid": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
+    "partner_id": "550e8400-e29b-41d4-a716-446655440000",
     "name": "Haircut",
     "description": "Professional haircut and styling",
     "duration_minutes": 60,
@@ -305,8 +305,8 @@ curl http://localhost:3002/api/v1/services
 curl -X POST http://localhost:3002/api/v1/team-services \
   -H "Content-Type: application/json" \
   -d '{
-    "team_id": "1",
-    "service_id": "1"
+    "team_id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+    "service_id": "6ba7b811-9dad-11d1-80b4-00c04fd430c8"
   }'
 ```
 
@@ -317,9 +317,9 @@ curl -X POST http://localhost:3002/api/v1/team-services \
   "timestamp": 1699123456789,
   "requestId": "req_assign123",
   "data": {
-    "id": "1",
-    "team_id": "1",
-    "service_id": "1",
+    "uid": "6ba7b815-9dad-11d1-80b4-00c04fd430c8",
+    "team_id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+    "service_id": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
     "created_at": "2024-11-04T10:50:00.000Z"
   }
 }
@@ -335,7 +335,7 @@ curl -X POST http://localhost:3002/api/v1/team-services \
 curl -X POST http://localhost:3002/api/v1/company-media \
   -H "Content-Type: application/json" \
   -d '{
-    "partner_id": "1",
+    "partner_id": "550e8400-e29b-41d4-a716-446655440000",
     "url": "https://cdn.example.com/logo.png",
     "type": "LOGO",
     "display_order": 0,
@@ -350,8 +350,8 @@ curl -X POST http://localhost:3002/api/v1/company-media \
   "timestamp": 1699123456789,
   "requestId": "req_media123",
   "data": {
-    "id": "1",
-    "partner_id": "1",
+    "uid": "6ba7b816-9dad-11d1-80b4-00c04fd430c8",
+    "partner_id": "550e8400-e29b-41d4-a716-446655440000",
     "url": "https://cdn.example.com/logo.png",
     "type": "LOGO",
     "display_order": 0,
@@ -373,8 +373,8 @@ curl -X POST http://localhost:3002/api/v1/appointments \
   -H "Content-Type: application/json" \
   -d '{
     "customer_user_id": "user_789",
-    "team_member_id": "1",
-    "service_id": "1",
+    "team_member_id": "6ba7b813-9dad-11d1-80b4-00c04fd430c8",
+    "service_id": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
     "appointment_date": "2024-11-10",
     "start_time": "14:00",
     "duration_minutes": 60,
@@ -389,10 +389,10 @@ curl -X POST http://localhost:3002/api/v1/appointments \
   "timestamp": 1699123456789,
   "requestId": "req_appt123",
   "data": {
-    "id": "1",
+    "uid": "6ba7b814-9dad-11d1-80b4-00c04fd430c8",
     "customer_user_id": "user_789",
-    "team_member_id": "1",
-    "service_id": "1",
+    "team_member_id": "6ba7b813-9dad-11d1-80b4-00c04fd430c8",
+    "service_id": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
     "appointment_date": "2024-11-10",
     "start_time": "14:00",
     "end_time": "15:00",
@@ -411,7 +411,7 @@ curl -X POST http://localhost:3002/api/v1/appointments \
 curl -X POST http://localhost:3002/api/v1/appointments/check-availability \
   -H "Content-Type: application/json" \
   -d '{
-    "team_member_id": "1",
+    "team_member_id": "6ba7b813-9dad-11d1-80b4-00c04fd430c8",
     "appointment_date": "2024-11-10",
     "duration_minutes": 60
   }'
@@ -433,7 +433,7 @@ curl -X POST http://localhost:3002/api/v1/appointments/check-availability \
 ### Update Appointment Status
 
 ```bash
-curl -X PATCH http://localhost:3002/api/v1/appointments/1/status \
+curl -X PATCH http://localhost:3002/api/v1/appointments/6ba7b814-9dad-11d1-80b4-00c04fd430c8/status \
   -H "Content-Type: application/json" \
   -d '{
     "status": "CONFIRMED"
@@ -443,7 +443,7 @@ curl -X PATCH http://localhost:3002/api/v1/appointments/1/status \
 ### Cancel Appointment
 
 ```bash
-curl -X PATCH http://localhost:3002/api/v1/appointments/1/status \
+curl -X PATCH http://localhost:3002/api/v1/appointments/6ba7b814-9dad-11d1-80b4-00c04fd430c8/status \
   -H "Content-Type: application/json" \
   -d '{
     "status": "CANCELLED",
@@ -461,7 +461,7 @@ curl -X PATCH http://localhost:3002/api/v1/appointments/1/status \
 curl -X POST http://localhost:3002/api/v1/availability \
   -H "Content-Type: application/json" \
   -d '{
-    "team_member_id": "1",
+    "team_member_id": "6ba7b813-9dad-11d1-80b4-00c04fd430c8",
     "is_recurring": true,
     "day_of_week": 1,
     "start_time": "09:00",
@@ -476,8 +476,8 @@ curl -X POST http://localhost:3002/api/v1/availability \
   "timestamp": 1699123456789,
   "requestId": "req_avail123",
   "data": {
-    "id": "1",
-    "team_member_id": "1",
+    "uid": "6ba7b817-9dad-11d1-80b4-00c04fd430c8",
+    "team_member_id": "6ba7b813-9dad-11d1-80b4-00c04fd430c8",
     "is_recurring": true,
     "day_of_week": 1,
     "specific_date": null,
@@ -497,7 +497,7 @@ curl -X POST http://localhost:3002/api/v1/availability \
 curl -X POST http://localhost:3002/api/v1/availability \
   -H "Content-Type: application/json" \
   -d '{
-    "team_member_id": "1",
+    "team_member_id": "6ba7b813-9dad-11d1-80b4-00c04fd430c8",
     "is_recurring": false,
     "specific_date": "2024-11-25",
     "start_time": "10:00",
@@ -508,7 +508,7 @@ curl -X POST http://localhost:3002/api/v1/availability \
 ### Get Available Time Slots
 
 ```bash
-curl "http://localhost:3002/api/v1/availability/slots?team_member_id=1&date=2024-11-10&service_id=1"
+curl "http://localhost:3002/api/v1/availability/slots?team_member_id=6ba7b813-9dad-11d1-80b4-00c04fd430c8&date=2024-11-10&service_id=6ba7b811-9dad-11d1-80b4-00c04fd430c8"
 ```
 
 **Response** (200 OK):
@@ -545,7 +545,7 @@ curl "http://localhost:3002/api/v1/availability/slots?team_member_id=1&date=2024
 ### Get Partner Availability Tree
 
 ```bash
-curl http://localhost:3002/api/v1/partners/1/availability
+curl http://localhost:3002/api/v1/partners/550e8400-e29b-41d4-a716-446655440000/availability
 ```
 
 **Response** (200 OK):
@@ -555,27 +555,27 @@ curl http://localhost:3002/api/v1/partners/1/availability
   "timestamp": 1699123456789,
   "requestId": "req_tree123",
   "data": {
-    "partner_id": "1",
+    "partner_id": "550e8400-e29b-41d4-a716-446655440000",
     "partner_name": "Bella Beauty Salon",
     "teams": [
       {
-        "team_id": "1",
+        "team_id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
         "team_name": "Downtown Team",
         "members": [
           {
-            "member_id": "1",
+            "member_id": "6ba7b813-9dad-11d1-80b4-00c04fd430c8",
             "user_id": "user_456",
             "role": "stylist",
             "availability": [
               {
-                "id": "1",
+                "uid": "6ba7b817-9dad-11d1-80b4-00c04fd430c8",
                 "day_of_week": 1,
                 "start_time": "09:00",
                 "end_time": "17:00",
                 "is_recurring": true
               },
               {
-                "id": "2",
+                "uid": "6ba7b818-9dad-11d1-80b4-00c04fd430c8",
                 "day_of_week": 2,
                 "start_time": "09:00",
                 "end_time": "17:00",
@@ -616,7 +616,7 @@ curl http://localhost:3002/health
 ### 404 Not Found
 
 ```bash
-curl http://localhost:3002/api/v1/partners/999
+curl http://localhost:3002/api/v1/partners/99999999-9999-9999-9999-999999999999
 ```
 
 **Response** (404):
@@ -655,7 +655,7 @@ curl -X POST http://localhost:3002/api/v1/partners \
 curl -X POST http://localhost:3002/api/v1/team-members \
   -H "Content-Type: application/json" \
   -d '{
-    "team_id": "1",
+    "team_id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
     "user_id": "user_456"
   }'
 ```
@@ -714,6 +714,6 @@ Swagger UI provides:
 - All timestamps are in ISO 8601 format
 - All dates use YYYY-MM-DD format
 - All times use HH:MM format (24-hour)
-- All IDs are strings (even though stored as bigint)
+- All UIDs are UUID format strings
 - All prices are decimal numbers
 - Request IDs are unique per request for debugging

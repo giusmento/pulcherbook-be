@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import * as dotenv from "dotenv";
+import * as models from "./db/models";
 
 dotenv.config();
 
@@ -15,7 +16,16 @@ export const AppDataSource = new DataSource({
   ssl: process.env.DATABASE_SSL === "true" ? { rejectUnauthorized: false } : false,
   synchronize: process.env.DATABASE_SYNC === "true",
   logging: process.env.DATABASE_LOGGING === "true",
-  entities: ["src/db/models/**/*.ts"],
+  entities: [
+    models.Partner,
+    models.Team,
+    models.TeamMember,
+    models.Service,
+    models.TeamService,
+    models.CompanyMedia,
+    models.Appointment,
+    models.TeamMemberAvailability,
+  ],
   migrations: ["migrations/**/*.ts"],
   subscribers: [],
 });

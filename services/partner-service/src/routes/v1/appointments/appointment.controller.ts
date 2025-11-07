@@ -7,9 +7,9 @@ import {
   Delete,
   utils,
   errors,
+  Containers,
 } from "@giusmento/mangojs-core";
-import { PartnerContainer } from "../../../inversify.config";
-import { AppointmentService } from "../../../service/appointment.service";
+import { AppointmentService } from "../../../services/appointment.service";
 import {
   CreateAppointmentRequest,
   UpdateAppointmentRequest,
@@ -18,7 +18,12 @@ import {
 } from "../../../types/types";
 
 // Resolve service from container
-const appointmentService = PartnerContainer.get<AppointmentService>(AppointmentService);
+const appointmentService = Containers.getContainer().get<AppointmentService>(
+  AppointmentService,
+  {
+    autobind: true,
+  }
+);
 
 /**
  * @swagger
@@ -101,7 +106,7 @@ export class AppointmentController {
 
   /**
    * @swagger
-   * /api/v1/appointments/{id}:
+   * /api/v1/appointments/{uid}:
    *   get:
    *     summary: Get appointment by ID
    *     tags: [Appointments]
@@ -109,7 +114,7 @@ export class AppointmentController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -120,12 +125,12 @@ export class AppointmentController {
    *       404:
    *         description: Appointment not found
    */
-  @Get("/:id")
+  @Get("/:uid")
   public async findById(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const appointment = await this.appointmentService.findById(id);
+      const { uid } = req.params;
+      const appointment = await this.appointmentService.findById(uid);
 
       if (!appointment) {
         const apiResponse = {
@@ -229,7 +234,7 @@ export class AppointmentController {
 
   /**
    * @swagger
-   * /api/v1/appointments/{id}:
+   * /api/v1/appointments/{uid}:
    *   put:
    *     summary: Update appointment
    *     tags: [Appointments]
@@ -237,7 +242,7 @@ export class AppointmentController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -265,13 +270,13 @@ export class AppointmentController {
    *       404:
    *         description: Appointment not found
    */
-  @Put("/:id")
+  @Put("/:uid")
   public async update(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
+      const { uid } = req.params;
       const data: UpdateAppointmentRequest = req.body;
-      const appointment = await this.appointmentService.update(id, data);
+      const appointment = await this.appointmentService.update(uid, data);
 
       if (!appointment) {
         const apiResponse = {
@@ -297,7 +302,7 @@ export class AppointmentController {
 
   /**
    * @swagger
-   * /api/v1/appointments/{id}/status:
+   * /api/v1/appointments/{uid}/status:
    *   put:
    *     summary: Update appointment status
    *     tags: [Appointments]
@@ -305,7 +310,7 @@ export class AppointmentController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -330,13 +335,13 @@ export class AppointmentController {
    *       404:
    *         description: Appointment not found
    */
-  @Put("/:id/status")
+  @Put("/:uid/status")
   public async updateStatus(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
+      const { uid } = req.params;
       const data: UpdateAppointmentStatusRequest = req.body;
-      const appointment = await this.appointmentService.updateStatus(id, data);
+      const appointment = await this.appointmentService.updateStatus(uid, data);
 
       if (!appointment) {
         const apiResponse = {
@@ -362,7 +367,7 @@ export class AppointmentController {
 
   /**
    * @swagger
-   * /api/v1/appointments/{id}:
+   * /api/v1/appointments/{uid}:
    *   delete:
    *     summary: Delete appointment
    *     tags: [Appointments]
@@ -370,7 +375,7 @@ export class AppointmentController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -381,12 +386,12 @@ export class AppointmentController {
    *       404:
    *         description: Appointment not found
    */
-  @Delete("/:id")
+  @Delete("/:uid")
   public async delete(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const success = await this.appointmentService.delete(id);
+      const { uid } = req.params;
+      const success = await this.appointmentService.delete(uid);
 
       if (!success) {
         const apiResponse = {

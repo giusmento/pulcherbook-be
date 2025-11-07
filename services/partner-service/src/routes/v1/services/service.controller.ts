@@ -7,16 +7,21 @@ import {
   Delete,
   utils,
   errors,
+  Containers,
 } from "@giusmento/mangojs-core";
-import { PartnerContainer } from "../../../inversify.config";
-import { ServiceService } from "../../../service/service.service";
+import { ServiceService } from "../../../services/service.service";
 import {
   CreateServiceRequest,
   UpdateServiceRequest,
 } from "../../../types/types";
 
 // Resolve service from container
-const serviceService = PartnerContainer.get<ServiceService>(ServiceService);
+const serviceService = Containers.getContainer().get<ServiceService>(
+  ServiceService,
+  {
+    autobind: true,
+  }
+);
 
 /**
  * @swagger
@@ -92,7 +97,7 @@ export class ServiceController {
 
   /**
    * @swagger
-   * /api/v1/services/{id}:
+   * /api/v1/services/{uid}:
    *   get:
    *     summary: Get service by ID
    *     tags: [Services]
@@ -100,7 +105,7 @@ export class ServiceController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -111,12 +116,12 @@ export class ServiceController {
    *       404:
    *         description: Service not found
    */
-  @Get("/:id")
+  @Get("/:uid")
   public async findById(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const service = await this.serviceService.findById(id);
+      const { uid } = req.params;
+      const service = await this.serviceService.findById(uid);
 
       if (!service) {
         const apiResponse = {
@@ -198,7 +203,7 @@ export class ServiceController {
 
   /**
    * @swagger
-   * /api/v1/services/{id}:
+   * /api/v1/services/{uid}:
    *   put:
    *     summary: Update service
    *     tags: [Services]
@@ -206,7 +211,7 @@ export class ServiceController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -236,13 +241,13 @@ export class ServiceController {
    *       404:
    *         description: Service not found
    */
-  @Put("/:id")
+  @Put("/:uid")
   public async update(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
+      const { uid } = req.params;
       const data: UpdateServiceRequest = req.body;
-      const service = await this.serviceService.update(id, data);
+      const service = await this.serviceService.update(uid, data);
 
       if (!service) {
         const apiResponse = {
@@ -268,7 +273,7 @@ export class ServiceController {
 
   /**
    * @swagger
-   * /api/v1/services/{id}:
+   * /api/v1/services/{uid}:
    *   delete:
    *     summary: Delete service
    *     tags: [Services]
@@ -276,7 +281,7 @@ export class ServiceController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -287,12 +292,12 @@ export class ServiceController {
    *       404:
    *         description: Service not found
    */
-  @Delete("/:id")
+  @Delete("/:uid")
   public async delete(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const success = await this.serviceService.delete(id);
+      const { uid } = req.params;
+      const success = await this.serviceService.delete(uid);
 
       if (!success) {
         const apiResponse = {

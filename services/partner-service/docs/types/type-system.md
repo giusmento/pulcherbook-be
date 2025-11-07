@@ -1,43 +1,101 @@
 # Type System Documentation - Partner Service
 
-This document describes all TypeScript types used in the Partner Service.
+This document describes all TypeScript types used in the Partner Service, following MangoJS standards.
 
 ## Entity Types
 
-| Entity                 | Type Name              | Description                      | File                                      |
-| ---------------------- | ---------------------- | -------------------------------- | ----------------------------------------- |
-| Partner                | Partner                | Partner/company entity           | `src/db/models/Partner.ts`                |
-| Team                   | Team                   | Team entity                      | `src/db/models/Team.ts`                   |
-| TeamMember             | TeamMember             | Team member entity               | `src/db/models/TeamMember.ts`             |
-| Service                | Service                | Service entity                   | `src/db/models/Service.ts`                |
-| TeamService            | TeamService            | Team-service assignment entity   | `src/db/models/TeamService.ts`            |
-| CompanyMedia           | CompanyMedia           | Company media entity             | `src/db/models/CompanyMedia.ts`           |
-| Appointment            | Appointment            | Appointment booking entity       | `src/db/models/Appointment.ts`            |
-| TeamMemberAvailability | TeamMemberAvailability | Team member availability entity  | `src/db/models/TeamMemberAvailability.ts` |
+Types are organized per entity in `src/types/entities/`. Each entity has:
+- Base type (full database entity)
+- Post type (for creating new records)
+- Put type (for updating existing records)
 
-## Request/Response DTOs
+---
 
-| Category     | Type Name                      | Description                         | File                 |
-| ------------ | ------------------------------ | ----------------------------------- | -------------------- |
-| Partner      | CreatePartnerRequest           | DTO for creating partners           | `src/types/types.ts` |
-| Partner      | UpdatePartnerRequest           | DTO for updating partners           | `src/types/types.ts` |
-| Partner      | SearchPartnersRequest          | DTO for searching partners          | `src/types/types.ts` |
-| Team         | CreateTeamRequest              | DTO for creating teams              | `src/types/types.ts` |
-| Team         | UpdateTeamRequest              | DTO for updating teams              | `src/types/types.ts` |
-| TeamMember   | CreateTeamMemberRequest        | DTO for adding team members         | `src/types/types.ts` |
-| Service      | CreateServiceRequest           | DTO for creating services           | `src/types/types.ts` |
-| Service      | UpdateServiceRequest           | DTO for updating services           | `src/types/types.ts` |
-| TeamService  | CreateTeamServiceRequest       | DTO for assigning services to teams | `src/types/types.ts` |
-| CompanyMedia | CreateCompanyMediaRequest      | DTO for adding company media        | `src/types/types.ts` |
-| CompanyMedia | UpdateCompanyMediaRequest      | DTO for updating media metadata     | `src/types/types.ts` |
-| Appointment  | CreateAppointmentRequest       | DTO for booking appointments        | `src/types/types.ts` |
-| Appointment  | UpdateAppointmentRequest       | DTO for updating appointments       | `src/types/types.ts` |
-| Appointment  | UpdateAppointmentStatusRequest | DTO for updating appointment status | `src/types/types.ts` |
-| Appointment  | CheckAvailabilityRequest       | DTO for checking availability       | `src/types/types.ts` |
-| Availability | CreateAvailabilityRequest      | DTO for creating availability       | `src/types/types.ts` |
-| Availability | UpdateAvailabilityRequest      | DTO for updating availability       | `src/types/types.ts` |
-| Availability | GetAvailableSlotsRequest       | DTO for getting available slots     | `src/types/types.ts` |
-| Availability | TimeSlot                       | Response type for time slots        | `src/types/types.ts` |
+### partner
+
+| Entity  | Type Name   | Description                       | File                                     |
+| ------- | ----------- | --------------------------------- | ---------------------------------------- |
+| Partner | Partner     | Full partner entity from database | `src/types/entities/partner.type.ts`     |
+| Partner | PartnerPost | DTO for creating new partners     | `src/types/entities/partner.type.ts`     |
+| Partner | PartnerPut  | DTO for updating partners         | `src/types/entities/partner.type.ts`     |
+
+---
+
+### team
+
+| Entity | Type Name | Description                    | File                                 |
+| ------ | --------- | ------------------------------ | ------------------------------------ |
+| Team   | Team      | Full team entity from database | `src/types/entities/team.type.ts`    |
+| Team   | TeamPost  | DTO for creating new teams     | `src/types/entities/team.type.ts`    |
+| Team   | TeamPut   | DTO for updating teams         | `src/types/entities/team.type.ts`    |
+
+---
+
+### team_member
+
+| Entity     | Type Name       | Description                           | File                                        |
+| ---------- | --------------- | ------------------------------------- | ------------------------------------------- |
+| TeamMember | TeamMember      | Full team member entity from database | `src/types/entities/team-member.type.ts`    |
+| TeamMember | TeamMemberPost  | DTO for creating new team members     | `src/types/entities/team-member.type.ts`    |
+| TeamMember | TeamMemberPut   | DTO for updating team members         | `src/types/entities/team-member.type.ts`    |
+
+---
+
+### service
+
+| Entity  | Type Name   | Description                       | File                                    |
+| ------- | ----------- | --------------------------------- | --------------------------------------- |
+| Service | Service     | Full service entity from database | `src/types/entities/service.type.ts`    |
+| Service | ServicePost | DTO for creating new services     | `src/types/entities/service.type.ts`    |
+| Service | ServicePut  | DTO for updating services         | `src/types/entities/service.type.ts`    |
+
+---
+
+### team_service
+
+| Entity      | Type Name        | Description                            | File                                       |
+| ----------- | ---------------- | -------------------------------------- | ------------------------------------------ |
+| TeamService | TeamService      | Full team service entity from database | `src/types/entities/team-service.type.ts`  |
+| TeamService | TeamServicePost  | DTO for creating team-service links    | `src/types/entities/team-service.type.ts`  |
+| TeamService | TeamServicePut   | DTO for updating team-service links    | `src/types/entities/team-service.type.ts`  |
+
+---
+
+### company_media
+
+| Entity       | Type Name         | Description                             | File                                        |
+| ------------ | ----------------- | --------------------------------------- | ------------------------------------------- |
+| CompanyMedia | CompanyMedia      | Full company media entity from database | `src/types/entities/company-media.type.ts`  |
+| CompanyMedia | CompanyMediaPost  | DTO for creating company media          | `src/types/entities/company-media.type.ts`  |
+| CompanyMedia | CompanyMediaPut   | DTO for updating company media          | `src/types/entities/company-media.type.ts`  |
+
+---
+
+### appointment
+
+| Entity      | Type Name        | Description                            | File                                       |
+| ----------- | ---------------- | -------------------------------------- | ------------------------------------------ |
+| Appointment | Appointment      | Full appointment entity from database  | `src/types/entities/appointment.type.ts`   |
+| Appointment | AppointmentPost  | DTO for creating new appointments      | `src/types/entities/appointment.type.ts`   |
+| Appointment | AppointmentPut   | DTO for updating appointments          | `src/types/entities/appointment.type.ts`   |
+
+---
+
+### team_member_availability
+
+| Entity       | Type Name         | Description                             | File                                       |
+| ------------ | ----------------- | --------------------------------------- | ------------------------------------------ |
+| Availability | Availability      | Full availability entity from database  | `src/types/entities/availability.type.ts`  |
+| Availability | AvailabilityPost  | DTO for creating availability           | `src/types/entities/availability.type.ts`  |
+| Availability | AvailabilityPut   | DTO for updating availability           | `src/types/entities/availability.type.ts`  |
+
+---
+
+## Additional API Types
+
+Legacy types defined in `src/types/types.ts` for backward compatibility. New code should use entity types above.
+
+---
 
 ## Enum Values
 

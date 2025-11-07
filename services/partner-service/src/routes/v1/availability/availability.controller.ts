@@ -7,9 +7,9 @@ import {
   Delete,
   utils,
   errors,
+  Containers,
 } from "@giusmento/mangojs-core";
-import { PartnerContainer } from "../../../inversify.config";
-import { AvailabilityService } from "../../../service/availability.service";
+import { AvailabilityService } from "../../../services/availability.service";
 import {
   CreateAvailabilityRequest,
   UpdateAvailabilityRequest,
@@ -17,7 +17,12 @@ import {
 } from "../../../types/types";
 
 // Resolve service from container
-const availabilityService = PartnerContainer.get<AvailabilityService>(AvailabilityService);
+const availabilityService = Containers.getContainer().get<AvailabilityService>(
+  AvailabilityService,
+  {
+    autobind: true,
+  }
+);
 
 /**
  * @swagger
@@ -101,7 +106,7 @@ export class AvailabilityController {
 
   /**
    * @swagger
-   * /api/v1/availability/{id}:
+   * /api/v1/availability/{uid}:
    *   get:
    *     summary: Get availability by ID
    *     tags: [Availability]
@@ -109,7 +114,7 @@ export class AvailabilityController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -120,12 +125,12 @@ export class AvailabilityController {
    *       404:
    *         description: Availability not found
    */
-  @Get("/:id")
+  @Get("/:uid")
   public async findById(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const availability = await this.availabilityService.findById(id);
+      const { uid } = req.params;
+      const availability = await this.availabilityService.findById(uid);
 
       if (!availability) {
         const apiResponse = {
@@ -207,7 +212,7 @@ export class AvailabilityController {
 
   /**
    * @swagger
-   * /api/v1/availability/{id}:
+   * /api/v1/availability/{uid}:
    *   put:
    *     summary: Update availability rule
    *     tags: [Availability]
@@ -215,7 +220,7 @@ export class AvailabilityController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -248,13 +253,13 @@ export class AvailabilityController {
    *       404:
    *         description: Availability not found
    */
-  @Put("/:id")
+  @Put("/:uid")
   public async update(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
+      const { uid } = req.params;
       const data: UpdateAvailabilityRequest = req.body;
-      const availability = await this.availabilityService.update(id, data);
+      const availability = await this.availabilityService.update(uid, data);
 
       if (!availability) {
         const apiResponse = {
@@ -280,7 +285,7 @@ export class AvailabilityController {
 
   /**
    * @swagger
-   * /api/v1/availability/{id}:
+   * /api/v1/availability/{uid}:
    *   delete:
    *     summary: Delete availability rule
    *     tags: [Availability]
@@ -288,7 +293,7 @@ export class AvailabilityController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -299,12 +304,12 @@ export class AvailabilityController {
    *       404:
    *         description: Availability not found
    */
-  @Delete("/:id")
+  @Delete("/:uid")
   public async delete(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const success = await this.availabilityService.delete(id);
+      const { uid } = req.params;
+      const success = await this.availabilityService.delete(uid);
 
       if (!success) {
         const apiResponse = {

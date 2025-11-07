@@ -22,18 +22,18 @@ export enum AppointmentStatus {
 @Entity("appointments")
 @Index(["team_member_id", "appointment_date", "start_time"])
 export class Appointment {
-  @PrimaryGeneratedColumn("increment", { type: "bigint" })
-  id: string;
+  @PrimaryGeneratedColumn("uuid")
+  uid: string;
 
   @Column({ type: "varchar", length: 255 })
   @Index()
   customer_user_id: string;
 
-  @Column({ type: "bigint" })
+  @Column({ type: "uuid" })
   @Index()
   team_member_id: string;
 
-  @Column({ type: "bigint" })
+  @Column({ type: "uuid" })
   @Index()
   service_id: string;
 

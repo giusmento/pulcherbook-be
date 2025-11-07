@@ -28,12 +28,12 @@ sequenceDiagram
 
     Note over Client,Database: Example: Get Partner with Relations
 
-    Client->>Controller: GET /api/v1/partners/:id
+    Client->>Controller: GET /api/v1/partners/:uid
     activate Controller
     Controller->>Controller: Create LogRequest
-    Controller->>Service: findById(id)
+    Controller->>Service: findById(uid)
     activate Service
-    Service->>Repository: findOne(id, relations)
+    Service->>Repository: findOne(uid, relations)
     activate Repository
     Repository->>Database: SELECT with JOINs
     Database-->>Repository: Partner with teams & services

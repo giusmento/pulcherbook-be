@@ -19,8 +19,8 @@ export enum PartnerStatus {
 
 @Entity("partners")
 export class Partner {
-  @PrimaryGeneratedColumn("increment", { type: "bigint" })
-  id: string;
+  @PrimaryGeneratedColumn("uuid")
+  uid: string;
 
   @Column({ type: "varchar", length: 255 })
   @Index()

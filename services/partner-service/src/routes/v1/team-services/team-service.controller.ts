@@ -6,13 +6,18 @@ import {
   Delete,
   utils,
   errors,
+  Containers,
 } from "@giusmento/mangojs-core";
-import { PartnerContainer } from "../../../inversify.config";
-import { TeamServiceService } from "../../../service/team-service.service";
+import { TeamServiceService } from "../../../services/team-service.service";
 import { CreateTeamServiceRequest } from "../../../types/types";
 
 // Resolve service from container
-const teamServiceService = PartnerContainer.get<TeamServiceService>(TeamServiceService);
+const teamServiceService = Containers.getContainer().get<TeamServiceService>(
+  TeamServiceService,
+  {
+    autobind: true,
+  }
+);
 
 /**
  * @swagger
@@ -77,7 +82,7 @@ export class TeamServiceController {
 
   /**
    * @swagger
-   * /api/v1/team-services/{id}:
+   * /api/v1/team-services/{uid}:
    *   get:
    *     summary: Get team service assignment by ID
    *     tags: [TeamServices]
@@ -85,7 +90,7 @@ export class TeamServiceController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -96,12 +101,12 @@ export class TeamServiceController {
    *       404:
    *         description: Team service not found
    */
-  @Get("/:id")
+  @Get("/:uid")
   public async findById(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const teamService = await this.teamServiceService.findById(id);
+      const { uid } = req.params;
+      const teamService = await this.teamServiceService.findById(uid);
 
       if (!teamService) {
         const apiResponse = {
@@ -190,7 +195,7 @@ export class TeamServiceController {
 
   /**
    * @swagger
-   * /api/v1/team-services/{id}:
+   * /api/v1/team-services/{uid}:
    *   delete:
    *     summary: Remove service assignment from team
    *     tags: [TeamServices]
@@ -198,7 +203,7 @@ export class TeamServiceController {
    *       - bearerAuth: []
    *     parameters:
    *       - in: path
-   *         name: id
+   *         name: uid
    *         required: true
    *         schema:
    *           type: string
@@ -209,12 +214,12 @@ export class TeamServiceController {
    *       404:
    *         description: Team service not found
    */
-  @Delete("/:id")
+  @Delete("/:uid")
   public async delete(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { id } = req.params;
-      const success = await this.teamServiceService.delete(id);
+      const { uid } = req.params;
+      const success = await this.teamServiceService.delete(uid);
 
       if (!success) {
         const apiResponse = {
