@@ -36,6 +36,7 @@ export const initializePartnerContainer = async () => {
 
   // Bind Persistence Context - Using Dummy since we manage persistence with TypeORM
   // NOTE: Services use AppDataSource.transaction() directly for proper transaction handling
+  await PartnerContainer.unbind(INVERSITY_TYPES.PersistenceContext);
   PartnerContainer.bind<IPersistenceContext>(
     INVERSITY_TYPES.PersistenceContext
   ).to(persistanceContext.DummyPersistenceContext);

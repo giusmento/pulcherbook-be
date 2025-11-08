@@ -1,17 +1,30 @@
-import { injectable } from "inversify";
+import { injectable, inject, LazyServiceIdentifier } from "inversify";
 import { EntityManager } from "typeorm";
-import { errors } from "@giusmento/mangojs-core";
+import {
+  errors,
+  INVERSITY_TYPES,
+  IPersistenceContext,
+} from "@giusmento/mangojs-core";
 import * as models from "../db/models";
-import { AppDataSource } from "../data-source";
 import { CreateTeamRequest, UpdateTeamRequest } from "../types/types";
 
 @injectable()
 export class TeamService {
+  @inject(new LazyServiceIdentifier(() => INVERSITY_TYPES.PersistenceContext))
+  private _persistenceContext: IPersistenceContext;
+
   constructor() {}
 
-
-  async create(data: CreateTeamRequest): Promise<models.Team> {
-    const response = await AppDataSource.transaction(async (em: EntityManager) => {
+  /**
+   * Create Team - Create a new team with validation
+   *
+   * @param data - Team creation data
+   * @returns Promise resolving to the created team
+   * @throws {APIError} 400 BAD_REQUEST if name or partner_id is missing
+   */
+  public async create(data: CreateTeamRequest): Promise<models.Team> {
+    const response = await this._persistenceContext.inTransaction(
+      async (em: EntityManager) => {
         // Validation
         if (!data.name) {
           throw new errors.APIError(400, "BAD_REQUEST", "Team name is required");
@@ -26,11 +39,19 @@ export class TeamService {
         return team;
       }
     );
-    return response;
+    return response as models.Team;
   }
 
-  async findById(uid: string): Promise<models.Team> {
-    const response = await AppDataSource.transaction(async (em: EntityManager) => {
+  /**
+   * Get Team By ID - Retrieve a team by their ID with relations
+   *
+   * @param uid - Team ID
+   * @returns Promise resolving to the team with partner, members, and services
+   * @throws {APIError} 404 NOT_FOUND if team doesn't exist
+   */
+  public async findById(uid: string): Promise<models.Team> {
+    const response = await this._persistenceContext.inTransaction(
+      async (em: EntityManager) => {
         const team = await em.findOne(models.Team, {
           where: { uid },
           relations: ["partner", "members", "teamServices", "teamServices.service"],
@@ -43,15 +64,24 @@ export class TeamService {
         return team;
       }
     );
-    return response;
+    return response as models.Team;
   }
 
-  async findAll(
+  /**
+   * Get All Teams - Retrieve all teams with optional filtering by partner
+   *
+   * @param partner_id - Optional partner ID to filter by
+   * @param limit - Number of items to return (default: 20)
+   * @param offset - Number of items to skip (default: 0)
+   * @returns Promise resolving to array of teams
+   */
+  public async findAll(
     partner_id?: string,
     limit: number = 20,
     offset: number = 0
   ): Promise<models.Team[]> {
-    const response = await AppDataSource.transaction(async (em: EntityManager) => {
+    const response = await this._persistenceContext.inTransaction(
+      async (em: EntityManager) => {
         const query = em
           .createQueryBuilder(models.Team, "team")
           .leftJoinAndSelect("team.partner", "partner")
@@ -68,11 +98,20 @@ export class TeamService {
         return await query.getMany();
       }
     );
-    return response;
+    return response as models.Team[];
   }
 
-  async update(uid: string, data: UpdateTeamRequest): Promise<models.Team> {
-    const response = await AppDataSource.transaction(async (em: EntityManager) => {
+  /**
+   * Update Team - Update team information
+   *
+   * @param uid - Team ID
+   * @param data - Fields to update
+   * @returns Promise resolving to updated team
+   * @throws {APIError} 404 NOT_FOUND if team doesn't exist
+   */
+  public async update(uid: string, data: UpdateTeamRequest): Promise<models.Team> {
+    const response = await this._persistenceContext.inTransaction(
+      async (em: EntityManager) => {
         const team = await em.findOne(models.Team, { where: { uid } });
         if (!team) {
           throw new errors.APIError(404, "NOT_FOUND", "Team not found");
@@ -83,11 +122,19 @@ export class TeamService {
         return team;
       }
     );
-    return response;
+    return response as models.Team;
   }
 
-  async delete(uid: string): Promise<boolean> {
-    const response = await AppDataSource.transaction(async (em: EntityManager) => {
+  /**
+   * Delete Team - Remove a team (hard delete)
+   *
+   * @param uid - Team ID
+   * @returns Promise resolving to true if successful
+   * @throws {APIError} 404 NOT_FOUND if team doesn't exist
+   */
+  public async delete(uid: string): Promise<boolean> {
+    const response = await this._persistenceContext.inTransaction(
+      async (em: EntityManager) => {
         const team = await em.findOne(models.Team, { where: { uid } });
         if (!team) {
           throw new errors.APIError(404, "NOT_FOUND", "Team not found");
@@ -97,6 +144,6 @@ export class TeamService {
         return true;
       }
     );
-    return response;
+    return response as boolean;
   }
 }

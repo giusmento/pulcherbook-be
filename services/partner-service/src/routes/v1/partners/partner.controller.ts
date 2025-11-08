@@ -445,4 +445,70 @@ export class PartnerController {
       return errors.errorHandler(res, error as Error);
     }
   }
+
+  /**
+   * @swagger
+   * /api/v1/partners/{uid}/isProfileCompleted:
+   *   get:
+   *     summary: Check if partner profile is completed
+   *     tags: [Partners]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: uid
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: Partner ID
+   *     responses:
+   *       200:
+   *         description: Profile completion status
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 ok:
+   *                   type: boolean
+   *                 timestamp:
+   *                   type: string
+   *                 requestId:
+   *                   type: string
+   *                 data:
+   *                   type: object
+   *                   properties:
+   *                     isCompleted:
+   *                       type: boolean
+   *                     missingFields:
+   *                       type: array
+   *                       items:
+   *                         type: string
+   *       404:
+   *         description: Partner not found
+   */
+  @Get("/:uid/isProfileCompleted")
+  //@Decorators.auth.HasGroups(["Admin", "Partner"])
+  public async isProfileCompleted(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
+    const logRequest = new utils.LogRequest(res);
+    try {
+      const { uid } = req.params;
+      const completionStatus = await this.partnerService.checkProfileCompletion(
+        uid
+      );
+
+      const apiResponse = {
+        ok: true,
+        timestamp: logRequest.timestamp,
+        requestId: logRequest.requestId,
+        data: completionStatus,
+      };
+      return res.status(200).send(apiResponse);
+    } catch (error: unknown) {
+      return errors.errorHandler(res, error as Error);
+    }
+  }
 }

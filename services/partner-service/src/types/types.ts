@@ -160,3 +160,9 @@ export interface TimeSlot {
   end_time: string;
   available: boolean;
 }
+
+// Profile Completion types
+export interface ProfileCompletionResponse {
+  isCompleted: boolean;
+  missingFields?: string[];
+}

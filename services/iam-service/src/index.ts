@@ -13,7 +13,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import swaggerJSDoc from "swagger-jsdoc";
-import swaggerJson from "../docs/swagger.api.json";
+import swaggerJson from "../swagger.json";
 
 ///////////////////
 // VARIABLES
