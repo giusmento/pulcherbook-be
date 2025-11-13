@@ -14,14 +14,12 @@ import {
   CreateServiceRequest,
   UpdateServiceRequest,
 } from "../../../types/types";
+import { partnerContainer } from "../../../inversify.config";
 
 // Resolve service from container
-const serviceService = Containers.getContainer().get<ServiceService>(
-  ServiceService,
-  {
-    autobind: true,
-  }
-);
+const serviceService = partnerContainer.get<ServiceService>(ServiceService, {
+  autobind: true,
+});
 
 /**
  * @swagger

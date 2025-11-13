@@ -5,19 +5,17 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
   Index,
 } from "typeorm";
 import { Team } from "./Team";
 import { Service } from "./Service";
 import { CompanyMedia } from "./CompanyMedia";
+import { PartnerStatus } from "../../catalog/enums";
+import { BusinessType } from "./BusinessType";
 
-export enum PartnerStatus {
-  ACTIVE = "active",
-  INACTIVE = "inactive",
-  PENDING = "pending",
-}
-
-@Entity("partners")
+@Entity({ name: "partners", schema: "partner" })
 export class Partner {
   @PrimaryGeneratedColumn("uuid")
   uid: string;
@@ -76,6 +74,9 @@ export class Partner {
   updated_at: Date;
 
   // Relations
+  @OneToMany(() => BusinessType, (businessType) => businessType.partners)
+  businessType: BusinessType;
+
   @OneToMany(() => Team, (team) => team.partner)
   teams: Team[];
 

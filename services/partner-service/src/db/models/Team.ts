@@ -18,7 +18,7 @@ export enum TeamStatus {
   INACTIVE = "inactive",
 }
 
-@Entity("teams")
+@Entity({ name: "teams", schema: "partner" })
 export class Team {
   @PrimaryGeneratedColumn("uuid")
   uid: string;

@@ -16,9 +16,10 @@ import {
   UpdateAppointmentStatusRequest,
   CheckAvailabilityRequest,
 } from "../../../types/types";
+import { partnerContainer } from "../../../inversify.config";
 
 // Resolve service from container
-const appointmentService = Containers.getContainer().get<AppointmentService>(
+const appointmentService = partnerContainer.get<AppointmentService>(
   AppointmentService,
   {
     autobind: true,

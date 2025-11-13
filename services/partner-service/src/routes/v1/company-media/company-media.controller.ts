@@ -14,9 +14,10 @@ import {
   CreateCompanyMediaRequest,
   UpdateCompanyMediaRequest,
 } from "../../../types/types";
+import { partnerContainer } from "../../../inversify.config";
 
 // Resolve service from container
-const companyMediaService = Containers.getContainer().get<CompanyMediaService>(
+const companyMediaService = partnerContainer.get<CompanyMediaService>(
   CompanyMediaService,
   {
     autobind: true,

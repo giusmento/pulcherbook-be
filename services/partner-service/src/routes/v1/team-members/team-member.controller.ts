@@ -10,9 +10,10 @@ import {
 } from "@giusmento/mangojs-core";
 import { TeamMemberService } from "../../../services/team-member.service";
 import { CreateTeamMemberRequest } from "../../../types/types";
+import { partnerContainer } from "../../../inversify.config";
 
 // Resolve service from container
-const teamMemberService = Containers.getContainer().get<TeamMemberService>(
+const teamMemberService = partnerContainer.get<TeamMemberService>(
   TeamMemberService,
   {
     autobind: true,

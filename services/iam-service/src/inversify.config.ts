@@ -1,9 +1,9 @@
-import {
-  INVERSITY_TYPES,
-  Providers,
-  services,
-  utils,
-} from "@giusmento/mangojs-core";
+import { Containers, services } from "@giusmento/mangojs-core";
+
+import { INVERSITY_TYPES } from "@giusmento/mangojs-core";
+import { Providers } from "@giusmento/mangojs-core";
+
+import { utils } from "@giusmento/mangojs-core";
 
 export const setIAMContainer = () => {
   /**
@@ -19,16 +19,21 @@ export const setIAMContainer = () => {
   const emailFromAddress = process.env.EMAIL_SENDER_ADDRESS || "";
   const appName = process.env.APP_NAME;
 
-  console.log(`${brevoApikey}, ${emailFromAddress}, ${appName}`);
+  console.log(`${emailFromAddress}, ${appName}`);
 
-  services.iam_server.IAMDefaultContainer.unbind(INVERSITY_TYPES.EmailService);
-  services.iam_server.IAMDefaultContainer.bind<Providers.email.IEmailService>(
-    INVERSITY_TYPES.EmailService
-  ).toConstantValue(
-    new Providers.email.EmailServiceBrevo(
-      emailFromAddress,
-      appName,
-      brevoApikey
-    )
-  );
+  //const container = services.iam_server.IAMDefaultContainer;
+  const container = Containers.createChild(
+    services.iam_server.IAMContainerManager
+  ).getContainer();
+
+  container.unbind(INVERSITY_TYPES.EmailService);
+  container
+    .bind<Providers.email.IEmailService>(INVERSITY_TYPES.EmailService)
+    .toConstantValue(
+      new Providers.email.EmailServiceBrevo(
+        emailFromAddress,
+        appName,
+        brevoApikey
+      )
+    );
 };

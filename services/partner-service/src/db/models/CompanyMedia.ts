@@ -16,7 +16,7 @@ export enum MediaType {
   GALLERY = "gallery",
 }
 
-@Entity("company_media")
+@Entity({ name: "company_media", schema: "partner" })
 export class CompanyMedia {
   @PrimaryGeneratedColumn("uuid")
   uid: string;

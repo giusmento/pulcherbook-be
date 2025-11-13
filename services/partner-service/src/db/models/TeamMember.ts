@@ -14,7 +14,7 @@ import { Team } from "./Team";
 import { Appointment } from "./Appointment";
 import { TeamMemberAvailability } from "./TeamMemberAvailability";
 
-@Entity("team_members")
+@Entity({ name: "team_members", schema: "partner" })
 @Unique(["team_id", "user_id"])
 export class TeamMember {
   @PrimaryGeneratedColumn("uuid")

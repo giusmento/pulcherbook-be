@@ -11,7 +11,7 @@ import {
 import { Team } from "./Team";
 import { Service } from "./Service";
 
-@Entity("team_services")
+@Entity({ name: "team_services", schema: "partner" })
 @Unique(["team_id", "service_id"])
 export class TeamService {
   @PrimaryGeneratedColumn("uuid")

@@ -10,9 +10,10 @@ import {
 } from "@giusmento/mangojs-core";
 import { TeamServiceService } from "../../../services/team-service.service";
 import { CreateTeamServiceRequest } from "../../../types/types";
+import { partnerContainer } from "../../../inversify.config";
 
 // Resolve service from container
-const teamServiceService = Containers.getContainer().get<TeamServiceService>(
+const teamServiceService = partnerContainer.get<TeamServiceService>(
   TeamServiceService,
   {
     autobind: true,
@@ -29,9 +30,7 @@ const teamServiceService = Containers.getContainer().get<TeamServiceService>(
 export class TeamServiceController {
   private teamServiceService: TeamServiceService;
 
-  constructor() {
-    this.teamServiceService = teamServiceService;
-  }
+  constructor() {}
 
   /**
    * @swagger

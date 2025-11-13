@@ -10,7 +10,7 @@ import {
 } from "typeorm";
 import { TeamMember } from "./TeamMember";
 
-@Entity("team_member_availability")
+@Entity({ name: "team_member_availability", schema: "partner" })
 export class TeamMemberAvailability {
   @PrimaryGeneratedColumn("uuid")
   uid: string;

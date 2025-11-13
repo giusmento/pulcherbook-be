@@ -5,6 +5,7 @@ dotenv.config();
 // IMPORTS
 import "reflect-metadata";
 import { initializePartnerContainer } from "./inversify.config";
+initializePartnerContainer();
 import { ServerBuilder } from "@giusmento/mangojs-core";
 import helmet from "helmet";
 import cors from "cors";
@@ -81,10 +82,6 @@ const swaggerSpec = swaggerJSDoc(swaggerOptions);
     console.log("[Partner Service] Step 1: Connecting to database...");
     //await AppDataSource.initialize();
     console.log("[Partner Service] Database connected successfully");
-
-    // Step 2: Initialize Inversify container
-    console.log("[Partner Service] Step 2: Initializing DI container...");
-    initializePartnerContainer();
 
     // Step 3: Build server with MangoJS ServerBuilder
     console.log("[Partner Service] Step 3: Building server...");

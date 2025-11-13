@@ -12,6 +12,7 @@ import {
   SearchPartnersRequest,
   ProfileCompletionResponse,
 } from "../types/types";
+import * as enums from "../catalog/enums";
 
 @injectable()
 export class PartnerService {
@@ -32,10 +33,18 @@ export class PartnerService {
       async (em: EntityManager) => {
         // Validation
         if (!data.company_name) {
-          throw new errors.APIError(400, "BAD_REQUEST", "Company name is required");
+          throw new errors.APIError(
+            400,
+            "BAD_REQUEST",
+            "Company name is required"
+          );
         }
         if (!data.owner_user_id) {
-          throw new errors.APIError(400, "BAD_REQUEST", "Owner user ID is required");
+          throw new errors.APIError(
+            400,
+            "BAD_REQUEST",
+            "Owner user ID is required"
+          );
         }
 
         // Create and save using em
@@ -79,7 +88,10 @@ export class PartnerService {
    * @param offset - Number of items to skip (default: 0)
    * @returns Promise resolving to array of partners
    */
-  public async findAll(limit: number = 20, offset: number = 0): Promise<models.Partner[]> {
+  public async findAll(
+    limit: number = 20,
+    offset: number = 0
+  ): Promise<models.Partner[]> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         return await em.find(models.Partner, {
@@ -100,7 +112,10 @@ export class PartnerService {
    * @returns Promise resolving to updated partner
    * @throws {APIError} 404 NOT_FOUND if partner doesn't exist
    */
-  public async update(uid: string, data: UpdatePartnerRequest): Promise<models.Partner> {
+  public async update(
+    uid: string,
+    data: UpdatePartnerRequest
+  ): Promise<models.Partner> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         const partner = await em.findOne(models.Partner, { where: { uid } });
@@ -132,7 +147,7 @@ export class PartnerService {
         }
 
         // Soft delete - set status to inactive
-        partner.status = models.PartnerStatus.INACTIVE;
+        partner.status = enums.PartnerStatus.INACTIVE;
         await em.save(partner);
         return true;
       }
@@ -146,14 +161,18 @@ export class PartnerService {
    * @param params - Search parameters (latitude, longitude, radius, service_id, city, limit, offset)
    * @returns Promise resolving to array of matching partners
    */
-  public async search(params: SearchPartnersRequest): Promise<models.Partner[]> {
+  public async search(
+    params: SearchPartnersRequest
+  ): Promise<models.Partner[]> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         const query = em
           .createQueryBuilder(models.Partner, "partner")
           .leftJoinAndSelect("partner.services", "service")
           .leftJoinAndSelect("partner.media", "media")
-          .where("partner.status = :status", { status: models.PartnerStatus.ACTIVE });
+          .where("partner.status = :status", {
+            status: enums.PartnerStatus.ACTIVE,
+          });
 
         if (params.city) {
           query.andWhere("LOWER(partner.city) = LOWER(:city)", {
@@ -246,19 +265,16 @@ export class PartnerService {
    * @returns Promise resolving to completion status with list of missing fields (if any)
    * @throws {APIError} 404 NOT_FOUND if partner doesn't exist
    */
-  public async checkProfileCompletion(uid: string): Promise<ProfileCompletionResponse> {
+  public async checkProfileCompletion(
+    uid: string
+  ): Promise<ProfileCompletionResponse> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
-        const partner = await em.findOne(models.Partner, {
-          where: { uid },
-        });
-
-        if (!partner) {
-          throw new errors.APIError(404, "NOT_FOUND", "Partner not found");
-        }
-
         // Define required fields for a complete profile
-        const requiredFields: Array<{ field: keyof models.Partner; label: string }> = [
+        const requiredFields: Array<{
+          field: keyof models.Partner;
+          label: string;
+        }> = [
           { field: "description", label: "description" },
           { field: "phone", label: "phone" },
           { field: "email", label: "email" },
@@ -267,6 +283,17 @@ export class PartnerService {
           { field: "country", label: "country" },
           { field: "postal_code", label: "postal_code" },
         ];
+
+        const partner = await em.findOne(models.Partner, {
+          where: { uid },
+        });
+
+        if (!partner) {
+          return {
+            isCompleted: false,
+            missingFields: requiredFields.map((f) => f.label),
+          };
+        }
 
         // Check for missing fields
         const missingFields: string[] = [];

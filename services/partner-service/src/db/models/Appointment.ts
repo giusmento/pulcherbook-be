@@ -19,7 +19,7 @@ export enum AppointmentStatus {
   NO_SHOW = "no_show",
 }
 
-@Entity("appointments")
+@Entity({ name: "appointments", schema: "partner" })
 @Index(["team_member_id", "appointment_date", "start_time"])
 export class Appointment {
   @PrimaryGeneratedColumn("uuid")

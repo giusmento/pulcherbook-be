@@ -16,14 +16,12 @@ import {
   UpdatePartnerRequest,
   SearchPartnersRequest,
 } from "../../../types/types";
+import { partnerContainer } from "../../../inversify.config";
 
 // Resolve service from container
-const partnerService = Containers.getContainer().get<PartnerService>(
-  PartnerService,
-  {
-    autobind: true,
-  }
-);
+const partnerService = partnerContainer.get<PartnerService>(PartnerService, {
+  autobind: true,
+});
 
 /**
  * @swagger

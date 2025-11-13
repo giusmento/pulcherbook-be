@@ -12,9 +12,9 @@
     "start:prod": "pm2 start ./dist/index.js",
     "stop:prod": "pm2 stop index",
     "typeorm": "typeorm-ts-node-commonjs",
-    "migration:generate": "npx typeorm-ts-node-commonjs migration:generate ./migrations/Migration -d src/data-source.ts",
-    "migration:show": "npx typeorm-ts-node-commonjs migration:show -d src/data-source.ts",
-    "migration:run": "npx typeorm-ts-node-commonjs migration:run -d src/data-source.ts",
+    "migration:generate": "npx typeorm-ts-node-commonjs migration:generate ./migrations/Migration -d data-source.ts",
+    "migration:show": "npx typeorm-ts-node-commonjs migration:show -d data-source.ts",
+    "migration:run": "npx typeorm-ts-node-commonjs migration:run -d data-source.ts",
     "test": "jest",
     "test:watch": "jest --watch"
   },
