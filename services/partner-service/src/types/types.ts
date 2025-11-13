@@ -2,7 +2,7 @@
 
 // Partner types
 export interface CreatePartnerRequest {
-  owner_user_id: string;
+  external_uid: string;
   company_name: string;
   description?: string;
   address?: string;

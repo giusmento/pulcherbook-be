@@ -88,7 +88,6 @@ export class PartnerController {
    *         description: Invalid request data
    */
   @Post("/")
-  @Decorators.auth.HasGroups(["Admin", "Partner"])
   public async create(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {
@@ -259,7 +258,6 @@ export class PartnerController {
    *         description: Partner not found
    */
   @Put("/:uid")
-  @Decorators.auth.HasGroups(["Admin", "Partner"])
   public async update(req: Request, res: Response): Promise<Response> {
     const logRequest = new utils.LogRequest(res);
     try {

@@ -20,9 +20,9 @@ export class Partner {
   @PrimaryGeneratedColumn("uuid")
   uid: string;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column({ type: "uuid" })
   @Index()
-  owner_user_id: string;
+  external_uid: string;
 
   @Column({ type: "varchar", length: 255 })
   company_name: string;
@@ -82,7 +82,4 @@ export class Partner {
 
   @OneToMany(() => Service, (service) => service.partner)
   services: Service[];
-
-  @OneToMany(() => CompanyMedia, (media) => media.partner)
-  media: CompanyMedia[];
 }

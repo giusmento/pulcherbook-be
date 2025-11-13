@@ -39,11 +39,11 @@ export class PartnerService {
             "Company name is required"
           );
         }
-        if (!data.owner_user_id) {
+        if (!data.external_uid) {
           throw new errors.APIError(
             400,
             "BAD_REQUEST",
-            "Owner user ID is required"
+            "External uid is required"
           );
         }
 
@@ -118,13 +118,26 @@ export class PartnerService {
   ): Promise<models.Partner> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
-        const partner = await em.findOne(models.Partner, { where: { uid } });
-        if (!partner) {
-          throw new errors.APIError(404, "NOT_FOUND", "Partner not found");
-        }
+        const update = {
+          company_name: data.company_name,
+          description: data.description,
+          address: data.address,
+          city: data.city,
+          state: data.state,
+          country: data.country,
+          postal_code: data.postal_code,
+          latitude: data.latitude,
+          longitude: data.longitude,
+          phone: data.phone,
+          email: data.email,
+          website: data.website,
+        };
+        const partner = await em.update(
+          models.Partner,
+          { external_uid: uid },
+          update
+        );
 
-        Object.assign(partner, data);
-        await em.save(partner);
         return partner;
       }
     );

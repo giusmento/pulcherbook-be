@@ -46,10 +46,6 @@ export class CompanyMedia {
   @UpdateDateColumn()
   updated_at: Date;
 
-  // Relations
-  @ManyToOne(() => Partner, (partner) => partner.media, {
-    onDelete: "CASCADE",
-  })
   @JoinColumn({ name: "partner_id" })
   partner: Partner;
 }

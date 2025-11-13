@@ -1,0 +1,9 @@
+export * as partners from "./partners";
+export * as teams from "./teams";
+export * as teamMembers from "./teamMembers";
+export * as services from "./services";
+export * as teamServices from "./teamServices";
+export * as companyMedia from "./companyMedia";
+export * as appointments from "./appointments";
+export * as availability from "./availability";
+export * as catalog from "./catalog";
