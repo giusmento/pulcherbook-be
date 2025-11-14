@@ -10,10 +10,11 @@ import {
   Containers,
 } from "@giusmento/mangojs-core";
 import { CompanyMediaService } from "../../../services/company-media.service";
-import {
-  CreateCompanyMediaRequest,
-  UpdateCompanyMediaRequest,
-} from "../../../types/types";
+
+// Import API types from package
+import type * as PBTypes from "@giusmento/pulcherbook-types";
+type CompanyMediaPost = PBTypes.partner.entities.CompanyMediaPost;
+type CompanyMediaPut = PBTypes.partner.entities.CompanyMediaPut;
 import { partnerContainer } from "../../../inversify.config";
 
 // Resolve service from container
@@ -75,10 +76,16 @@ export class CompanyMediaController {
    *         description: Invalid request data
    */
   @Post("/")
-  public async create(req: Request, res: Response): Promise<Response> {
+  public async create(
+    req: Request<
+      PBTypes.partner.api.v1.companyMedia.POST.Params,
+      PBTypes.partner.api.v1.companyMedia.POST.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.companyMedia.POST.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.companyMedia.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const data: CreateCompanyMediaRequest = req.body;
+      const data: CompanyMediaPost = req.body;
       const media = await this.companyMediaService.create(data);
 
       const apiResponse = {
@@ -115,20 +122,20 @@ export class CompanyMediaController {
    *         description: Media not found
    */
   @Get("/:uid")
-  public async findById(req: Request, res: Response): Promise<Response> {
+  public async findById(
+    req: Request<
+      PBTypes.partner.api.v1.companyMedia.GET.ParamsSingle,
+      PBTypes.partner.api.v1.companyMedia.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.companyMedia.GET.ResponseBodySingle>
+  ): Promise<Response<PBTypes.partner.api.v1.companyMedia.GET.ResponseBodySingle>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const media = await this.companyMediaService.findById(uid);
 
       if (!media) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Media not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Media not found");
       }
 
       const apiResponse = {
@@ -180,7 +187,13 @@ export class CompanyMediaController {
    *         description: List of media
    */
   @Get("/")
-  public async findAll(req: Request, res: Response): Promise<Response> {
+  public async findAll(
+    req: Request<
+      PBTypes.partner.api.v1.companyMedia.GET.Params,
+      PBTypes.partner.api.v1.companyMedia.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.companyMedia.GET.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.companyMedia.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const partner_id = req.query.partner_id as string | undefined;
@@ -240,21 +253,21 @@ export class CompanyMediaController {
    *         description: Media not found
    */
   @Put("/:uid")
-  public async update(req: Request, res: Response): Promise<Response> {
+  public async update(
+    req: Request<
+      PBTypes.partner.api.v1.companyMedia.PUT.Params,
+      PBTypes.partner.api.v1.companyMedia.PUT.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.companyMedia.PUT.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.companyMedia.PUT.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const data: UpdateCompanyMediaRequest = req.body;
+      const data: CompanyMediaPut = req.body;
       const media = await this.companyMediaService.update(uid, data);
 
       if (!media) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Media not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Media not found");
       }
 
       const apiResponse = {
@@ -291,20 +304,20 @@ export class CompanyMediaController {
    *         description: Media not found
    */
   @Delete("/:uid")
-  public async delete(req: Request, res: Response): Promise<Response> {
+  public async delete(
+    req: Request<
+      PBTypes.partner.api.v1.companyMedia.DELETE.Params,
+      PBTypes.partner.api.v1.companyMedia.DELETE.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.companyMedia.DELETE.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.companyMedia.DELETE.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const success = await this.companyMediaService.delete(uid);
 
       if (!success) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Media not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Media not found");
       }
 
       const apiResponse = {

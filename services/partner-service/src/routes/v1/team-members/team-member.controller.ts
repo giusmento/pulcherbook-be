@@ -9,7 +9,10 @@ import {
   Containers,
 } from "@giusmento/mangojs-core";
 import { TeamMemberService } from "../../../services/team-member.service";
-import { CreateTeamMemberRequest } from "../../../types/types";
+
+// Import API types from package
+import type * as PBTypes from "@giusmento/pulcherbook-types";
+type TeamMemberPost = PBTypes.partner.entities.TeamMemberPost;
 import { partnerContainer } from "../../../inversify.config";
 
 // Resolve service from container
@@ -65,10 +68,16 @@ export class TeamMemberController {
    *         description: Invalid request data
    */
   @Post("/")
-  public async create(req: Request, res: Response): Promise<Response> {
+  public async create(
+    req: Request<
+      PBTypes.partner.api.v1.teamMembers.POST.Params,
+      PBTypes.partner.api.v1.teamMembers.POST.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teamMembers.POST.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.teamMembers.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const data: CreateTeamMemberRequest = req.body;
+      const data: TeamMemberPost = req.body;
       const teamMember = await this.teamMemberService.create(data);
 
       const apiResponse = {
@@ -105,20 +114,20 @@ export class TeamMemberController {
    *         description: Team member not found
    */
   @Get("/:uid")
-  public async findById(req: Request, res: Response): Promise<Response> {
+  public async findById(
+    req: Request<
+      PBTypes.partner.api.v1.teamMembers.GET.ParamsSingle,
+      PBTypes.partner.api.v1.teamMembers.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teamMembers.GET.ResponseBodySingle>
+  ): Promise<Response<PBTypes.partner.api.v1.teamMembers.GET.ResponseBodySingle>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const teamMember = await this.teamMemberService.findById(uid);
 
       if (!teamMember) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Team member not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Team member not found");
       }
 
       const apiResponse = {
@@ -164,7 +173,13 @@ export class TeamMemberController {
    *         description: List of team members
    */
   @Get("/")
-  public async findAll(req: Request, res: Response): Promise<Response> {
+  public async findAll(
+    req: Request<
+      PBTypes.partner.api.v1.teamMembers.GET.Params,
+      PBTypes.partner.api.v1.teamMembers.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teamMembers.GET.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.teamMembers.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const team_id = req.query.team_id as string | undefined;
@@ -211,20 +226,20 @@ export class TeamMemberController {
    *         description: Team member not found
    */
   @Delete("/:uid")
-  public async delete(req: Request, res: Response): Promise<Response> {
+  public async delete(
+    req: Request<
+      PBTypes.partner.api.v1.teamMembers.DELETE.Params,
+      PBTypes.partner.api.v1.teamMembers.DELETE.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teamMembers.DELETE.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.teamMembers.DELETE.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const success = await this.teamMemberService.delete(uid);
 
       if (!success) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Team member not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Team member not found");
       }
 
       const apiResponse = {
@@ -262,9 +277,12 @@ export class TeamMemberController {
    */
   @Get("/:uid/upcoming-appointments")
   public async getUpcomingAppointments(
-    req: Request,
-    res: Response
-  ): Promise<Response> {
+    req: Request<
+      PBTypes.partner.api.v1.teamMembers.upcomingAppointments.GET.Params,
+      PBTypes.partner.api.v1.teamMembers.upcomingAppointments.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teamMembers.upcomingAppointments.GET.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.teamMembers.upcomingAppointments.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
@@ -273,13 +291,7 @@ export class TeamMemberController {
       );
 
       if (!appointments) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Team member not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Team member not found");
       }
 
       const apiResponse = {

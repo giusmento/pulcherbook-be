@@ -123,6 +123,9 @@ importers:
 
   services/partner-service:
     dependencies:
+      '@giusmento/pulcherbook-types':
+        specifier: workspace:*
+        version: link:../../packages/types
       cookie-parser:
         specifier: ^1.4.6
         version: 1.4.7

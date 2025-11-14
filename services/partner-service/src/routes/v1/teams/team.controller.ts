@@ -11,8 +11,12 @@ import {
   Decorators,
 } from "@giusmento/mangojs-core";
 import { TeamService } from "../../../services/team.service";
-import { CreateTeamRequest, UpdateTeamRequest } from "../../../types/types";
 import { partnerContainer } from "../../../inversify.config";
+
+// Import API types from package
+import type * as PBTypes from "@giusmento/pulcherbook-types";
+type TeamPost = PBTypes.partner.entities.TeamPost;
+type TeamPut = PBTypes.partner.entities.TeamPut;
 
 // Resolve service from container
 const teamService = partnerContainer.get<TeamService>(TeamService, {
@@ -65,10 +69,16 @@ export class TeamController {
    */
   @Post("/")
   @Decorators.auth.HasGroups(["Admin", "Partner"])
-  public async create(req: Request, res: Response): Promise<Response> {
+  public async create(
+    req: Request<
+      PBTypes.partner.api.v1.teams.POST.Params,
+      PBTypes.partner.api.v1.teams.POST.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teams.POST.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.teams.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const data: CreateTeamRequest = req.body;
+      const data: TeamPost = req.body;
       const team = await this.teamService.create(data);
 
       const apiResponse = {
@@ -105,20 +115,20 @@ export class TeamController {
    *         description: Team not found
    */
   @Get("/:uid")
-  public async findById(req: Request, res: Response): Promise<Response> {
+  public async findById(
+    req: Request<
+      PBTypes.partner.api.v1.teams.GET.ParamsSingle,
+      PBTypes.partner.api.v1.teams.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teams.GET.ResponseBodySingle>
+  ): Promise<Response<PBTypes.partner.api.v1.teams.GET.ResponseBodySingle>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const team = await this.teamService.findById(uid);
 
       if (!team) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Team not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Team not found");
       }
 
       const apiResponse = {
@@ -165,7 +175,13 @@ export class TeamController {
    */
   @Get("/")
   @Decorators.auth.HasGroups(["Admin", "Partner"])
-  public async findAll(req: Request, res: Response): Promise<Response> {
+  public async findAll(
+    req: Request<
+      PBTypes.partner.api.v1.teams.GET.Params,
+      PBTypes.partner.api.v1.teams.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teams.GET.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.teams.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const partner_id = req.query.partner_id as string | undefined;
@@ -222,21 +238,21 @@ export class TeamController {
    */
   @Put("/:uid")
   @Decorators.auth.HasGroups(["Admin", "Partner"])
-  public async update(req: Request, res: Response): Promise<Response> {
+  public async update(
+    req: Request<
+      PBTypes.partner.api.v1.teams.PUT.Params,
+      PBTypes.partner.api.v1.teams.PUT.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teams.PUT.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.teams.PUT.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const data: UpdateTeamRequest = req.body;
+      const data: TeamPut = req.body;
       const team = await this.teamService.update(uid, data);
 
       if (!team) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Team not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Team not found");
       }
 
       const apiResponse = {
@@ -274,20 +290,20 @@ export class TeamController {
    */
   @Delete("/:uid")
   @Decorators.auth.HasGroups(["Admin", "Partner"])
-  public async delete(req: Request, res: Response): Promise<Response> {
+  public async delete(
+    req: Request<
+      PBTypes.partner.api.v1.teams.DELETE.Params,
+      PBTypes.partner.api.v1.teams.DELETE.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teams.DELETE.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.teams.DELETE.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const success = await this.teamService.delete(uid);
 
       if (!success) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Team not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Team not found");
       }
 
       const apiResponse = {

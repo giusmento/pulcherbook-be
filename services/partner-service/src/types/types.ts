@@ -1,4 +1,5 @@
 // Request/Response types for Partner Service
+// These types are used by the service layer and stay in the service package
 
 // Partner types
 export interface CreatePartnerRequest {
@@ -107,17 +108,17 @@ export interface CreateAppointmentRequest {
   customer_user_id: string;
   team_member_id: string;
   service_id: string;
-  appointment_date: string; // YYYY-MM-DD
+  appointment_date: Date;
   start_time: string; // HH:MM
   duration_minutes: number;
-  customer_notes?: string;
+  customer_notes?: string | null;
 }
 
 export interface UpdateAppointmentRequest {
-  appointment_date?: string;
+  appointment_date?: Date;
   start_time?: string;
   duration_minutes?: number;
-  customer_notes?: string;
+  customer_notes?: string | null;
 }
 
 export interface UpdateAppointmentStatusRequest {
@@ -135,8 +136,8 @@ export interface CheckAvailabilityRequest {
 export interface CreateAvailabilityRequest {
   team_member_id: string;
   is_recurring: boolean;
-  day_of_week?: number; // 0-6 for recurring
-  specific_date?: string; // YYYY-MM-DD for one-time
+  day_of_week?: number | null; // 0-6 for recurring
+  specific_date?: Date | null; // for one-time
   start_time: string; // HH:MM
   end_time: string; // HH:MM
 }
@@ -145,8 +146,8 @@ export interface UpdateAvailabilityRequest {
   start_time?: string;
   end_time?: string;
   is_recurring?: boolean;
-  day_of_week?: number;
-  specific_date?: string;
+  day_of_week?: number | null;
+  specific_date?: Date | null;
 }
 
 export interface GetAvailableSlotsRequest {

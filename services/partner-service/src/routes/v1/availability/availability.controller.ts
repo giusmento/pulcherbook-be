@@ -10,12 +10,13 @@ import {
   Containers,
 } from "@giusmento/mangojs-core";
 import { AvailabilityService } from "../../../services/availability.service";
-import {
-  CreateAvailabilityRequest,
-  UpdateAvailabilityRequest,
-  GetAvailableSlotsRequest,
-} from "../../../types/types";
+import { GetAvailableSlotsRequest } from "../../../types/types";
 import { partnerContainer } from "../../../inversify.config";
+
+// Import API types from package
+import type * as PBTypes from "@giusmento/pulcherbook-types";
+type AvailabilityPost = PBTypes.partner.entities.AvailabilityPost;
+type AvailabilityPut = PBTypes.partner.entities.AvailabilityPut;
 
 // Resolve service from container
 const availabilityService = partnerContainer.get<AvailabilityService>(
@@ -87,10 +88,16 @@ export class AvailabilityController {
    *         description: Invalid request data
    */
   @Post("/")
-  public async create(req: Request, res: Response): Promise<Response> {
+  public async create(
+    req: Request<
+      PBTypes.partner.api.v1.availability.POST.Params,
+      PBTypes.partner.api.v1.availability.POST.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.availability.POST.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.availability.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const data: CreateAvailabilityRequest = req.body;
+      const data: AvailabilityPost = req.body;
       const availability = await this.availabilityService.create(data);
 
       const apiResponse = {
@@ -127,20 +134,20 @@ export class AvailabilityController {
    *         description: Availability not found
    */
   @Get("/:uid")
-  public async findById(req: Request, res: Response): Promise<Response> {
+  public async findById(
+    req: Request<
+      PBTypes.partner.api.v1.availability.GET.ParamsSingle,
+      PBTypes.partner.api.v1.availability.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.availability.GET.ResponseBodySingle>
+  ): Promise<Response<PBTypes.partner.api.v1.availability.GET.ResponseBodySingle>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const availability = await this.availabilityService.findById(uid);
 
       if (!availability) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Availability not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Availability not found");
       }
 
       const apiResponse = {
@@ -186,7 +193,13 @@ export class AvailabilityController {
    *         description: List of availability rules
    */
   @Get("/")
-  public async findAll(req: Request, res: Response): Promise<Response> {
+  public async findAll(
+    req: Request<
+      PBTypes.partner.api.v1.availability.GET.Params,
+      PBTypes.partner.api.v1.availability.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.availability.GET.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.availability.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const team_member_id = req.query.team_member_id as string | undefined;
@@ -255,21 +268,21 @@ export class AvailabilityController {
    *         description: Availability not found
    */
   @Put("/:uid")
-  public async update(req: Request, res: Response): Promise<Response> {
+  public async update(
+    req: Request<
+      PBTypes.partner.api.v1.availability.PUT.Params,
+      PBTypes.partner.api.v1.availability.PUT.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.availability.PUT.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.availability.PUT.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const data: UpdateAvailabilityRequest = req.body;
+      const data: AvailabilityPut = req.body;
       const availability = await this.availabilityService.update(uid, data);
 
       if (!availability) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Availability not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Availability not found");
       }
 
       const apiResponse = {
@@ -306,20 +319,20 @@ export class AvailabilityController {
    *         description: Availability not found
    */
   @Delete("/:uid")
-  public async delete(req: Request, res: Response): Promise<Response> {
+  public async delete(
+    req: Request<
+      PBTypes.partner.api.v1.availability.DELETE.Params,
+      PBTypes.partner.api.v1.availability.DELETE.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.availability.DELETE.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.availability.DELETE.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const success = await this.availabilityService.delete(uid);
 
       if (!success) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Availability not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Availability not found");
       }
 
       const apiResponse = {
@@ -366,9 +379,12 @@ export class AvailabilityController {
    */
   @Post("/slots")
   public async getAvailableSlots(
-    req: Request,
-    res: Response
-  ): Promise<Response> {
+    req: Request<
+      PBTypes.partner.api.v1.availability.slots.POST.Params,
+      PBTypes.partner.api.v1.availability.slots.POST.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.availability.slots.POST.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.availability.slots.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const data: GetAvailableSlotsRequest = req.body;

@@ -1,2 +1,2 @@
 export * from "./iam";
-export * from "./partner";
+export * as partner from "./partner";

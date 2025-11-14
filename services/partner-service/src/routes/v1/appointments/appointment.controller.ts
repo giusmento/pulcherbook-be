@@ -11,12 +11,15 @@ import {
 } from "@giusmento/mangojs-core";
 import { AppointmentService } from "../../../services/appointment.service";
 import {
-  CreateAppointmentRequest,
-  UpdateAppointmentRequest,
   UpdateAppointmentStatusRequest,
   CheckAvailabilityRequest,
 } from "../../../types/types";
 import { partnerContainer } from "../../../inversify.config";
+
+// Import API types from package
+import type * as PBTypes from "@giusmento/pulcherbook-types";
+type AppointmentPost = PBTypes.partner.entities.AppointmentPost;
+type AppointmentPut = PBTypes.partner.entities.AppointmentPut;
 
 // Resolve service from container
 const appointmentService = partnerContainer.get<AppointmentService>(
@@ -87,10 +90,16 @@ export class AppointmentController {
    *         description: Invalid request data
    */
   @Post("/")
-  public async create(req: Request, res: Response): Promise<Response> {
+  public async create(
+    req: Request<
+      PBTypes.partner.api.v1.appointments.POST.Params,
+      PBTypes.partner.api.v1.appointments.POST.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.appointments.POST.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.appointments.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const data: CreateAppointmentRequest = req.body;
+      const data: AppointmentPost = req.body;
       const appointment = await this.appointmentService.create(data);
 
       const apiResponse = {
@@ -127,20 +136,20 @@ export class AppointmentController {
    *         description: Appointment not found
    */
   @Get("/:uid")
-  public async findById(req: Request, res: Response): Promise<Response> {
+  public async findById(
+    req: Request<
+      PBTypes.partner.api.v1.appointments.GET.ParamsSingle,
+      PBTypes.partner.api.v1.appointments.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.appointments.GET.ResponseBodySingle>
+  ): Promise<Response<PBTypes.partner.api.v1.appointments.GET.ResponseBodySingle>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const appointment = await this.appointmentService.findById(uid);
 
       if (!appointment) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Appointment not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Appointment not found");
       }
 
       const apiResponse = {
@@ -202,7 +211,13 @@ export class AppointmentController {
    *         description: List of appointments
    */
   @Get("/")
-  public async findAll(req: Request, res: Response): Promise<Response> {
+  public async findAll(
+    req: Request<
+      PBTypes.partner.api.v1.appointments.GET.Params,
+      PBTypes.partner.api.v1.appointments.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.appointments.GET.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.appointments.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const customer_user_id = req.query.customer_user_id as string | undefined;
@@ -272,21 +287,21 @@ export class AppointmentController {
    *         description: Appointment not found
    */
   @Put("/:uid")
-  public async update(req: Request, res: Response): Promise<Response> {
+  public async update(
+    req: Request<
+      PBTypes.partner.api.v1.appointments.PUT.Params,
+      PBTypes.partner.api.v1.appointments.PUT.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.appointments.PUT.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.appointments.PUT.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const data: UpdateAppointmentRequest = req.body;
+      const data: AppointmentPut = req.body;
       const appointment = await this.appointmentService.update(uid, data);
 
       if (!appointment) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Appointment not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Appointment not found");
       }
 
       const apiResponse = {
@@ -337,7 +352,13 @@ export class AppointmentController {
    *         description: Appointment not found
    */
   @Put("/:uid/status")
-  public async updateStatus(req: Request, res: Response): Promise<Response> {
+  public async updateStatus(
+    req: Request<
+      PBTypes.partner.api.v1.appointments.status.PUT.Params,
+      PBTypes.partner.api.v1.appointments.status.PUT.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.appointments.status.PUT.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.appointments.status.PUT.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
@@ -345,13 +366,7 @@ export class AppointmentController {
       const appointment = await this.appointmentService.updateStatus(uid, data);
 
       if (!appointment) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Appointment not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Appointment not found");
       }
 
       const apiResponse = {
@@ -388,20 +403,20 @@ export class AppointmentController {
    *         description: Appointment not found
    */
   @Delete("/:uid")
-  public async delete(req: Request, res: Response): Promise<Response> {
+  public async delete(
+    req: Request<
+      PBTypes.partner.api.v1.appointments.DELETE.Params,
+      PBTypes.partner.api.v1.appointments.DELETE.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.appointments.DELETE.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.appointments.DELETE.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const success = await this.appointmentService.delete(uid);
 
       if (!success) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Appointment not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Appointment not found");
       }
 
       const apiResponse = {
@@ -448,9 +463,12 @@ export class AppointmentController {
    */
   @Post("/check-availability")
   public async checkAvailability(
-    req: Request,
-    res: Response
-  ): Promise<Response> {
+    req: Request<
+      PBTypes.partner.api.v1.appointments.checkAvailability.POST.Params,
+      PBTypes.partner.api.v1.appointments.checkAvailability.POST.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.appointments.checkAvailability.POST.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.appointments.checkAvailability.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const data: CheckAvailabilityRequest = req.body;

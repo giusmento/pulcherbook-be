@@ -11,12 +11,13 @@ import {
   Decorators,
 } from "@giusmento/mangojs-core";
 import { PartnerService } from "../../../services/partner.service";
-import {
-  CreatePartnerRequest,
-  UpdatePartnerRequest,
-  SearchPartnersRequest,
-} from "../../../types/types";
+import { SearchPartnersRequest } from "../../../types/types";
 import { partnerContainer } from "../../../inversify.config";
+
+// Import API types from package
+import type * as PBTypes from "@giusmento/pulcherbook-types";
+type PartnerPost = PBTypes.partner.entities.PartnerPost;
+type PartnerPut = PBTypes.partner.entities.PartnerPut;
 
 // Resolve service from container
 const partnerService = partnerContainer.get<PartnerService>(PartnerService, {
@@ -88,10 +89,16 @@ export class PartnerController {
    *         description: Invalid request data
    */
   @Post("/")
-  public async create(req: Request, res: Response): Promise<Response> {
+  public async create(
+    req: Request<
+      PBTypes.partner.api.v1.partners.POST.Params,
+      PBTypes.partner.api.v1.partners.POST.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.partners.POST.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.partners.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const data: CreatePartnerRequest = req.body;
+      const data: PartnerPost = req.body;
       const partner = await this.partnerService.create(data);
 
       const apiResponse = {
@@ -128,20 +135,20 @@ export class PartnerController {
    *         description: Partner not found
    */
   @Get("/:uid")
-  public async findById(req: Request, res: Response): Promise<Response> {
+  public async findById(
+    req: Request<
+      PBTypes.partner.api.v1.partners.GET.ParamsSingle,
+      PBTypes.partner.api.v1.partners.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.partners.GET.ResponseBodySingle>
+  ): Promise<Response<PBTypes.partner.api.v1.partners.GET.ResponseBodySingle>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const partner = await this.partnerService.findById(uid);
 
       if (!partner) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Partner not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Partner not found");
       }
 
       const apiResponse = {
@@ -183,7 +190,13 @@ export class PartnerController {
    */
   @Get("/")
   @Decorators.auth.HasGroups(["Admin", "Partner"])
-  public async findAll(req: Request, res: Response): Promise<Response> {
+  public async findAll(
+    req: Request<
+      PBTypes.partner.api.v1.partners.GET.Params,
+      PBTypes.partner.api.v1.partners.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.partners.GET.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.partners.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const limit = parseInt(req.query.limit as string) || 20;
@@ -258,21 +271,21 @@ export class PartnerController {
    *         description: Partner not found
    */
   @Put("/:uid")
-  public async update(req: Request, res: Response): Promise<Response> {
+  public async update(
+    req: Request<
+      PBTypes.partner.api.v1.partners.PUT.Params,
+      PBTypes.partner.api.v1.partners.PUT.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.partners.PUT.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.partners.PUT.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const data: UpdatePartnerRequest = req.body;
+      const data: PartnerPut = req.body;
       const partner = await this.partnerService.update(uid, data);
 
       if (!partner) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Partner not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Partner not found");
       }
 
       const apiResponse = {
@@ -310,20 +323,20 @@ export class PartnerController {
    */
   @Delete("/:uid")
   @Decorators.auth.HasGroups(["Admin", "Partner"])
-  public async delete(req: Request, res: Response): Promise<Response> {
+  public async delete(
+    req: Request<
+      PBTypes.partner.api.v1.partners.DELETE.Params,
+      PBTypes.partner.api.v1.partners.DELETE.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.partners.DELETE.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.partners.DELETE.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const success = await this.partnerService.delete(uid);
 
       if (!success) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Partner not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Partner not found");
       }
 
       const apiResponse = {
@@ -374,7 +387,13 @@ export class PartnerController {
    */
   @Post("/search")
   @Decorators.auth.NoAuth()
-  public async search(req: Request, res: Response): Promise<Response> {
+  public async search(
+    req: Request<
+      PBTypes.partner.api.v1.partners.search.POST.Params,
+      PBTypes.partner.api.v1.partners.search.POST.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.partners.search.POST.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.partners.search.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const params: SearchPartnersRequest = req.body;
@@ -414,20 +433,20 @@ export class PartnerController {
    *         description: Partner not found
    */
   @Get("/:uid/availability")
-  public async getAvailability(req: Request, res: Response): Promise<Response> {
+  public async getAvailability(
+    req: Request<
+      PBTypes.partner.api.v1.partners.availability.GET.Params,
+      PBTypes.partner.api.v1.partners.availability.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.partners.availability.GET.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.partners.availability.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const availability = await this.partnerService.getAvailability(uid);
 
       if (!availability) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Partner not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Partner not found");
       }
 
       const apiResponse = {
@@ -486,9 +505,12 @@ export class PartnerController {
   @Get("/:uid/isProfileCompleted")
   //@Decorators.auth.HasGroups(["Admin", "Partner"])
   public async isProfileCompleted(
-    req: Request,
-    res: Response
-  ): Promise<Response> {
+    req: Request<
+      PBTypes.partner.api.v1.partners.isProfileCompleted.GET.Params,
+      PBTypes.partner.api.v1.partners.isProfileCompleted.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.partners.isProfileCompleted.GET.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.partners.isProfileCompleted.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;

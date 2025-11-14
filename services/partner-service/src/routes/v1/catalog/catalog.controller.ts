@@ -9,6 +9,9 @@ import {
 import { CatalogService } from "../../../services/catalog.service";
 import { partnerContainer } from "../../../inversify.config";
 
+// Import API types from package
+import type * as PBTypes from "@giusmento/pulcherbook-types";
+
 // Resolve service from container
 const catalogService = partnerContainer.get<CatalogService>(CatalogService, {
   autobind: true,
@@ -61,22 +64,21 @@ export class CatalogController {
   @Get("/business-types")
   @Decorators.auth.NoAuth()
   public async getBusinessTypes(
-    req: Request,
-    res: Response
-  ): Promise<Response> {
+    req: Request<
+      PBTypes.partner.api.v1.catalog.businessTypes.GET.Params,
+      PBTypes.partner.api.v1.catalog.businessTypes.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.catalog.businessTypes.GET.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.catalog.businessTypes.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const businessTypes = await this.catalogService.getBusinessTypes();
 
-      const response = businessTypes.map((bt) => ({
-        uid: bt.uid,
-        label: bt.name,
-      }));
       const apiResponse = {
         ok: true,
         timestamp: logRequest.timestamp,
         requestId: logRequest.requestId,
-        data: response,
+        data: businessTypes,
       };
       return res.status(200).send(apiResponse);
     } catch (error: unknown) {

@@ -9,9 +9,11 @@ import {
   Containers,
 } from "@giusmento/mangojs-core";
 import { TeamServiceService } from "../../../services/team-service.service";
-import { CreateTeamServiceRequest } from "../../../types/types";
 import { partnerContainer } from "../../../inversify.config";
 
+// Import API types from package
+import type * as PBTypes from "@giusmento/pulcherbook-types";
+type TeamServicePost = PBTypes.partner.entities.TeamServicePost;
 // Resolve service from container
 const teamServiceService = partnerContainer.get<TeamServiceService>(
   TeamServiceService,
@@ -61,10 +63,16 @@ export class TeamServiceController {
    *         description: Invalid request data
    */
   @Post("/")
-  public async create(req: Request, res: Response): Promise<Response> {
+  public async create(
+    req: Request<
+      PBTypes.partner.api.v1.teamServices.POST.Params,
+      PBTypes.partner.api.v1.teamServices.POST.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teamServices.POST.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.teamServices.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const data: CreateTeamServiceRequest = req.body;
+      const data: TeamServicePost = req.body;
       const teamService = await this.teamServiceService.create(data);
 
       const apiResponse = {
@@ -101,20 +109,20 @@ export class TeamServiceController {
    *         description: Team service not found
    */
   @Get("/:uid")
-  public async findById(req: Request, res: Response): Promise<Response> {
+  public async findById(
+    req: Request<
+      PBTypes.partner.api.v1.teamServices.GET.ParamsSingle,
+      PBTypes.partner.api.v1.teamServices.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teamServices.GET.ResponseBodySingle>
+  ): Promise<Response<PBTypes.partner.api.v1.teamServices.GET.ResponseBodySingle>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const teamService = await this.teamServiceService.findById(uid);
 
       if (!teamService) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Team service not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Team service not found");
       }
 
       const apiResponse = {
@@ -165,7 +173,13 @@ export class TeamServiceController {
    *         description: List of team service assignments
    */
   @Get("/")
-  public async findAll(req: Request, res: Response): Promise<Response> {
+  public async findAll(
+    req: Request<
+      PBTypes.partner.api.v1.teamServices.GET.Params,
+      PBTypes.partner.api.v1.teamServices.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teamServices.GET.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.teamServices.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const team_id = req.query.team_id as string | undefined;
@@ -214,20 +228,20 @@ export class TeamServiceController {
    *         description: Team service not found
    */
   @Delete("/:uid")
-  public async delete(req: Request, res: Response): Promise<Response> {
+  public async delete(
+    req: Request<
+      PBTypes.partner.api.v1.teamServices.DELETE.Params,
+      PBTypes.partner.api.v1.teamServices.DELETE.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teamServices.DELETE.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.teamServices.DELETE.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const success = await this.teamServiceService.delete(uid);
 
       if (!success) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Team service not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Team service not found");
       }
 
       const apiResponse = {

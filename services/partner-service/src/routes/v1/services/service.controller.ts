@@ -10,11 +10,12 @@ import {
   Containers,
 } from "@giusmento/mangojs-core";
 import { ServiceService } from "../../../services/service.service";
-import {
-  CreateServiceRequest,
-  UpdateServiceRequest,
-} from "../../../types/types";
 import { partnerContainer } from "../../../inversify.config";
+
+// Import API types from package
+import type * as PBTypes from "@giusmento/pulcherbook-types";
+type ServicePost = PBTypes.partner.entities.ServicePost;
+type ServicePut = PBTypes.partner.entities.ServicePut;
 
 // Resolve service from container
 const serviceService = partnerContainer.get<ServiceService>(ServiceService, {
@@ -75,10 +76,16 @@ export class ServiceController {
    *         description: Invalid request data
    */
   @Post("/")
-  public async create(req: Request, res: Response): Promise<Response> {
+  public async create(
+    req: Request<
+      PBTypes.partner.api.v1.services.POST.Params,
+      PBTypes.partner.api.v1.services.POST.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.services.POST.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.services.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const data: CreateServiceRequest = req.body;
+      const data: ServicePost = req.body;
       const service = await this.serviceService.create(data);
 
       const apiResponse = {
@@ -115,20 +122,20 @@ export class ServiceController {
    *         description: Service not found
    */
   @Get("/:uid")
-  public async findById(req: Request, res: Response): Promise<Response> {
+  public async findById(
+    req: Request<
+      PBTypes.partner.api.v1.services.GET.ParamsSingle,
+      PBTypes.partner.api.v1.services.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.services.GET.ResponseBodySingle>
+  ): Promise<Response<PBTypes.partner.api.v1.services.GET.ResponseBodySingle>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const service = await this.serviceService.findById(uid);
 
       if (!service) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Service not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Service not found");
       }
 
       const apiResponse = {
@@ -174,7 +181,13 @@ export class ServiceController {
    *         description: List of services
    */
   @Get("/")
-  public async findAll(req: Request, res: Response): Promise<Response> {
+  public async findAll(
+    req: Request<
+      PBTypes.partner.api.v1.services.GET.Params,
+      PBTypes.partner.api.v1.services.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.services.GET.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.services.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const partner_id = req.query.partner_id as string | undefined;
@@ -240,21 +253,21 @@ export class ServiceController {
    *         description: Service not found
    */
   @Put("/:uid")
-  public async update(req: Request, res: Response): Promise<Response> {
+  public async update(
+    req: Request<
+      PBTypes.partner.api.v1.services.PUT.Params,
+      PBTypes.partner.api.v1.services.PUT.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.services.PUT.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.services.PUT.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const data: UpdateServiceRequest = req.body;
+      const data: ServicePut = req.body;
       const service = await this.serviceService.update(uid, data);
 
       if (!service) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Service not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Service not found");
       }
 
       const apiResponse = {
@@ -291,20 +304,20 @@ export class ServiceController {
    *         description: Service not found
    */
   @Delete("/:uid")
-  public async delete(req: Request, res: Response): Promise<Response> {
+  public async delete(
+    req: Request<
+      PBTypes.partner.api.v1.services.DELETE.Params,
+      PBTypes.partner.api.v1.services.DELETE.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.services.DELETE.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.services.DELETE.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
       const success = await this.serviceService.delete(uid);
 
       if (!success) {
-        const apiResponse = {
-          ok: false,
-          timestamp: logRequest.timestamp,
-          requestId: logRequest.requestId,
-          error: "Service not found",
-        };
-        return res.status(404).send(apiResponse);
+        throw new errors.APIError(404, "NOT_FOUND", "Service not found");
       }
 
       const apiResponse = {
