@@ -50,6 +50,31 @@ sequenceDiagram
     end
     deactivate Controller
 
+    Note over Client,Database: Example: Create Shop
+
+    Client->>Controller: POST /api/v1/partners/:partner_uid/shops
+    activate Controller
+    Controller->>Controller: Create LogRequest
+    Controller->>Service: findByExternalUid(partner_uid)
+    activate Service
+    Service->>Repository: findOne(external_uid)
+    Repository->>Database: SELECT partner
+    Database-->>Repository: Partner record
+    Repository-->>Service: Partner entity
+    deactivate Service
+    Controller->>Service: create(shopData)
+    activate Service
+    Service->>Repository: create(shopData)
+    Service->>Repository: save(shop)
+    Repository->>Database: INSERT INTO shops
+    Database-->>Repository: Shop record
+    Repository-->>Service: Shop entity
+    deactivate Service
+    Service-->>Controller: Shop
+    Controller->>Controller: Build API response
+    Controller-->>Client: 201 Created { ok, timestamp, requestId, data }
+    deactivate Controller
+
     Note over Client,Database: Example: Check Appointment Availability
 
     Client->>Controller: POST /api/v1/appointments/check-availability

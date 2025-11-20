@@ -12,6 +12,7 @@ import {
 import { Partner } from "./Partner";
 import { TeamMember } from "./TeamMember";
 import { TeamService } from "./TeamService";
+import { Shop } from "./Shop";
 
 export enum TeamStatus {
   ACTIVE = "active",
@@ -47,12 +48,6 @@ export class Team {
   updated_at: Date;
 
   // Relations
-  @ManyToOne(() => Partner, (partner) => partner.teams, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn({ name: "partner_id" })
-  partner: Partner;
-
   @OneToMany(() => TeamMember, (member) => member.team)
   members: TeamMember[];
 

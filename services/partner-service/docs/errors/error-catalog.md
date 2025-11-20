@@ -21,6 +21,7 @@ All errors use the MangoJS `errors.APIError` class from `@giusmento/mangojs-core
 | HTTP Error Code | Error Code                 | Error Name              | Message                           | Cause                  | Resolution            |
 | --------------- | -------------------------- | ----------------------- | --------------------------------- | ---------------------- | --------------------- |
 | 404             | ERR_PARTNER_NOT_FOUND      | Partner Not Found       | "Partner not found"               | Invalid partner ID     | Verify partner ID     |
+| 404             | ERR_SHOP_NOT_FOUND         | Shop Not Found          | "Shop not found"                  | Invalid shop ID        | Verify shop ID        |
 | 404             | ERR_TEAM_NOT_FOUND         | Team Not Found          | "Team not found"                  | Invalid team ID        | Verify team ID        |
 | 404             | ERR_MEMBER_NOT_FOUND       | Team Member Not Found   | "Team member not found"           | Invalid team member ID | Verify team member ID |
 | 404             | ERR_SERVICE_NOT_FOUND      | Service Not Found       | "Service not found"               | Invalid service ID     | Verify service ID     |

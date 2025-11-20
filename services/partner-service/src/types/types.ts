@@ -19,19 +19,21 @@ export interface CreatePartnerRequest {
 }
 
 export interface UpdatePartnerRequest {
-  company_name?: string;
-  description?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  postal_code?: string;
-  latitude?: number;
-  longitude?: number;
-  phone?: string;
-  email?: string;
+  company_name: string;
+  description: string;
+  business_type: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  postal_code: string;
+  latitude: number;
+  longitude: number;
+  phone: string;
+  email: string;
   website?: string;
-  status?: string;
+  instagram?: string;
+  status: string;
 }
 
 export interface SearchPartnersRequest {
@@ -161,6 +163,10 @@ export interface TimeSlot {
   end_time: string;
   available: boolean;
 }
+
+// Shop types - MIGRATED to packages/types/src/partner/requests/shop.requests.ts
+// Use: import type * as PBTypes from "@giusmento/pulcherbook-types";
+// Then: PBTypes.partner.requests.shop.CreateShopRequest
 
 // Profile Completion types
 export interface ProfileCompletionResponse {

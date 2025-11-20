@@ -13,6 +13,7 @@ import {
   ProfileCompletionResponse,
 } from "../types/types";
 import * as enums from "../catalog/enums";
+import type * as PBTypes from "@giusmento/pulcherbook-types";
 
 @injectable()
 export class PartnerService {
@@ -28,7 +29,9 @@ export class PartnerService {
    * @returns Promise resolving to the created partner
    * @throws {APIError} 400 BAD_REQUEST if company name or owner user ID is missing
    */
-  public async create(data: CreatePartnerRequest): Promise<models.Partner> {
+  public async create(
+    data: CreatePartnerRequest
+  ): Promise<PBTypes.partner.entities.Partner> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         // Validation
@@ -53,7 +56,7 @@ export class PartnerService {
         return partner;
       }
     );
-    return response as models.Partner;
+    return response as PBTypes.partner.entities.Partner;
   }
 
   /**
@@ -63,22 +66,33 @@ export class PartnerService {
    * @returns Promise resolving to the partner with teams, services, and media
    * @throws {APIError} 404 NOT_FOUND if partner doesn't exist
    */
-  public async findById(uid: string): Promise<models.Partner> {
+  public async findByExternalUid(
+    uid: string
+  ): Promise<PBTypes.partner.entities.Partner> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         const partner = await em.findOne(models.Partner, {
-          where: { uid },
-          relations: ["teams", "services", "media"],
+          where: { external_uid: uid },
+          relations: ["business_type"],
         });
 
         if (!partner) {
           throw new errors.APIError(404, "NOT_FOUND", "Partner not found");
         }
 
-        return partner;
+        return {
+          ...partner,
+          business_type: partner.business_type
+            ? {
+                uid: partner.business_type.uid,
+                name: partner.business_type.name,
+                description: partner.business_type.description,
+              }
+            : null,
+        };
       }
     );
-    return response as models.Partner;
+    return response as PBTypes.partner.entities.Partner;
   }
 
   /**
@@ -91,7 +105,7 @@ export class PartnerService {
   public async findAll(
     limit: number = 20,
     offset: number = 0
-  ): Promise<models.Partner[]> {
+  ): Promise<PBTypes.partner.entities.Partner[]> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         return await em.find(models.Partner, {
@@ -101,7 +115,7 @@ export class PartnerService {
         });
       }
     );
-    return response as models.Partner[];
+    return response as PBTypes.partner.entities.Partner[];
   }
 
   /**
@@ -114,12 +128,26 @@ export class PartnerService {
    */
   public async update(
     uid: string,
-    data: UpdatePartnerRequest
-  ): Promise<models.Partner> {
+    data: Partial<UpdatePartnerRequest>
+  ): Promise<PBTypes.partner.entities.Partner> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
+        // get business type
+        const businessType = await em.findOne(models.BusinessType, {
+          where: { uid: data.business_type },
+        });
+        if (!businessType) {
+          throw new errors.APIError(
+            400,
+            "BAD_REQUEST",
+            `Invalid business type: ${data.business_type}`
+          );
+        }
+
+        // Update partner
         const update = {
           company_name: data.company_name,
+          business_type: businessType,
           description: data.description,
           address: data.address,
           city: data.city,
@@ -131,6 +159,7 @@ export class PartnerService {
           phone: data.phone,
           email: data.email,
           website: data.website,
+          instagram: data.instagram,
         };
         const partner = await em.update(
           models.Partner,
@@ -141,7 +170,7 @@ export class PartnerService {
         return partner;
       }
     );
-    return response as models.Partner;
+    return response as PBTypes.partner.entities.Partner;
   }
 
   /**
@@ -176,7 +205,7 @@ export class PartnerService {
    */
   public async search(
     params: SearchPartnersRequest
-  ): Promise<models.Partner[]> {
+  ): Promise<PBTypes.partner.entities.Partner[]> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         const query = em
@@ -220,7 +249,7 @@ export class PartnerService {
         return await query.getMany();
       }
     );
-    return response as models.Partner[];
+    return response as PBTypes.partner.entities.Partner[];
   }
 
   /**
@@ -254,17 +283,6 @@ export class PartnerService {
             uid: partner.uid,
             company_name: partner.company_name,
           },
-          teams: partner.teams.map((team) => ({
-            uid: team.uid,
-            name: team.name,
-            services: team.teamServices.map((ts) => ts.service),
-            members: team.members.map((member) => ({
-              uid: member.uid,
-              user_id: member.user_id,
-              role: member.role,
-              availabilities: member.availabilities,
-            })),
-          })),
         };
       }
     );
@@ -298,7 +316,7 @@ export class PartnerService {
         ];
 
         const partner = await em.findOne(models.Partner, {
-          where: { uid },
+          where: { external_uid: uid },
         });
 
         if (!partner) {

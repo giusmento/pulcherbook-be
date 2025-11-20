@@ -11,13 +11,50 @@ Types are organized per entity in `src/types/entities/`. Each entity has:
 
 ---
 
+### business_types
+
+| Entity       | Type Name         | Description                             | File                                        |
+| ------------ | ----------------- | --------------------------------------- | ------------------------------------------- |
+| BusinessType | BusinessType      | Full business type entity from database | `packages/types/src/partner/entities/`      |
+| BusinessType | BusinessTypeShort | Short version for API responses         | `packages/types/src/partner/entities/`      |
+
+---
+
 ### partner
 
 | Entity  | Type Name   | Description                       | File                                     |
 | ------- | ----------- | --------------------------------- | ---------------------------------------- |
-| Partner | Partner     | Full partner entity from database | `src/types/entities/partner.type.ts`     |
-| Partner | PartnerPost | DTO for creating new partners     | `src/types/entities/partner.type.ts`     |
-| Partner | PartnerPut  | DTO for updating partners         | `src/types/entities/partner.type.ts`     |
+| Partner | Partner     | Full partner entity from database | `packages/types/src/partner/entities/`   |
+| Partner | PartnerPost | DTO for creating new partners     | `packages/types/src/partner/entities/`   |
+| Partner | PartnerPut  | DTO for updating partners         | `packages/types/src/partner/entities/`   |
+
+---
+
+### shops
+
+| Entity | Type Name | Description                    | File                                   |
+| ------ | --------- | ------------------------------ | -------------------------------------- |
+| Shop   | Shop      | Full shop entity from database | `packages/types/src/partner/entities/` |
+| Shop   | ShopPost  | DTO for creating new shops     | `packages/types/src/partner/entities/` |
+| Shop   | ShopPut   | DTO for updating shops         | `packages/types/src/partner/entities/` |
+
+---
+
+### shop_working_hours
+
+| Entity            | Type Name              | Description                                   | File                                   |
+| ----------------- | ---------------------- | --------------------------------------------- | -------------------------------------- |
+| ShopWorkingHours  | ShopWorkingHours       | Full shop working hours entity from database  | `src/db/models/ShopWorkingHours.ts`    |
+| ShopWorkingHours  | ShopWorkingHoursPost   | DTO for creating shop working hours           | `src/db/models/ShopWorkingHours.ts`    |
+
+---
+
+### shop_special_hours
+
+| Entity           | Type Name             | Description                                  | File                                   |
+| ---------------- | --------------------- | -------------------------------------------- | -------------------------------------- |
+| ShopSpecialHours | ShopSpecialHours      | Full shop special hours entity from database | `src/db/models/ShopSpecialHours.ts`    |
+| ShopSpecialHours | ShopSpecialHoursPost  | DTO for creating shop special hours          | `src/db/models/ShopSpecialHours.ts`    |
 
 ---
 
@@ -99,11 +136,13 @@ Legacy types defined in `src/types/types.ts` for backward compatibility. New cod
 
 ## Enum Values
 
-| Enum Name         | Values                                                      | Usage                  |
-| ----------------- | ----------------------------------------------------------- | ---------------------- |
-| PartnerStatus     | `ACTIVE`, `INACTIVE`, `SUSPENDED`                           | Partner account status |
-| TeamStatus        | `ACTIVE`, `INACTIVE`                                        | Team status            |
-| ServiceStatus     | `ACTIVE`, `INACTIVE`                                        | Service status         |
-| MediaType         | `LOGO`, `COVER`, `GALLERY`                                  | Company media type     |
-| AppointmentStatus | `PENDING`, `CONFIRMED`, `CANCELLED`, `COMPLETED`, `NO_SHOW` | Appointment status     |
-| DayOfWeek         | `0-6` (Sunday-Saturday)                                     | Recurring availability |
+| Enum Name             | Values                                                      | Usage                  |
+| --------------------- | ----------------------------------------------------------- | ---------------------- |
+| BusinessTypeStatus    | `ACTIVE`, `INACTIVE`                                        | Business type status   |
+| PartnerStatus         | `ACTIVE`, `INACTIVE`, `SUSPENDED`                           | Partner account status |
+| ShopStatus            | `ONLINE`, `OFFLINE`, `MAINTENANCE`                          | Shop status            |
+| TeamStatus            | `ACTIVE`, `INACTIVE`                                        | Team status            |
+| ServiceStatus         | `ACTIVE`, `INACTIVE`                                        | Service status         |
+| MediaType             | `LOGO`, `COVER`, `GALLERY`                                  | Company media type     |
+| AppointmentStatus     | `PENDING`, `CONFIRMED`, `CANCELLED`, `COMPLETED`, `NO_SHOW` | Appointment status     |
+| DayOfWeek             | `0-6` (Sunday-Saturday)                                     | Shop recurring hours   |

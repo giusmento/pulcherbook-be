@@ -1,5 +1,6 @@
-import { Request, Response } from "express";
 import {
+  Request,
+  Response,
   Controller,
   Get,
   Post,
@@ -7,12 +8,11 @@ import {
   Delete,
   utils,
   errors,
-  Containers,
   Decorators,
+  Containers,
 } from "@giusmento/mangojs-core";
 import { PartnerService } from "../../../services/partner.service";
 import { SearchPartnersRequest } from "../../../types/types";
-import { partnerContainer } from "../../../inversify.config";
 
 // Import API types from package
 import type * as PBTypes from "@giusmento/pulcherbook-types";
@@ -20,9 +20,12 @@ type PartnerPost = PBTypes.partner.entities.PartnerPost;
 type PartnerPut = PBTypes.partner.entities.PartnerPut;
 
 // Resolve service from container
-const partnerService = partnerContainer.get<PartnerService>(PartnerService, {
-  autobind: true,
-});
+const partnerService = Containers.getContainer().get<PartnerService>(
+  PartnerService,
+  {
+    autobind: true,
+  }
+);
 
 /**
  * @swagger
@@ -32,12 +35,6 @@ const partnerService = partnerContainer.get<PartnerService>(PartnerService, {
  */
 @Controller("/api/v1/partners")
 export class PartnerController {
-  private partnerService: PartnerService;
-
-  constructor() {
-    this.partnerService = partnerService;
-  }
-
   /**
    * @swagger
    * /api/v1/partners:
@@ -92,14 +89,15 @@ export class PartnerController {
   public async create(
     req: Request<
       PBTypes.partner.api.v1.partners.POST.Params,
-      PBTypes.partner.api.v1.partners.POST.RequestBody
+      PBTypes.partner.api.v1.partners.POST.RequestBody,
+      PBTypes.partner.api.v1.partners.POST.QueryParams
     >,
     res: Response<PBTypes.partner.api.v1.partners.POST.ResponseBody>
   ): Promise<Response<PBTypes.partner.api.v1.partners.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const data: PartnerPost = req.body;
-      const partner = await this.partnerService.create(data);
+      const partner = await partnerService.create(data);
 
       const apiResponse = {
         ok: true,
@@ -145,7 +143,7 @@ export class PartnerController {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const partner = await this.partnerService.findById(uid);
+      const partner = await partnerService.findByExternalUid(uid);
 
       if (!partner) {
         throw new errors.APIError(404, "NOT_FOUND", "Partner not found");
@@ -189,7 +187,7 @@ export class PartnerController {
    *         description: List of partners
    */
   @Get("/")
-  @Decorators.auth.HasGroups(["Admin", "Partner"])
+  @Decorators.auth.HasGroups(["Admin"])
   public async findAll(
     req: Request<
       PBTypes.partner.api.v1.partners.GET.Params,
@@ -202,7 +200,7 @@ export class PartnerController {
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = parseInt(req.query.offset as string) || 0;
 
-      const partners = await this.partnerService.findAll(limit, offset);
+      const partners = await partnerService.findAll(limit, offset);
 
       const apiResponse = {
         ok: true,
@@ -282,7 +280,7 @@ export class PartnerController {
     try {
       const { uid } = req.params;
       const data: PartnerPut = req.body;
-      const partner = await this.partnerService.update(uid, data);
+      const partner = await partnerService.update(uid, data);
 
       if (!partner) {
         throw new errors.APIError(404, "NOT_FOUND", "Partner not found");
@@ -333,7 +331,7 @@ export class PartnerController {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const success = await this.partnerService.delete(uid);
+      const success = await partnerService.delete(uid);
 
       if (!success) {
         throw new errors.APIError(404, "NOT_FOUND", "Partner not found");
@@ -393,11 +391,13 @@ export class PartnerController {
       PBTypes.partner.api.v1.partners.search.POST.RequestBody
     >,
     res: Response<PBTypes.partner.api.v1.partners.search.POST.ResponseBody>
-  ): Promise<Response<PBTypes.partner.api.v1.partners.search.POST.ResponseBody>> {
+  ): Promise<
+    Response<PBTypes.partner.api.v1.partners.search.POST.ResponseBody>
+  > {
     const logRequest = new utils.LogRequest(res);
     try {
       const params: SearchPartnersRequest = req.body;
-      const partners = await this.partnerService.search(params);
+      const partners = await partnerService.search(params);
 
       const apiResponse = {
         ok: true,
@@ -439,11 +439,13 @@ export class PartnerController {
       PBTypes.partner.api.v1.partners.availability.GET.RequestBody
     >,
     res: Response<PBTypes.partner.api.v1.partners.availability.GET.ResponseBody>
-  ): Promise<Response<PBTypes.partner.api.v1.partners.availability.GET.ResponseBody>> {
+  ): Promise<
+    Response<PBTypes.partner.api.v1.partners.availability.GET.ResponseBody>
+  > {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const availability = await this.partnerService.getAvailability(uid);
+      const availability = await partnerService.getAvailability(uid);
 
       if (!availability) {
         throw new errors.APIError(404, "NOT_FOUND", "Partner not found");
@@ -510,13 +512,13 @@ export class PartnerController {
       PBTypes.partner.api.v1.partners.isProfileCompleted.GET.RequestBody
     >,
     res: Response<PBTypes.partner.api.v1.partners.isProfileCompleted.GET.ResponseBody>
-  ): Promise<Response<PBTypes.partner.api.v1.partners.isProfileCompleted.GET.ResponseBody>> {
+  ): Promise<
+    Response<PBTypes.partner.api.v1.partners.isProfileCompleted.GET.ResponseBody>
+  > {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const completionStatus = await this.partnerService.checkProfileCompletion(
-        uid
-      );
+      const completionStatus = await partnerService.checkProfileCompletion(uid);
 
       const apiResponse = {
         ok: true,

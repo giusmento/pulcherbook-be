@@ -5,8 +5,13 @@ config:
 flowchart TD
     subgraph PartnerDomain [Partner Management Domain]
         Partner[Partner]
+        Shop[Shop]
+        BusinessType[Business Type]
         CompanyMedia[Company Media]
         Partner -->|has| CompanyMedia
+        Partner -->|owns| Shop
+        Partner -->|categorized as| BusinessType
+        Shop -->|categorized as| BusinessType
     end
 
     subgraph TeamDomain [Team Management Domain]
@@ -19,9 +24,16 @@ flowchart TD
     subgraph ServiceDomain [Service Management Domain]
         Service[Service]
         TeamService[Team-Service Assignment]
-        Partner -->|offers| Service
+        Shop -->|offers| Service
         Team -->|provides| TeamService
         Service -->|assigned to| TeamService
+    end
+
+    subgraph SchedulingDomain [Scheduling Domain]
+        ShopWorkingHours[Shop Working Hours]
+        ShopSpecialHours[Shop Special Hours]
+        Shop -->|has| ShopWorkingHours
+        Shop -->|has| ShopSpecialHours
     end
 
     subgraph BookingDomain [Booking & Scheduling Domain]

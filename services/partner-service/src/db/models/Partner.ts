@@ -9,9 +9,7 @@ import {
   JoinColumn,
   Index,
 } from "typeorm";
-import { Team } from "./Team";
-import { Service } from "./Service";
-import { CompanyMedia } from "./CompanyMedia";
+import { Shop } from "./Shop";
 import { PartnerStatus } from "../../catalog/enums";
 import { BusinessType } from "./BusinessType";
 
@@ -45,12 +43,6 @@ export class Partner {
   @Column({ type: "varchar", length: 20, nullable: true })
   postal_code: string;
 
-  @Column({ type: "decimal", precision: 10, scale: 8, nullable: true })
-  latitude: number;
-
-  @Column({ type: "decimal", precision: 11, scale: 8, nullable: true })
-  longitude: number;
-
   @Column({ type: "varchar", length: 50, nullable: true })
   phone: string;
 
@@ -59,6 +51,9 @@ export class Partner {
 
   @Column({ type: "varchar", length: 255, nullable: true })
   website: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  instagram: string;
 
   @Column({
     type: "enum",
@@ -74,12 +69,9 @@ export class Partner {
   updated_at: Date;
 
   // Relations
-  @OneToMany(() => BusinessType, (businessType) => businessType.partners)
-  businessType: BusinessType;
+  @OneToMany(() => Shop, (shop) => shop.partner)
+  shops: Shop[];
 
-  @OneToMany(() => Team, (team) => team.partner)
-  teams: Team[];
-
-  @OneToMany(() => Service, (service) => service.partner)
-  services: Service[];
+  @ManyToOne(() => BusinessType, (businessType) => businessType.partners)
+  business_type: BusinessType;
 }

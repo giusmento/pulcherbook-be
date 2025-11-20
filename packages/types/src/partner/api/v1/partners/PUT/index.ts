@@ -6,8 +6,7 @@
  */
 
 import { Types } from "@giusmento/mangojs-core";
-import { PartnerPut } from "../../../../entities";
-import { ResponseBodyData } from "..";
+import { Partner, PartnerPut } from "../../../../entities";
 
 export type Params = { uid: string };
 
@@ -19,4 +18,4 @@ export type RequestBody = PartnerPut;
  * @see
  */
 
-export type ResponseBody = Types.v1.api.response.response<ResponseBodyData>;
+export type ResponseBody = Types.v1.api.response.response<Partner>;

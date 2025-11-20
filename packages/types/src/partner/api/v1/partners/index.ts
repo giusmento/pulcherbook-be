@@ -19,8 +19,6 @@ export type ResponseBodyData = Pick<
   | "state"
   | "country"
   | "postal_code"
-  | "latitude"
-  | "longitude"
   | "phone"
   | "email"
   | "website"
@@ -28,6 +26,8 @@ export type ResponseBodyData = Pick<
   | "created_at"
   | "updated_at"
 > & {
-  teams?: Array<Pick<Team, "uid" | "name" | "description" | "status">>;
-  services?: Array<Pick<Service, "uid" | "name" | "description" | "duration_minutes" | "price" | "currency" | "status">>;
+  business_type: {
+    uid: string;
+    name: string;
+  };
 };

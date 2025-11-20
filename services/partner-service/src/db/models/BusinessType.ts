@@ -8,6 +8,7 @@ import {
   ManyToOne,
 } from "typeorm";
 import { Partner } from "./Partner";
+import { Shop } from "./Shop";
 
 export enum BusinessTypeStatus {
   ACTIVE = "active",
@@ -39,8 +40,9 @@ export class BusinessType {
   updated_at: Date;
 
   // Relations
-  @ManyToOne(() => Partner, (partner) => partner.businessType, {
-    onDelete: "SET NULL",
-  })
+  @OneToMany(() => Partner, (partner) => partner.business_type)
   partners: Partner[];
+
+  @OneToMany(() => Shop, (shop) => shop.business_type)
+  shops: Shop[];
 }

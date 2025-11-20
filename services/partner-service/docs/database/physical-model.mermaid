@@ -3,9 +3,16 @@ config:
   layout: elk
 ---
 erDiagram
+    business_types ||--o{ partners : "business_type"
+    business_types ||--o{ shops : "business_type"
+
+    partners ||--o{ shops : "partner_uid"
     partners ||--o{ teams : "partner_id"
-    partners ||--o{ services : "partner_id"
     partners ||--o{ company_media : "partner_id"
+
+    shops ||--o{ services : "shop_uid"
+    shops ||--o{ shop_working_hours : "shop_uid"
+    shops ||--o{ shop_special_hours : "shop_uid"
 
     teams ||--o{ team_members : "team_id"
     teams ||--o{ team_services : "team_id"
@@ -16,10 +23,38 @@ erDiagram
     team_members ||--o{ appointments : "team_member_id"
     team_members ||--o{ team_member_availability : "team_member_id"
 
+    business_types {
+        uuid uid PK "UUID"
+        varchar name UK "NOT NULL, UNIQUE"
+        text description
+        enum status "active/inactive"
+        timestamp created_at
+        timestamp updated_at
+    }
+
     partners {
         uuid uid PK "UUID"
-        varchar owner_user_id UK "Index"
+        uuid external_uid UK "Index"
         varchar company_name "NOT NULL"
+        text description
+        varchar address
+        varchar city
+        varchar state
+        varchar country
+        varchar postal_code
+        varchar phone
+        varchar email
+        varchar website
+        varchar instagram
+        enum status "active/inactive/pending"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    shops {
+        uuid uid PK "UUID"
+        uuid partner_uid FK "Index"
+        varchar shop_name "NOT NULL"
         text description
         varchar address
         varchar city
@@ -31,7 +66,8 @@ erDiagram
         varchar phone
         varchar email
         varchar website
-        enum status "active/inactive/pending"
+        varchar instagram
+        enum status "online/offline/maintenance"
         timestamp created_at
         timestamp updated_at
     }
@@ -59,12 +95,40 @@ erDiagram
     services {
         uuid uid PK "UUID"
         uuid partner_id FK "Index"
+        uuid shop_uid FK
         varchar name "NOT NULL"
         text description
         integer duration_minutes "NOT NULL"
         decimal price "10,2 NOT NULL"
         varchar currency "USD"
         enum status "active/inactive"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    shop_working_hours {
+        uuid uid PK "UUID"
+        uuid shop_uid FK "Index"
+        smallint day_of_week "0-6, Index"
+        time start_time "NOT NULL"
+        time end_time "NOT NULL"
+        smallint slot_order "0"
+        boolean is_active "true"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    shop_special_hours {
+        uuid uid PK "UUID"
+        uuid shop_uid FK "Index"
+        date special_date "Index"
+        boolean is_recurring_annual "false"
+        time start_time "nullable"
+        time end_time "nullable"
+        smallint slot_order "0"
+        boolean is_closed "false"
+        varchar description
+        boolean is_active "true"
         timestamp created_at
         timestamp updated_at
     }

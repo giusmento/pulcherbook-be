@@ -3,6 +3,8 @@
  * These types define the shape of Partner data for API operations
  */
 
+import { BusinessType } from "./common";
+
 /**
  * Full Partner entity with all fields
  */
@@ -11,6 +13,7 @@ export type Partner = {
   external_uid: string;
   company_name: string;
   description: string | null;
+  business_type: BusinessType;
   address: string | null;
   city: string | null;
   state: string | null;

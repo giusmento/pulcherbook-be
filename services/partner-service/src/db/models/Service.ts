@@ -9,14 +9,10 @@ import {
   JoinColumn,
   Index,
 } from "typeorm";
-import { Partner } from "./Partner";
 import { TeamService } from "./TeamService";
 import { Appointment } from "./Appointment";
-
-export enum ServiceStatus {
-  ACTIVE = "active",
-  INACTIVE = "inactive",
-}
+import { Shop } from "./Shop";
+import { ServiceStatus } from "../../catalog/enums";
 
 @Entity({ name: "services", schema: "partner" })
 export class Service {
@@ -56,11 +52,9 @@ export class Service {
   updated_at: Date;
 
   // Relations
-  @ManyToOne(() => Partner, (partner) => partner.services, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn({ name: "partner_id" })
-  partner: Partner;
+  @ManyToOne(() => Shop, (shop) => shop.services)
+  @JoinColumn({ name: "shop_uid" })
+  shop: Shop;
 
   @OneToMany(() => TeamService, (teamService) => teamService.service)
   teamServices: TeamService[];

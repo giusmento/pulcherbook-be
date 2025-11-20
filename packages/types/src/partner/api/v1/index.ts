@@ -7,3 +7,6 @@ export * as companyMedia from "./companyMedia";
 export * as appointments from "./appointments";
 export * as availability from "./availability";
 export * as catalog from "./catalog";
+export * as shops from "./shops";
+export * as workingHours from "./working-hours";
+export * as specialHours from "./special-hours";

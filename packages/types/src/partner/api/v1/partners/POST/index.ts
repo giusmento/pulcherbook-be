@@ -13,6 +13,8 @@ export type Params = undefined;
 
 export type RequestBody = PartnerPost;
 
+export type QueryParams = undefined;
+
 /**
  * RESPONSE
  *

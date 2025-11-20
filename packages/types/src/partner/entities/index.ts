@@ -4,6 +4,9 @@
  */
 
 export * from "./partner.entity";
+export * from "./shop.entity";
+export * from "./working-hours.entity";
+export * from "./special-hours.entity";
 export * from "./team.entity";
 export * from "./team-member.entity";
 export * from "./service.entity";

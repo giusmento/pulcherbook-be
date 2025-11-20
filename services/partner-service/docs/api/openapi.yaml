@@ -24,6 +24,12 @@ servers:
 tags:
   - name: Partners
     description: Partner/company management
+  - name: Shops
+    description: Shop management
+  - name: WorkingHours
+    description: Shop working hours management
+  - name: SpecialHours
+    description: Shop special hours management
   - name: Teams
     description: Team management (TODO)
   - name: TeamMembers
@@ -238,6 +244,186 @@ paths:
         '404':
           description: Partner not found
 
+  /api/v1/partners/{partner_uid}/shops:
+    post:
+      summary: Create a new shop
+      tags: [Shops]
+      parameters:
+        - name: partner_uid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateShopRequest'
+      responses:
+        '201':
+          description: Shop created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shop'
+        '400':
+          description: Invalid request
+
+    get:
+      summary: Get all shops for a partner
+      tags: [Shops]
+      parameters:
+        - name: partner_uid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of shops
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Shop'
+
+  /api/v1/partners/{partner_uid}/shops/{uid}:
+    get:
+      summary: Get shop by ID
+      tags: [Shops]
+      parameters:
+        - name: partner_uid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Shop details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shop'
+        '404':
+          description: Shop not found
+
+    put:
+      summary: Update shop
+      tags: [Shops]
+      parameters:
+        - name: partner_uid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateShopRequest'
+      responses:
+        '200':
+          description: Shop updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shop'
+        '404':
+          description: Shop not found
+
+    delete:
+      summary: Delete shop
+      tags: [Shops]
+      parameters:
+        - name: partner_uid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Shop deleted
+        '404':
+          description: Shop not found
+
+  /api/v1/partners/{partner_uid}/shops/{uid}/enable:
+    post:
+      summary: Enable shop (set status to ONLINE)
+      tags: [Shops]
+      parameters:
+        - name: partner_uid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Shop enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shop'
+        '404':
+          description: Shop not found
+
+  /api/v1/partners/{partner_uid}/shops/{uid}/disable:
+    post:
+      summary: Disable shop (set status to OFFLINE)
+      tags: [Shops]
+      parameters:
+        - name: partner_uid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Shop disabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shop'
+        '404':
+          description: Shop not found
+
 components:
   schemas:
     Partner:
@@ -389,6 +575,198 @@ components:
                       type: array
                       items:
                         type: object
+
+    Shop:
+      type: object
+      properties:
+        uid:
+          type: string
+        partner_uid:
+          type: string
+        shop_name:
+          type: string
+        description:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        postal_code:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        phone:
+          type: string
+        email:
+          type: string
+        website:
+          type: string
+        instagram:
+          type: string
+        status:
+          type: string
+          enum: [online, offline, maintenance]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateShopRequest:
+      type: object
+      required:
+        - shop_name
+      properties:
+        shop_name:
+          type: string
+        description:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        postal_code:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        phone:
+          type: string
+        email:
+          type: string
+        website:
+          type: string
+        instagram:
+          type: string
+
+    UpdateShopRequest:
+      type: object
+      properties:
+        shop_name:
+          type: string
+        description:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        postal_code:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        phone:
+          type: string
+        email:
+          type: string
+        website:
+          type: string
+        instagram:
+          type: string
+        status:
+          type: string
+          enum: [online, offline, maintenance]
+
+    ShopWorkingHours:
+      type: object
+      properties:
+        uid:
+          type: string
+        shop_uid:
+          type: string
+        day_of_week:
+          type: integer
+          minimum: 0
+          maximum: 6
+          description: 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        start_time:
+          type: string
+          format: time
+          example: "08:00:00"
+        end_time:
+          type: string
+          format: time
+          example: "18:00:00"
+        slot_order:
+          type: integer
+          default: 0
+        is_active:
+          type: boolean
+          default: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ShopSpecialHours:
+      type: object
+      properties:
+        uid:
+          type: string
+        shop_uid:
+          type: string
+        special_date:
+          type: string
+          format: date
+          example: "2025-12-25"
+        is_recurring_annual:
+          type: boolean
+          default: false
+          description: If true, applies every year
+        start_time:
+          type: string
+          format: time
+          example: "10:00:00"
+          nullable: true
+        end_time:
+          type: string
+          format: time
+          example: "14:00:00"
+          nullable: true
+        slot_order:
+          type: integer
+          default: 0
+        is_closed:
+          type: boolean
+          default: false
+          description: If true, shop is closed (overrides regular hours)
+        description:
+          type: string
+          example: "Christmas Day"
+        is_active:
+          type: boolean
+          default: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
 
     Error:
       type: object
