@@ -6,12 +6,14 @@
  */
 
 import { Types } from "@giusmento/mangojs-core";
-import { ShopWorkingHoursPut } from "../../../../entities";
 import { ResponseBodyData } from "..";
+import { UpsertWorkingHoursRequest } from "../../../../requests/working-hours.requests";
 
-export type Params = { shop_uid: string; uid: string };
+export type Params = { partner_uid: string; shop_uid: string };
 
-export type RequestBody = ShopWorkingHoursPut;
+export type RequestBody = UpsertWorkingHoursRequest;
+
+export type QueryParams = {};
 
 /**
  * RESPONSE
@@ -19,4 +21,6 @@ export type RequestBody = ShopWorkingHoursPut;
  * @see
  */
 
-export type ResponseBody = Types.v1.api.response.response<ResponseBodyData>;
+export type ResponseBody = Types.v1.api.response.response<
+  Array<ResponseBodyData>
+>;

@@ -20,17 +20,6 @@ export type ShopWorkingHours = {
 };
 
 /**
- * API POST request body - Fields required when creating new working hours
- * Derived from ShopWorkingHours entity
- */
-export type ShopWorkingHoursPost = Pick<
-  ShopWorkingHours,
-  "day_of_week" | "start_time" | "end_time"
-> & {
-  slot_order?: number; // Optional with default value
-};
-
-/**
  * API PUT request body - Fields that can be updated on existing working hours
  * Derived from ShopWorkingHours entity
  */

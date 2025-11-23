@@ -5,31 +5,22 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  OneToMany,
   JoinColumn,
   Index,
-  Unique,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
 import { Team } from "./Team";
-import { Appointment } from "./Appointment";
-import { TeamMemberAvailability } from "./TeamMemberAvailability";
+import { Partner } from "./Partner";
 
 @Entity({ name: "team_members", schema: "partner" })
-@Unique(["team_id", "user_id"])
 export class TeamMember {
   @PrimaryGeneratedColumn("uuid")
   uid: string;
 
-  @Column({ type: "uuid" })
-  @Index()
-  team_id: string;
-
   @Column({ type: "varchar", length: 255 })
   @Index()
-  user_id: string;
-
-  @Column({ type: "varchar", length: 50, default: "member" })
-  role: string;
+  external_uid: string;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   joined_at: Date;
@@ -41,18 +32,13 @@ export class TeamMember {
   updated_at: Date;
 
   // Relations
-  @ManyToOne(() => Team, (team) => team.members, {
-    onDelete: "CASCADE",
+  @ManyToOne(() => Partner, (partner) => partner.uid)
+  @JoinColumn({ name: "partner_uid" })
+  partner: Partner;
+
+  @ManyToMany(() => Team)
+  @JoinTable({
+    name: "team_members_teams",
   })
-  @JoinColumn({ name: "team_id" })
-  team: Team;
-
-  @OneToMany(() => Appointment, (appointment) => appointment.teamMember)
-  appointments: Appointment[];
-
-  @OneToMany(
-    () => TeamMemberAvailability,
-    (availability) => availability.teamMember
-  )
-  availabilities: TeamMemberAvailability[];
+  teams: Team[];
 }

@@ -16,16 +16,14 @@ import { SearchPartnersRequest } from "../../../types/types";
 
 // Import API types from package
 import type * as PBTypes from "@giusmento/pulcherbook-types";
+import { partnerContainer } from "../../../inversify.config";
 type PartnerPost = PBTypes.partner.entities.PartnerPost;
 type PartnerPut = PBTypes.partner.entities.PartnerPut;
 
 // Resolve service from container
-const partnerService = Containers.getContainer().get<PartnerService>(
-  PartnerService,
-  {
-    autobind: true,
-  }
-);
+const partnerService = partnerContainer.get<PartnerService>(PartnerService, {
+  autobind: true,
+});
 
 /**
  * @swagger

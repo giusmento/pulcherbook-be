@@ -2,16 +2,16 @@
  * REQUEST
  * @see
  *
- * REQUEST: POST /api/v1/teams
+ * REQUEST: POST /api/v1/partners/:partner_uid/teams
  */
 
 import { Types } from "@giusmento/mangojs-core";
-import { TeamPost } from "../../../../entities";
+import { CreateTeamRequest } from "../../../../requests/team.requests";
 import { ResponseBodyData } from "..";
 
-export type Params = undefined;
+export type Params = { partner_uid: string };
 
-export type RequestBody = TeamPost;
+export type RequestBody = CreateTeamRequest;
 
 /**
  * RESPONSE

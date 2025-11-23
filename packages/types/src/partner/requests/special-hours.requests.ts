@@ -10,17 +10,11 @@ import type { ShopSpecialHoursPost, ShopSpecialHoursPut } from "../entities";
  * Extends API POST type with service-specific fields
  * Note: special_date is Date object (controller converts from API string)
  */
-export interface CreateSpecialHoursRequest
-  extends Omit<ShopSpecialHoursPost, "special_date"> {
-  special_date: Date; // Service layer uses Date object (API uses string)
-}
+export type CreateSpecialHoursRequest = ShopSpecialHoursPost;
 
 /**
  * Service layer: Update special hours request
  * Similar to API PUT but with Date type for special_date
  * Note: special_date is Date object (controller converts from API string)
  */
-export interface UpdateSpecialHoursRequest
-  extends Omit<ShopSpecialHoursPut, "special_date"> {
-  special_date?: Date; // Service layer uses Date object (API uses string)
-}
+export type UpdateSpecialHoursRequest = ShopSpecialHoursPut;

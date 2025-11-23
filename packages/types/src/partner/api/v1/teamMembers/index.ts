@@ -8,9 +8,11 @@ export * as upcomingAppointments from "./upcomingAppointments";
 export type ResponseBodyData = Pick<
   TeamMember,
   | "uid"
-  | "team_id"
-  | "user_id"
-  | "role"
+  | "firstName"
+  | "lastName"
+  | "email"
+  | "phone"
+  | "external_uid"
   | "joined_at"
   | "created_at"
   | "updated_at"

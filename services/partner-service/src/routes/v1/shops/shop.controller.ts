@@ -47,12 +47,18 @@ export class ShopController {
 
   /**
    * @swagger
-   * /api/v1/shops:
+   * /api/v1/partners/{partner_uid}/shops:
    *   post:
    *     summary: Create a new shop
    *     tags: [Shops]
    *     security:
    *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: partner_uid
+   *         required: true
+   *         schema:
+   *           type: string
    *     requestBody:
    *       required: true
    *       content:
@@ -60,11 +66,8 @@ export class ShopController {
    *           schema:
    *             type: object
    *             required:
-   *               - partner_uid
    *               - shop_name
    *             properties:
-   *               partner_uid:
-   *                 type: string
    *               shop_name:
    *                 type: string
    *               description:
@@ -137,13 +140,18 @@ export class ShopController {
 
   /**
    * @swagger
-   * /api/v1/shops/{uid}:
+   * /api/v1/partners/{partner_uid}/shops/{uid}:
    *   get:
    *     summary: Get shop by ID
    *     tags: [Shops]
    *     security:
    *       - bearerAuth: []
    *     parameters:
+   *       - in: path
+   *         name: partner_uid
+   *         required: true
+   *         schema:
+   *           type: string
    *       - in: path
    *         name: uid
    *         required: true
@@ -156,6 +164,7 @@ export class ShopController {
    *         description: Shop not found
    */
   @Get("/:uid")
+  @Decorators.auth.NoAuth()
   public async findById(
     req: Request<
       PBTypes.partner.api.v1.shops.GET.ParamsSingle,
@@ -187,13 +196,18 @@ export class ShopController {
 
   /**
    * @swagger
-   * /api/v1/shops:
+   * /api/v1/partners/{partner_uid}/shops:
    *   get:
    *     summary: Get all shops
    *     tags: [Shops]
    *     security:
    *       - bearerAuth: []
    *     parameters:
+   *       - in: path
+   *         name: partner_uid
+   *         required: true
+   *         schema:
+   *           type: string
    *       - in: query
    *         name: limit
    *         schema:
@@ -204,15 +218,12 @@ export class ShopController {
    *         schema:
    *           type: integer
    *           default: 0
-   *       - in: query
-   *         name: partner_uid
-   *         schema:
-   *           type: string
    *     responses:
    *       200:
    *         description: List of shops
    */
   @Get("/")
+  @Decorators.auth.NoAuth()
   public async findAll(
     req: Request<
       PBTypes.partner.api.v1.shops.GET.Params,
@@ -223,7 +234,8 @@ export class ShopController {
   ): Promise<Response<PBTypes.partner.api.v1.shops.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { limit = 20, offset = 0, partner_uid } = req.params as any;
+      const { partner_uid } = req.params as any;
+      const { limit = 20, offset = 0 } = req.query as any;
       const shops = await this.shopService.findAllByPartner(
         partner_uid,
         Number(limit),
@@ -244,13 +256,18 @@ export class ShopController {
 
   /**
    * @swagger
-   * /api/v1/shops/{uid}:
+   * /api/v1/partners/{partner_uid}/shops/{uid}:
    *   put:
    *     summary: Update shop
    *     tags: [Shops]
    *     security:
    *       - bearerAuth: []
    *     parameters:
+   *       - in: path
+   *         name: partner_uid
+   *         required: true
+   *         schema:
+   *           type: string
    *       - in: path
    *         name: uid
    *         required: true
@@ -331,13 +348,18 @@ export class ShopController {
 
   /**
    * @swagger
-   * /api/v1/shops/{uid}:
+   * /api/v1/partners/{partner_uid}/shops/{uid}:
    *   delete:
    *     summary: Delete shop
    *     tags: [Shops]
    *     security:
    *       - bearerAuth: []
    *     parameters:
+   *       - in: path
+   *         name: partner_uid
+   *         required: true
+   *         schema:
+   *           type: string
    *       - in: path
    *         name: uid
    *         required: true
@@ -378,13 +400,18 @@ export class ShopController {
 
   /**
    * @swagger
-   * /api/v1/shops/{uid}/enable:
-   *   put:
+   * /api/v1/partners/{partner_uid}/shops/{uid}/enable:
+   *   post:
    *     summary: Enable shop (set status to ONLINE)
    *     tags: [Shops]
    *     security:
    *       - bearerAuth: []
    *     parameters:
+   *       - in: path
+   *         name: partner_uid
+   *         required: true
+   *         schema:
+   *           type: string
    *       - in: path
    *         name: uid
    *         required: true
@@ -425,13 +452,18 @@ export class ShopController {
 
   /**
    * @swagger
-   * /api/v1/shops/{uid}/disable:
-   *   put:
+   * /api/v1/partners/{partner_uid}/shops/{uid}/disable:
+   *   post:
    *     summary: Disable shop (set status to OFFLINE)
    *     tags: [Shops]
    *     security:
    *       - bearerAuth: []
    *     parameters:
+   *       - in: path
+   *         name: partner_uid
+   *         required: true
+   *         schema:
+   *           type: string
    *       - in: path
    *         name: uid
    *         required: true

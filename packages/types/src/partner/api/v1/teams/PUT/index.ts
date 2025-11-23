@@ -2,16 +2,16 @@
  * REQUEST
  * @see
  *
- * REQUEST: PUT /api/v1/teams/:uid
+ * REQUEST: PUT /api/v1/partners/:partner_uid/teams/:uid
  */
 
 import { Types } from "@giusmento/mangojs-core";
-import { TeamPut } from "../../../../entities";
+import { UpdateTeamRequest } from "../../../../requests/team.requests";
 import { ResponseBodyData } from "..";
 
-export type Params = { uid: string };
+export type Params = { partner_uid: string; uid: string };
 
-export type RequestBody = TeamPut;
+export type RequestBody = UpdateTeamRequest;
 
 /**
  * RESPONSE

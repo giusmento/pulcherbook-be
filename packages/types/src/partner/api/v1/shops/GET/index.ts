@@ -10,7 +10,7 @@ import { Types } from "@giusmento/mangojs-core";
 import { ResponseBodyData } from "..";
 
 // Get all shops
-export type Params = undefined;
+export type Params = { partnerUid: string };
 export type RequestBody = {};
 export type QueryParams = undefined;
 export type ResponseBody = Types.v1.api.response.response<

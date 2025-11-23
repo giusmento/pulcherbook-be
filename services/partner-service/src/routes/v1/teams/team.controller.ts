@@ -15,6 +15,8 @@ import { partnerContainer } from "../../../inversify.config";
 
 // Import API types from package
 import type * as PBTypes from "@giusmento/pulcherbook-types";
+import { authUser } from "node_modules/@giusmento/mangojs-core/dist/services/iam_server/src/types/entities";
+import { AuthUserType } from "@giusmento/mangojs-core/types/enums";
 type TeamPost = PBTypes.partner.entities.TeamPost;
 type TeamPut = PBTypes.partner.entities.TeamPut;
 
@@ -29,7 +31,7 @@ const teamService = partnerContainer.get<TeamService>(TeamService, {
  *   name: Teams
  *   description: Team management endpoints
  */
-@Controller("/api/v1/teams")
+@Controller("/api/v1/partners/:partner_uid/teams")
 export class TeamController {
   private teamService: TeamService;
 
@@ -39,7 +41,7 @@ export class TeamController {
 
   /**
    * @swagger
-   * /api/v1/teams:
+   * /api/v1/partners/:partner_uid/teams:
    *   post:
    *     summary: Create a new team
    *     tags: [Teams]
@@ -68,7 +70,7 @@ export class TeamController {
    *         description: Invalid request data
    */
   @Post("/")
-  @Decorators.auth.HasGroups(["Admin", "Partner"])
+  //@Decorators.auth.HasUserType([AuthUserType.PARTNER])
   public async create(
     req: Request<
       PBTypes.partner.api.v1.teams.POST.Params,
@@ -78,8 +80,9 @@ export class TeamController {
   ): Promise<Response<PBTypes.partner.api.v1.teams.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const data: TeamPost = req.body;
-      const team = await this.teamService.create(data);
+      const data = req.body;
+      const partner_uid = req.params.partner_uid;
+      const team = await this.teamService.create(partner_uid, data);
 
       const apiResponse = {
         ok: true,
@@ -145,7 +148,7 @@ export class TeamController {
 
   /**
    * @swagger
-   * /api/v1/teams:
+   * /api/v1/partners/:partner_uid/teams:
    *   get:
    *     summary: Get all teams
    *     tags: [Teams]
@@ -174,7 +177,7 @@ export class TeamController {
    *         description: List of teams
    */
   @Get("/")
-  @Decorators.auth.HasGroups(["Admin", "Partner"])
+  //@Decorators.auth.HasGroups(["Admin", "Partner"])
   public async findAll(
     req: Request<
       PBTypes.partner.api.v1.teams.GET.Params,
@@ -237,7 +240,7 @@ export class TeamController {
    *         description: Team not found
    */
   @Put("/:uid")
-  @Decorators.auth.HasGroups(["Admin", "Partner"])
+  //@Decorators.auth.HasGroups(["Admin", "Partner"])
   public async update(
     req: Request<
       PBTypes.partner.api.v1.teams.PUT.Params,
@@ -289,7 +292,7 @@ export class TeamController {
    *         description: Team not found
    */
   @Delete("/:uid")
-  @Decorators.auth.HasGroups(["Admin", "Partner"])
+  //@Decorators.auth.HasGroups(["Admin", "Partner"])
   public async delete(
     req: Request<
       PBTypes.partner.api.v1.teams.DELETE.Params,
@@ -310,7 +313,7 @@ export class TeamController {
         ok: true,
         timestamp: logRequest.timestamp,
         requestId: logRequest.requestId,
-        data: { message: "Team deleted successfully" },
+        data: { ok: true },
       };
       return res.status(200).send(apiResponse);
     } catch (error: unknown) {

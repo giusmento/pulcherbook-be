@@ -42,9 +42,9 @@ export class TeamMemberAvailability {
   updated_at: Date;
 
   // Relations
-  @ManyToOne(() => TeamMember, (member) => member.availabilities, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn({ name: "team_member_id" })
-  teamMember: TeamMember;
+  //@ManyToOne(() => TeamMember, (member) => member.availabilities, {
+  //  onDelete: "CASCADE",
+  //})
+  //@JoinColumn({ name: "team_member_id" })
+  //teamMember: TeamMember;
 }

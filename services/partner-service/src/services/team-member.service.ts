@@ -6,7 +6,11 @@ import {
   IPersistenceContext,
 } from "@giusmento/mangojs-core";
 import * as models from "../db/models";
-import { CreateTeamMemberRequest } from "../types/types";
+
+import type * as PBTypes from "@giusmento/pulcherbook-types";
+
+type CreateTeamMemberRequest =
+  PBTypes.partner.requests.teamMember.CreateTeamMemberRequest;
 
 @injectable()
 export class TeamMemberService {
@@ -22,24 +26,33 @@ export class TeamMemberService {
    * @returns Promise resolving to the created team member
    * @throws {APIError} 400 BAD_REQUEST if team_id or user_id is missing
    */
-  public async create(data: CreateTeamMemberRequest): Promise<models.TeamMember> {
+  public async create(
+    data: CreateTeamMemberRequest
+  ): Promise<PBTypes.partner.entities.TeamMember> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         // Validation
-        if (!data.team_id) {
-          throw new errors.APIError(400, "BAD_REQUEST", "Team ID is required");
+        if (!data.firstName || !data.lastName) {
+          throw new errors.APIError(
+            400,
+            "BAD_REQUEST",
+            "First name and last name are required"
+          );
         }
-        if (!data.user_id) {
-          throw new errors.APIError(400, "BAD_REQUEST", "User ID is required");
+        if (!data.email) {
+          throw new errors.APIError(400, "BAD_REQUEST", "Email is required");
         }
 
         // Create and save using em
-        const teamMember = em.create(models.TeamMember, data);
+        const teamMemberData = {
+          external_uid: "",
+        };
+        const teamMember = em.create(models.TeamMember, teamMemberData);
         await em.save(teamMember);
         return teamMember;
       }
     );
-    return response as models.TeamMember;
+    return response as PBTypes.partner.entities.TeamMember;
   }
 
   /**
@@ -49,7 +62,9 @@ export class TeamMemberService {
    * @returns Promise resolving to the team member with team, partner, appointments, and availabilities
    * @throws {APIError} 404 NOT_FOUND if team member doesn't exist
    */
-  public async findById(uid: string): Promise<models.TeamMember> {
+  public async findById(
+    uid: string
+  ): Promise<PBTypes.partner.entities.TeamMember> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         const teamMember = await em.findOne(models.TeamMember, {
@@ -64,7 +79,7 @@ export class TeamMemberService {
         return teamMember;
       }
     );
-    return response as models.TeamMember;
+    return response as PBTypes.partner.entities.TeamMember;
   }
 
   /**
@@ -79,7 +94,7 @@ export class TeamMemberService {
     team_id?: string,
     limit: number = 20,
     offset: number = 0
-  ): Promise<models.TeamMember[]> {
+  ): Promise<PBTypes.partner.entities.TeamMember[]> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         const query = em
@@ -96,7 +111,7 @@ export class TeamMemberService {
         return await query.getMany();
       }
     );
-    return response as models.TeamMember[];
+    return response as PBTypes.partner.entities.TeamMember[];
   }
 
   /**
@@ -109,7 +124,9 @@ export class TeamMemberService {
   public async delete(uid: string): Promise<boolean> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
-        const teamMember = await em.findOne(models.TeamMember, { where: { uid } });
+        const teamMember = await em.findOne(models.TeamMember, {
+          where: { uid },
+        });
         if (!teamMember) {
           throw new errors.APIError(404, "NOT_FOUND", "Team member not found");
         }
@@ -119,44 +136,5 @@ export class TeamMemberService {
       }
     );
     return response as boolean;
-  }
-
-  /**
-   * Get Upcoming Appointments - Get all upcoming appointments for a team member
-   *
-   * @param uid - Team member ID
-   * @returns Promise resolving to team member's upcoming appointments sorted by date
-   * @throws {APIError} 404 NOT_FOUND if team member doesn't exist
-   */
-  public async getUpcomingAppointments(uid: string): Promise<any> {
-    const response = await this._persistenceContext.inTransaction(
-      async (em: EntityManager) => {
-        const teamMember = await em.findOne(models.TeamMember, {
-          where: { uid },
-          relations: ["appointments", "appointments.service"],
-        });
-
-        if (!teamMember) {
-          throw new errors.APIError(404, "NOT_FOUND", "Team member not found");
-        }
-
-        const now = new Date();
-        const upcoming = teamMember.appointments.filter((apt) => {
-          const aptDate = new Date(apt.appointment_date);
-          return aptDate >= now;
-        });
-
-        return {
-          team_member_uid: teamMember.uid,
-          user_id: teamMember.user_id,
-          upcoming_appointments: upcoming.sort(
-            (a, b) =>
-              new Date(a.appointment_date).getTime() -
-              new Date(b.appointment_date).getTime()
-          ),
-        };
-      }
-    );
-    return response;
   }
 }

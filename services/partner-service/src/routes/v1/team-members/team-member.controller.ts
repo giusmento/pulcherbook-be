@@ -29,7 +29,7 @@ const teamMemberService = partnerContainer.get<TeamMemberService>(
  *   name: TeamMembers
  *   description: Team member management endpoints
  */
-@Controller("/api/v1/team-members")
+@Controller("/api/v1/partners/:partner_uid/team-members")
 export class TeamMemberController {
   private teamMemberService: TeamMemberService;
 
@@ -77,7 +77,7 @@ export class TeamMemberController {
   ): Promise<Response<PBTypes.partner.api.v1.teamMembers.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const data: TeamMemberPost = req.body;
+      const data = req.body;
       const teamMember = await this.teamMemberService.create(data);
 
       const apiResponse = {
@@ -120,7 +120,9 @@ export class TeamMemberController {
       PBTypes.partner.api.v1.teamMembers.GET.RequestBody
     >,
     res: Response<PBTypes.partner.api.v1.teamMembers.GET.ResponseBodySingle>
-  ): Promise<Response<PBTypes.partner.api.v1.teamMembers.GET.ResponseBodySingle>> {
+  ): Promise<
+    Response<PBTypes.partner.api.v1.teamMembers.GET.ResponseBodySingle>
+  > {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
@@ -247,58 +249,6 @@ export class TeamMemberController {
         timestamp: logRequest.timestamp,
         requestId: logRequest.requestId,
         data: { message: "Team member deleted successfully" },
-      };
-      return res.status(200).send(apiResponse);
-    } catch (error: unknown) {
-      return errors.errorHandler(res, error as Error);
-    }
-  }
-
-  /**
-   * @swagger
-   * /api/v1/team-members/{uid}/upcoming-appointments:
-   *   get:
-   *     summary: Get upcoming appointments for a team member
-   *     tags: [TeamMembers]
-   *     security:
-   *       - bearerAuth: []
-   *     parameters:
-   *       - in: path
-   *         name: uid
-   *         required: true
-   *         schema:
-   *           type: string
-   *         description: Team member ID
-   *     responses:
-   *       200:
-   *         description: Upcoming appointments
-   *       404:
-   *         description: Team member not found
-   */
-  @Get("/:uid/upcoming-appointments")
-  public async getUpcomingAppointments(
-    req: Request<
-      PBTypes.partner.api.v1.teamMembers.upcomingAppointments.GET.Params,
-      PBTypes.partner.api.v1.teamMembers.upcomingAppointments.GET.RequestBody
-    >,
-    res: Response<PBTypes.partner.api.v1.teamMembers.upcomingAppointments.GET.ResponseBody>
-  ): Promise<Response<PBTypes.partner.api.v1.teamMembers.upcomingAppointments.GET.ResponseBody>> {
-    const logRequest = new utils.LogRequest(res);
-    try {
-      const { uid } = req.params;
-      const appointments = await this.teamMemberService.getUpcomingAppointments(
-        uid
-      );
-
-      if (!appointments) {
-        throw new errors.APIError(404, "NOT_FOUND", "Team member not found");
-      }
-
-      const apiResponse = {
-        ok: true,
-        timestamp: logRequest.timestamp,
-        requestId: logRequest.requestId,
-        data: appointments,
       };
       return res.status(200).send(apiResponse);
     } catch (error: unknown) {

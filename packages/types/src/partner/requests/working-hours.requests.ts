@@ -3,16 +3,10 @@
  * Used internally by the service methods
  */
 
-import type { ShopWorkingHoursPost, ShopWorkingHoursPut } from "../entities";
-
-/**
- * Service layer: Create working hours request
- * Extends API POST type with service-specific field (shop_uid added by controller)
- */
-export interface CreateWorkingHoursRequest extends ShopWorkingHoursPost {}
+import type { ShopWorkingHoursPut } from "../entities";
 
 /**
  * Service layer: Update working hours request
  * Same as API PUT type - can diverge if internal logic needs different fields
  */
-export type UpdateWorkingHoursRequest = ShopWorkingHoursPut;
+export type UpsertWorkingHoursRequest = Array<ShopWorkingHoursPut>;

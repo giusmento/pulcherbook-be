@@ -26,14 +26,16 @@ export type ShopSpecialHours = {
  * API POST request body - Fields required when creating new special hours
  * Derived from ShopSpecialHours entity
  */
-export type ShopSpecialHoursPost = Pick<ShopSpecialHours, "special_date"> & {
-  is_recurring_annual?: boolean; // Optional with default false
-  start_time?: string | null;
-  end_time?: string | null;
-  slot_order?: number; // Optional with default 0
-  is_closed?: boolean; // Optional with default false
-  description?: string | null;
-};
+export type ShopSpecialHoursPost = Pick<
+  ShopSpecialHours,
+  | "special_date"
+  | "is_recurring_annual"
+  | "start_time"
+  | "end_time"
+  | "slot_order"
+  | "is_closed"
+  | "description"
+>;
 
 /**
  * API PUT request body - Fields that can be updated on existing special hours

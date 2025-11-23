@@ -22,21 +22,49 @@ export class TeamService {
    * @returns Promise resolving to the created team
    * @throws {APIError} 400 BAD_REQUEST if name or partner_id is missing
    */
-  public async create(data: CreateTeamRequest): Promise<models.Team> {
+  public async create(
+    partner_uid: string,
+    data: CreateTeamRequest
+  ): Promise<models.Team> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         // Validation
         if (!data.name) {
-          throw new errors.APIError(400, "BAD_REQUEST", "Team name is required");
+          throw new errors.APIError(
+            400,
+            "BAD_REQUEST",
+            "Team name is required"
+          );
         }
-        if (!data.partner_id) {
-          throw new errors.APIError(400, "BAD_REQUEST", "Partner ID is required");
+        // get partner relation
+        const partner = await em.findOne(models.Partner, {
+          where: { external_uid: partner_uid },
+        });
+        if (!partner) {
+          throw new errors.APIError(
+            400,
+            "BAD_REQUEST",
+            "Invalid partner_id, partner does not exist"
+          );
         }
-
+        // prepare partner relation
+        const createTeamRequest = {
+          ...data,
+          partner: partner,
+        };
         // Create and save using em
-        const team = em.create(models.Team, data);
-        await em.save(team);
-        return team;
+        const team = em.create(models.Team, createTeamRequest);
+        const responseApi = await em.save(team);
+        const response = {
+          name: responseApi.name,
+          description: responseApi.description,
+          tags: responseApi.tags,
+          status: responseApi.status,
+          created_at: responseApi.created_at,
+          updated_at: responseApi.updated_at,
+          uid: responseApi.uid,
+        };
+        return response;
       }
     );
     return response as models.Team;
@@ -54,7 +82,6 @@ export class TeamService {
       async (em: EntityManager) => {
         const team = await em.findOne(models.Team, {
           where: { uid },
-          relations: ["partner", "members", "teamServices", "teamServices.service"],
         });
 
         if (!team) {
@@ -76,26 +103,17 @@ export class TeamService {
    * @returns Promise resolving to array of teams
    */
   public async findAll(
-    partner_id?: string,
+    partner_id: string,
     limit: number = 20,
     offset: number = 0
   ): Promise<models.Team[]> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
-        const query = em
-          .createQueryBuilder(models.Team, "team")
-          .leftJoinAndSelect("team.partner", "partner")
-          .leftJoinAndSelect("team.members", "members")
-          .leftJoinAndSelect("team.teamServices", "teamServices")
-          .leftJoinAndSelect("teamServices.service", "service");
+        const teams = await em.find(models.Team, {
+          where: { partner: { uid: partner_id } },
+        });
 
-        if (partner_id) {
-          query.where("team.partner_id = :partner_id", { partner_id });
-        }
-
-        query.take(limit).skip(offset);
-
-        return await query.getMany();
+        return teams;
       }
     );
     return response as models.Team[];
@@ -109,7 +127,10 @@ export class TeamService {
    * @returns Promise resolving to updated team
    * @throws {APIError} 404 NOT_FOUND if team doesn't exist
    */
-  public async update(uid: string, data: UpdateTeamRequest): Promise<models.Team> {
+  public async update(
+    uid: string,
+    data: UpdateTeamRequest
+  ): Promise<models.Team> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         const team = await em.findOne(models.Team, { where: { uid } });

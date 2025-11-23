@@ -8,15 +8,15 @@ import { ResponseBodyData } from "..";
  * REQUEST
  * @see
  *
- * REQUEST: GET /api/v1/teams
- * REQUEST: GET /api/v1/teams/:uid
+ * REQUEST: GET /api/v1/partners/:partner_uid/teams
+ * REQUEST: GET /api/v1/partners/:partner_uid/teams/:uid
  */
 
 // For GET / (all teams)
-export type Params = undefined;
+export type Params = { partner_uid: string };
 
 // For GET /:uid (single team)
-export type ParamsSingle = { uid: string };
+export type ParamsSingle = { partner_uid: string; uid: string };
 export type RequestBody = {};
 
 /**
@@ -31,4 +31,5 @@ export type ResponseBody = Types.v1.api.response.response<
 >;
 
 // For GET /:uid (single team)
-export type ResponseBodySingle = Types.v1.api.response.response<ResponseBodyData>;
+export type ResponseBodySingle =
+  Types.v1.api.response.response<ResponseBodyData>;

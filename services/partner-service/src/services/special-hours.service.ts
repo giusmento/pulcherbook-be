@@ -28,19 +28,20 @@ export class SpecialHoursService {
    * @returns Promise resolving to the created special hours
    */
   public async create(
+    shop_uid: string,
     data: CreateSpecialHoursRequest
   ): Promise<PBTypes.partner.entities.ShopSpecialHours> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         // Verify shop exists
         const shop = await em.findOne(models.Shop, {
-          where: { uid: data.shop_uid },
+          where: { uid: shop_uid },
         });
         if (!shop) {
           throw new errors.APIError(
             400,
             "BAD_REQUEST",
-            `Shop with UID ${data.shop_uid} not found`
+            `Shop with UID ${shop_uid} not found`
           );
         }
 
@@ -189,13 +190,13 @@ export class SpecialHoursService {
    * @returns Promise resolving to updated special hours
    */
   public async update(
-    uid: string,
+    shop_uid: string,
     data: UpdateSpecialHoursRequest
   ): Promise<PBTypes.partner.entities.ShopSpecialHours> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         const specialHours = await em.findOne(models.ShopSpecialHours, {
-          where: { uid },
+          where: { shop: { uid: shop_uid } },
         });
         if (!specialHours) {
           throw new errors.APIError(
@@ -232,16 +233,107 @@ export class SpecialHoursService {
   }
 
   /**
+   * Update Special Hours Multiple
+   *
+   * @param uid - Special hours ID
+   * @param data - Fields to update
+   * @returns Promise resolving to updated special hours
+   */
+  public async updateMultiple(
+    shop_uid: string,
+    data: UpdateSpecialHoursRequest[]
+  ): Promise<PBTypes.partner.entities.ShopSpecialHours[]> {
+    const response = await this._persistenceContext.inTransaction(
+      async (em: EntityManager) => {
+        // prepare special hours array
+        const specialHours = [];
+        // validate each item in data array
+        for (const item of data) {
+          // Validate time format if provided
+          const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
+          if (item.start_time && !timeRegex.test(item.start_time)) {
+            throw new errors.APIError(
+              400,
+              "BAD_REQUEST",
+              "Invalid start_time format"
+            );
+          }
+          if (item.end_time && !timeRegex.test(item.end_time)) {
+            throw new errors.APIError(
+              400,
+              "BAD_REQUEST",
+              "Invalid end_time format"
+            );
+          }
+          specialHours.push({
+            special_date: item.special_date,
+            is_recurring_annual: item.is_recurring_annual,
+            start_time: item.start_time,
+            end_time: item.end_time,
+            slot_order: item.slot_order || 0,
+            is_closed: item.is_closed,
+            description: item.description,
+            is_active: item.is_active,
+          });
+        }
+
+        // find shop by uid
+        const shop = await em.findOne(models.Shop, {
+          where: { uid: shop_uid },
+        });
+        if (!shop) {
+          throw new errors.APIError(
+            404,
+            "NOT_FOUND",
+            "Special hours not found"
+          );
+        }
+
+        // add shop to each special hours item
+        for (const sh of specialHours) {
+          sh.shop = shop;
+        }
+        // remove existing special hours for the shop
+        await em.delete(models.ShopSpecialHours, { shop: { uid: shop_uid } });
+        // save all special hours
+        const responseApi = await em.save(
+          models.ShopSpecialHours,
+          specialHours
+        );
+
+        const response = responseApi.map((wh) => {
+          return {
+            uid: wh.uid,
+            special_date: wh.special_date,
+            is_recurring_annual: wh.is_recurring_annual,
+            shop_uid: shop.uid,
+            description: wh.description,
+            start_time: wh.start_time,
+            end_time: wh.end_time,
+            slot_order: wh.slot_order,
+            is_active: wh.is_active,
+            created_at: wh.created_at,
+            updated_at: wh.updated_at,
+          };
+        });
+
+        return response;
+      }
+    );
+    return response as PBTypes.partner.entities.ShopSpecialHours[];
+  }
+
+  /**
    * Delete Special Hours - Soft delete by setting is_active to false
    *
    * @param uid - Special hours ID
    * @returns Promise resolving to true if successful
    */
-  public async delete(uid: string): Promise<boolean> {
+  public async delete(shop_uid: string, uid: string): Promise<boolean> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         const specialHours = await em.findOne(models.ShopSpecialHours, {
-          where: { uid },
+          where: { uid, shop: { uid: shop_uid } },
         });
         if (!specialHours) {
           throw new errors.APIError(
@@ -256,6 +348,6 @@ export class SpecialHoursService {
         return true;
       }
     );
-    return response;
+    return response as boolean;
   }
 }

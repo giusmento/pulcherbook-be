@@ -73,11 +73,11 @@ export class Appointment {
   updated_at: Date;
 
   // Relations
-  @ManyToOne(() => TeamMember, (member) => member.appointments, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn({ name: "team_member_id" })
-  teamMember: TeamMember;
+  //@ManyToOne(() => TeamMember, (member) => member.appointments, {
+  //  onDelete: "CASCADE",
+  //})
+  //@JoinColumn({ name: "team_member_id" })
+  //teamMember: TeamMember;
 
   @ManyToOne(() => Service, (service) => service.appointments, {
     onDelete: "CASCADE",

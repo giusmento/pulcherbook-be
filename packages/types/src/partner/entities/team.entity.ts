@@ -8,9 +8,9 @@
  */
 export type Team = {
   uid: string;
-  partner_id: string;
   name: string;
   description: string | null;
+  tags: Array<string>;
   status: string;
   created_at: Date;
   updated_at: Date;
@@ -19,9 +19,9 @@ export type Team = {
 /**
  * Fields required when creating a new team
  */
-export type TeamPost = Pick<Team, "partner_id" | "name" | "description">;
+export type TeamPost = Pick<Team, "name" | "description" | "tags">;
 
 /**
  * Fields that can be updated on an existing team (excluding partner_id)
  */
-export type TeamPut = Partial<Omit<TeamPost, "partner_id">>;
+export type TeamPut = Partial<Omit<TeamPost, "created_at" | "updated_at">>;

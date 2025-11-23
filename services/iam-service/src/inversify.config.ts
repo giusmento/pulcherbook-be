@@ -21,10 +21,7 @@ export const setIAMContainer = () => {
 
   console.log(`${emailFromAddress}, ${appName}`);
 
-  //const container = services.iam_server.IAMDefaultContainer;
-  const container = Containers.createChild(
-    services.iam_server.IAMContainerManager
-  ).getContainer();
+  const container = services.iam_server.IAMDefaultContainer;
 
   container.unbind(INVERSITY_TYPES.EmailService);
   container

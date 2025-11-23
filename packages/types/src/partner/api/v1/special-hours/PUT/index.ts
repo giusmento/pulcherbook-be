@@ -9,9 +9,10 @@ import { Types } from "@giusmento/mangojs-core";
 import { ShopSpecialHoursPut } from "../../../../entities";
 import { ResponseBodyData } from "..";
 
-export type Params = { shop_uid: string; uid: string };
+export type Params = { partner_uid: string; shop_uid: string; uid: string };
 
 export type RequestBody = ShopSpecialHoursPut;
+export type RequestBodyMultiple = Array<ShopSpecialHoursPut>;
 
 export type QueryParams = {};
 
@@ -22,3 +23,6 @@ export type QueryParams = {};
  */
 
 export type ResponseBody = Types.v1.api.response.response<ResponseBodyData>;
+export type ResponseBodyMultiple = Types.v1.api.response.response<
+  Array<ResponseBodyData>
+>;
