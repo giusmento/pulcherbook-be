@@ -13,6 +13,7 @@ import {
 } from "@giusmento/mangojs-core";
 import { PartnerService } from "../../../services/partner.service";
 import { SearchPartnersRequest } from "../../../types/types";
+import { IAMClientService } from "../../../services/iam-client.service";
 
 // Import API types from package
 import type * as PBTypes from "@giusmento/pulcherbook-types";
@@ -24,6 +25,13 @@ type PartnerPut = PBTypes.partner.entities.PartnerPut;
 const partnerService = partnerContainer.get<PartnerService>(PartnerService, {
   autobind: true,
 });
+// Resolve service from container
+const iamClientService = partnerContainer.get<IAMClientService>(
+  IAMClientService,
+  {
+    autobind: true,
+  }
+);
 
 /**
  * @swagger
@@ -95,6 +103,10 @@ export class PartnerController {
     const logRequest = new utils.LogRequest(res);
     try {
       const data: PartnerPost = req.body;
+      // start create partner process
+      // create iam partner profile
+      await iamClientService.registerPartner(data, req.cookies);
+
       const partner = await partnerService.create(data);
 
       const apiResponse = {

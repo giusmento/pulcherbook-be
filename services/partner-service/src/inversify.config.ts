@@ -11,6 +11,7 @@ import {
 } from "@giusmento/mangojs-core";
 // Import service classes
 import { PartnerServiceEntities } from "./db/models";
+import { IAMClientService } from "./services/iam-client.service";
 import { ContainerModule, Container } from "inversify";
 
 const POSTGRES_HOST = process.env.DATABASE_HOST || "localhost";
@@ -35,9 +36,8 @@ const partnerContainer = Containers.createChild(
 
 export const initializePartnerContainer = () => {
   /**
-   * IAM Service Module
+   * Bind Database and Persistence
    */
-
   partnerContainer
     .bind<IDatabaseManagerFactory>(INVERSITY_TYPES.DatabaseManagerFactory)
     .toConstantValue(
@@ -56,6 +56,15 @@ export const initializePartnerContainer = () => {
   partnerContainer
     .bind<IPersistenceContext>(INVERSITY_TYPES.PersistenceContext)
     .to(persistanceContext.PostgresPersistenceContext);
+
+  /**
+   * Bind IAM Client Service
+   */
+  partnerContainer
+    .bind<IAMClientService>(IAMClientService)
+    .to(IAMClientService)
+    .inSingletonScope();
+
   console.log("[Partner Service] Container initialized successfully");
 };
 

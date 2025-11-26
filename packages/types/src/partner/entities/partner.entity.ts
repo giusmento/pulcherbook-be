@@ -12,18 +12,19 @@ export type Partner = {
   uid: string;
   external_uid: string;
   company_name: string;
-  description: string | null;
+  tax_code: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  description?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postal_code?: string;
+  phone?: string;
+  website?: string;
   business_type: BusinessType;
-  address: string | null;
-  city: string | null;
-  state: string | null;
-  country: string | null;
-  postal_code: string | null;
-  latitude: number | null;
-  longitude: number | null;
-  phone: string | null;
-  email: string | null;
-  website: string | null;
   status: string;
   created_at: Date;
   updated_at: Date;
@@ -34,22 +35,25 @@ export type Partner = {
  */
 export type PartnerPost = Pick<
   Partner,
-  | "external_uid"
   | "company_name"
-  | "description"
+  | "tax_code"
+  | "first_name"
+  | "last_name"
+  | "email"
+  | "business_type"
   | "address"
   | "city"
   | "state"
   | "country"
   | "postal_code"
-  | "latitude"
-  | "longitude"
   | "phone"
-  | "email"
   | "website"
->;
+  | "description"
+> & {
+  password: string;
+};
 
 /**
  * Fields that can be updated on an existing partner (excluding external_uid)
  */
-export type PartnerPut = Partial<Omit<PartnerPost, "external_uid">>;
+export type PartnerPut = Partial<Omit<PartnerPost, "external_uid" | "uid">>;

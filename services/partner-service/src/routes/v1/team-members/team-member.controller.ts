@@ -7,17 +7,26 @@ import {
   utils,
   errors,
   Containers,
+  Put,
 } from "@giusmento/mangojs-core";
 import { TeamMemberService } from "../../../services/team-member.service";
+import { IAMClientService } from "../../../services/iam-client.service";
 
 // Import API types from package
 import type * as PBTypes from "@giusmento/pulcherbook-types";
-type TeamMemberPost = PBTypes.partner.entities.TeamMemberPost;
+
 import { partnerContainer } from "../../../inversify.config";
 
 // Resolve service from container
 const teamMemberService = partnerContainer.get<TeamMemberService>(
   TeamMemberService,
+  {
+    autobind: true,
+  }
+);
+// Resolve service from container
+const iamClientService = partnerContainer.get<IAMClientService>(
+  IAMClientService,
   {
     autobind: true,
   }
@@ -32,9 +41,11 @@ const teamMemberService = partnerContainer.get<TeamMemberService>(
 @Controller("/api/v1/partners/:partner_uid/team-members")
 export class TeamMemberController {
   private teamMemberService: TeamMemberService;
+  private _iamClient: IAMClientService;
 
   constructor() {
     this.teamMemberService = teamMemberService;
+    this._iamClient = iamClientService;
   }
 
   /**
@@ -78,7 +89,9 @@ export class TeamMemberController {
     const logRequest = new utils.LogRequest(res);
     try {
       const data = req.body;
-      const teamMember = await this.teamMemberService.create(data);
+      const partner_uid = req.params.partner_uid;
+
+      const teamMember = await this.teamMemberService.create(data, partner_uid);
 
       const apiResponse = {
         ok: true,
@@ -125,18 +138,40 @@ export class TeamMemberController {
   > {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { uid } = req.params;
-      const teamMember = await this.teamMemberService.findById(uid);
+      const { uid, partner_uid } = req.params;
+      const teamMember = await this.teamMemberService.findById(
+        partner_uid,
+        uid
+      );
 
       if (!teamMember) {
         throw new errors.APIError(404, "NOT_FOUND", "Team member not found");
       }
+      const iamTeamMembers = await this._iamClient.getPartnerUserByUid(
+        partner_uid,
+        teamMember.external_uid,
+        req.cookies
+      );
+      const mergedTeamMember = {
+        uid: teamMember.uid,
+        firstName: iamTeamMembers.firstName,
+        lastName: iamTeamMembers.lastName,
+        email: iamTeamMembers.email,
+        status: iamTeamMembers.status,
+        phone: iamTeamMembers.phoneNumber || "",
+        teams: teamMember.teams,
+        systemGroups: [],
+        external_uid: iamTeamMembers.uid,
+        joined_at: teamMember.joined_at,
+        created_at: teamMember.created_at,
+        updated_at: teamMember.updated_at,
+      };
 
       const apiResponse = {
         ok: true,
         timestamp: logRequest.timestamp,
         requestId: logRequest.requestId,
-        data: teamMember,
+        data: mergedTeamMember,
       };
       return res.status(200).send(apiResponse);
     } catch (error: unknown) {
@@ -188,17 +223,179 @@ export class TeamMemberController {
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = parseInt(req.query.offset as string) || 0;
 
-      const teamMembers = await this.teamMemberService.findAll(
-        team_id,
-        limit,
-        offset
+      const iamTeamMembers = await this._iamClient.getPartnerUsers(
+        req.params.partner_uid,
+        req.cookies
       );
+
+      const partnerTeamMember = await this.teamMemberService.findAll(
+        req.params.partner_uid
+      );
+
+      //merge data from iamTeamMembers and partnerTeamMember
+      const mergeTeamMembers = iamTeamMembers.map((iamMember) => {
+        const partnerMember = partnerTeamMember.find(
+          (ptm) => ptm.external_uid === iamMember.uid
+        );
+        return {
+          uid: partnerMember ? partnerMember.uid : "",
+          firstName: iamMember.firstName,
+          lastName: iamMember.lastName,
+          email: iamMember.email,
+          status: iamMember.status,
+          teams: partnerMember ? partnerMember.teams : [],
+          systemGroups: iamMember.groups.map((group) => ({
+            uid: group.uid,
+            name: group.name,
+          })),
+          phone: iamMember.phoneNumber || "",
+          external_uid: iamMember.uid,
+          joined_at: partnerMember ? partnerMember.joined_at : "",
+          created_at: partnerMember
+            ? partnerMember.created_at
+            : String(iamMember.createdAt),
+          updated_at: partnerMember
+            ? partnerMember.updated_at
+            : String(iamMember.updatedAt),
+        };
+      });
 
       const apiResponse = {
         ok: true,
         timestamp: logRequest.timestamp,
         requestId: logRequest.requestId,
-        data: teamMembers,
+        data: mergeTeamMembers,
+      };
+      return res.status(200).send(apiResponse);
+    } catch (error: unknown) {
+      return errors.errorHandler(res, error as Error);
+    }
+  }
+
+  /**
+   * @swagger
+   * /api/v1/team-members/{uid}:
+   *   put:
+   *     summary: MOdify team member
+   *     tags: [TeamMembers]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: uid
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: Team member ID
+   *     responses:
+   *       200:
+   *         description: Team member deleted successfully
+   *       404:
+   *         description: Team member not found
+   */
+  @Put("/:uid")
+  public async modify(
+    req: Request<
+      PBTypes.partner.api.v1.teamMembers.PUT.Params,
+      PBTypes.partner.api.v1.teamMembers.PUT.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teamMembers.PUT.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.teamMembers.PUT.ResponseBody>> {
+    const logRequest = new utils.LogRequest(res);
+    try {
+      const { uid } = req.params;
+      const { partner_uid } = req.params;
+      const data = req.body;
+
+      const teamMember = await this.teamMemberService.modify(
+        data,
+        uid,
+        partner_uid
+      );
+
+      if (!teamMember) {
+        throw new errors.APIError(404, "NOT_FOUND", "Team member not found");
+      }
+
+      // update data on IAM service
+      const response = await this._iamClient.updatePartnerUser(
+        partner_uid,
+        teamMember.external_uid,
+        {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phoneNumber: data.phone,
+        },
+        req.cookies
+      );
+      if (!response) {
+        throw new errors.APIError(
+          404,
+          "NOT_FOUND",
+          "Team member not found in IAM service"
+        );
+      }
+
+      const apiResponse = {
+        ok: true,
+        timestamp: logRequest.timestamp,
+        requestId: logRequest.requestId,
+        data: data,
+      };
+      return res.status(200).send(apiResponse);
+    } catch (error: unknown) {
+      return errors.errorHandler(res, error as Error);
+    }
+  }
+
+  /**
+   * @swagger
+   * /api/v1/team-members/{uid}/groups:
+   *   put:
+   *     summary: manage team member groups
+   *     tags: [TeamMembers]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: uid
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: Team member ID
+   *     responses:
+   *       200:
+   *         description: Group assignments updated successfully
+   *       404:
+   *         description: Group or Team member not found
+   */
+  @Put("/:uid/groups")
+  public async manageWorkingGroupsToTeamMember(
+    req: Request<
+      PBTypes.partner.api.v1.teamMembers.groups.PUT.Params,
+      PBTypes.partner.api.v1.teamMembers.groups.PUT.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teamMembers.groups.PUT.ResponseBody>
+  ): Promise<
+    Response<PBTypes.partner.api.v1.teamMembers.groups.PUT.ResponseBody>
+  > {
+    const logRequest = new utils.LogRequest(res);
+    try {
+      const { uid } = req.params;
+      const { partner_uid } = req.params;
+      const data = req.body;
+
+      const teamMember = await this.teamMemberService.updateGroups(uid, data);
+
+      if (!teamMember) {
+        throw new errors.APIError(404, "NOT_FOUND", "Team member not found");
+      }
+
+      const apiResponse = {
+        ok: true,
+        timestamp: logRequest.timestamp,
+        requestId: logRequest.requestId,
+        data: { data, ok: true },
       };
       return res.status(200).send(apiResponse);
     } catch (error: unknown) {

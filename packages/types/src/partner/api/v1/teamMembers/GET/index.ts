@@ -13,10 +13,10 @@ import { ResponseBodyData } from "..";
  */
 
 // For GET / (all team members)
-export type Params = undefined;
+export type Params = { partner_uid: string };
 
 // For GET /:uid (single team member)
-export type ParamsSingle = { uid: string };
+export type ParamsSingle = { partner_uid: string; uid: string };
 export type RequestBody = {};
 
 /**
@@ -31,4 +31,5 @@ export type ResponseBody = Types.v1.api.response.response<
 >;
 
 // For GET /:uid (single team member)
-export type ResponseBodySingle = Types.v1.api.response.response<ResponseBodyData>;
+export type ResponseBodySingle =
+  Types.v1.api.response.response<ResponseBodyData>;
