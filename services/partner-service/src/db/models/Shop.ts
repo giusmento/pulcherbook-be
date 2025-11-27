@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   OneToMany,
   ManyToOne,
+  JoinColumn,
   Index,
 } from "typeorm";
 import { Service } from "./Service";
@@ -20,75 +21,111 @@ export class Shop {
   @PrimaryGeneratedColumn("uuid")
   uid: string;
 
-  @Column({ type: "varchar", length: 255 })
-  shop_name: string;
+  @Column({ type: "varchar", length: 255, name: "shop_name" })
+  shopName: string;
 
-  @Column({ type: "text", nullable: true })
+  @Column({ type: "text", nullable: true, name: "description" })
   description: string;
 
-  @Column({ type: "varchar", length: 500, nullable: true })
-  address: string;
+  @Column({
+    type: "varchar",
+    length: 500,
+    nullable: true,
+    name: "address_street",
+  })
+  addressStreet: string;
 
-  @Column({ type: "varchar", length: 100, nullable: true })
-  city: string;
+  @Column({
+    type: "varchar",
+    length: 100,
+    nullable: true,
+    name: "address_city",
+  })
+  addressCity: string;
 
-  @Column({ type: "varchar", length: 100, nullable: true })
-  state: string;
+  @Column({
+    type: "varchar",
+    length: 100,
+    nullable: true,
+    name: "address_state",
+  })
+  addressState: string;
 
-  @Column({ type: "varchar", length: 100, nullable: true })
-  country: string;
+  @Column({
+    type: "varchar",
+    length: 100,
+    nullable: true,
+    name: "address_country",
+  })
+  addressCountry: string;
 
-  @Column({ type: "varchar", length: 20, nullable: true })
-  postal_code: string;
+  @Column({
+    type: "varchar",
+    length: 20,
+    nullable: true,
+    name: "address_postal_code",
+  })
+  addressPostalCode: string;
 
-  @Column({ type: "decimal", precision: 10, scale: 8, nullable: true })
+  @Column({
+    type: "decimal",
+    precision: 10,
+    scale: 8,
+    nullable: true,
+    name: "latitude",
+  })
   latitude: number;
 
-  @Column({ type: "decimal", precision: 11, scale: 8, nullable: true })
+  @Column({
+    type: "decimal",
+    precision: 11,
+    scale: 8,
+    nullable: true,
+    name: "longitude",
+  })
   longitude: number;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  phone: string;
+  @Column({ type: "varchar", length: 50, nullable: true, name: "phone_number" })
+  phoneNumber: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "varchar", length: 255, nullable: true, name: "email" })
   email: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "varchar", length: 255, nullable: true, name: "website" })
   website: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "varchar", length: 255, nullable: true, name: "instagram" })
   instagram: string;
 
   @Column({
     type: "enum",
     enum: ShopStatus,
     default: ShopStatus.ONLINE,
+    name: "status",
   })
   status: ShopStatus;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 
   // Relations
-  @Column({ type: "uuid" })
-  @Index()
-  partner_uid: string;
-
   @ManyToOne(() => Partner, (partner) => partner.shops)
+  @JoinColumn({ name: "partner_uid" })
   partner: Partner;
 
   @ManyToOne(() => BusinessType, (businessType) => businessType.shops)
-  business_type: BusinessType;
+  @JoinColumn({ name: "business_type_uid" })
+  businessType: BusinessType;
 
   @OneToMany(() => Service, (service) => service.shop)
   services: Service[];
 
   @OneToMany(() => ShopWorkingHours, (hours) => hours.shop)
-  working_hours: ShopWorkingHours[];
+  workingHours: ShopWorkingHours[];
 
   @OneToMany(() => ShopSpecialHours, (hours) => hours.shop)
-  special_hours: ShopSpecialHours[];
+  specialHours: ShopSpecialHours[];
 }

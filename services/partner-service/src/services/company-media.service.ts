@@ -29,7 +29,7 @@ export class CompanyMediaService {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         // Validation
-        if (!data.partner_id) {
+        if (!data.partnerId) {
           throw new errors.APIError(400, "BAD_REQUEST", "Partner ID is required");
         }
         if (!data.url) {
@@ -96,10 +96,10 @@ export class CompanyMediaService {
         const query = em
           .createQueryBuilder(models.CompanyMedia, "media")
           .leftJoinAndSelect("media.partner", "partner")
-          .orderBy("media.display_order", "ASC");
+          .orderBy("media.displayOrder", "ASC");
 
         if (partner_id) {
-          query.where("media.partner_id = :partner_id", { partner_id });
+          query.where("media.partnerId = :partnerId", { partnerId: partner_id });
         }
 
         if (type) {

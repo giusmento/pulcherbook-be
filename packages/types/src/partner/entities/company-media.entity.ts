@@ -8,13 +8,13 @@
  */
 export type CompanyMedia = {
   uid: string;
-  partner_id: string;
+  partnerId: string;
   url: string;
   type: string;
-  display_order: number | null;
-  alt_text: string | null;
-  created_at: Date;
-  updated_at: Date;
+  displayOrder: number | null;
+  altText: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 /**
@@ -22,10 +22,10 @@ export type CompanyMedia = {
  */
 export type CompanyMediaPost = Pick<
   CompanyMedia,
-  "partner_id" | "url" | "type" | "display_order" | "alt_text"
+  "partnerId" | "url" | "type" | "displayOrder" | "altText"
 >;
 
 /**
- * Fields that can be updated on an existing company media (excluding partner_id, url, and type)
+ * Fields that can be updated on an existing company media (excluding partnerId, url, and type)
  */
-export type CompanyMediaPut = Partial<Omit<CompanyMediaPost, "partner_id" | "url" | "type">>;
+export type CompanyMediaPut = Partial<Omit<CompanyMediaPost, "partnerId" | "url" | "type">>;

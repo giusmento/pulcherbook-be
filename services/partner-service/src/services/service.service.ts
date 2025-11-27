@@ -29,10 +29,10 @@ export class ServiceService {
         if (!data.name) {
           throw new errors.APIError(400, "BAD_REQUEST", "Service name is required");
         }
-        if (!data.partner_id) {
+        if (!data.partnerId) {
           throw new errors.APIError(400, "BAD_REQUEST", "Partner ID is required");
         }
-        if (!data.duration_minutes || data.duration_minutes <= 0) {
+        if (!data.durationMinutes || data.durationMinutes <= 0) {
           throw new errors.APIError(400, "BAD_REQUEST", "Valid duration is required");
         }
         if (!data.price || data.price < 0) {
@@ -95,7 +95,7 @@ export class ServiceService {
           .leftJoinAndSelect("teamServices.team", "team");
 
         if (partner_id) {
-          query.where("service.partner_id = :partner_id", { partner_id });
+          query.where("service.partnerId = :partnerId", { partnerId: partner_id });
         }
 
         query.take(limit).skip(offset);

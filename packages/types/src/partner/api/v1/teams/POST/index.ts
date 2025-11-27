@@ -9,7 +9,7 @@ import { Types } from "@giusmento/mangojs-core";
 import { CreateTeamRequest } from "../../../../requests/team.requests";
 import { ResponseBodyData } from "..";
 
-export type Params = { partner_uid: string };
+export type Params = { partnerUid: string };
 
 export type RequestBody = CreateTeamRequest;
 

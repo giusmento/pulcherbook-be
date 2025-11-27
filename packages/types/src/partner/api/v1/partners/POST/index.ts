@@ -6,12 +6,12 @@
  */
 
 import { Types } from "@giusmento/mangojs-core";
-import { PartnerPost } from "../../../../entities";
+import { PartnerWithUserPost } from "../../../../entities";
 import { ResponseBodyData } from "..";
 
 export type Params = undefined;
 
-export type RequestBody = PartnerPost;
+export type RequestBody = PartnerWithUserPost;
 
 export type QueryParams = undefined;
 

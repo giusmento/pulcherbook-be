@@ -9,7 +9,7 @@ import { Types } from "@giusmento/mangojs-core";
 import { ResponseBodyData } from "..";
 import { UpsertWorkingHoursRequest } from "../../../../requests/working-hours.requests";
 
-export type Params = { partner_uid: string; shop_uid: string };
+export type Params = { partnerUid: string; shopUid: string };
 
 export type RequestBody = UpsertWorkingHoursRequest;
 

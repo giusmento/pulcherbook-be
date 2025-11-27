@@ -32,7 +32,7 @@ const workingHoursService = partnerContainer.get<WorkingHoursService>(
  *   name: WorkingHours
  *   description: Shop working hours management endpoints
  */
-@Controller("/api/v1/partners/:partner_uid/shops/:shop_uid/working-hours")
+@Controller("/api/v1/partners/:partnerUid/shops/:shopUid/working-hours")
 export class WorkingHoursController {
   /**
    * @swagger
@@ -71,8 +71,8 @@ export class WorkingHoursController {
   ): Promise<Response<PBTypes.partner.api.v1.workingHours.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { shop_uid } = req.params;
-      const workingHours = await workingHoursService.findByShop(shop_uid);
+      const { shopUid } = req.params;
+      const workingHours = await workingHoursService.findByShop(shopUid);
 
       const apiResponse = {
         ok: true,
@@ -142,9 +142,9 @@ export class WorkingHoursController {
   ): Promise<Response<PBTypes.partner.api.v1.workingHours.PUT.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { shop_uid } = req.params;
+      const { shopUid } = req.params;
       const data: UpsertWorkingHoursRequest = req.body;
-      const workingHours = await workingHoursService.upsert(shop_uid, data);
+      const workingHours = await workingHoursService.upsert(shopUid, data);
 
       const apiResponse = {
         ok: true,

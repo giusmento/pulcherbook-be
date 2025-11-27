@@ -182,14 +182,14 @@ export class TeamServiceController {
   ): Promise<Response<PBTypes.partner.api.v1.teamServices.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const team_id = req.query.team_id as string | undefined;
-      const service_id = req.query.service_id as string | undefined;
+      const teamId = req.query.teamId as string | undefined;
+      const serviceId = req.query.serviceId as string | undefined;
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = parseInt(req.query.offset as string) || 0;
 
       const teamServices = await this.teamServiceService.findAll(
-        team_id,
-        service_id,
+        teamId,
+        serviceId,
         limit,
         offset
       );

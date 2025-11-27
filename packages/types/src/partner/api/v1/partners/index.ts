@@ -1,4 +1,4 @@
-import { Partner, Team, Service } from "../../../entities";
+import { Partner } from "../../../entities";
 
 export * as POST from "./POST";
 export * as GET from "./GET";
@@ -11,22 +11,22 @@ export * as isProfileCompleted from "./isProfileCompleted";
 export type ResponseBodyData = Pick<
   Partner,
   | "uid"
-  | "external_uid"
-  | "company_name"
+  | "externalUid"
+  | "companyName"
   | "description"
-  | "address"
-  | "city"
-  | "state"
-  | "country"
-  | "postal_code"
-  | "phone"
+  | "addressStreet"
+  | "addressCity"
+  | "addressState"
+  | "addressCountry"
+  | "addressPostalCode"
+  | "phoneNumber"
   | "email"
   | "website"
   | "status"
-  | "created_at"
-  | "updated_at"
+  | "createdAt"
+  | "updatedAt"
 > & {
-  business_type: {
+  businessType: {
     uid: string;
     name: string;
   };

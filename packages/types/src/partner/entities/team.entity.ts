@@ -12,8 +12,8 @@ export type Team = {
   description: string | null;
   tags: Array<string>;
   status: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 /**
@@ -22,6 +22,6 @@ export type Team = {
 export type TeamPost = Pick<Team, "name" | "description" | "tags">;
 
 /**
- * Fields that can be updated on an existing team (excluding partner_id)
+ * Fields that can be updated on an existing team (excluding partnerId)
  */
-export type TeamPut = Partial<Omit<TeamPost, "created_at" | "updated_at">>;
+export type TeamPut = Partial<Omit<TeamPost, "createdAt" | "updatedAt">>;

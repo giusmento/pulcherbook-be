@@ -8,7 +8,7 @@
 import { Types } from "@giusmento/mangojs-core";
 import { TeamManageForUser } from "../../../../../entities/team-member.entity";
 
-export type Params = { partner_uid: string; uid: string };
+export type Params = { partnerUid: string; uid: string };
 
 export type RequestBody = TeamManageForUser;
 /**

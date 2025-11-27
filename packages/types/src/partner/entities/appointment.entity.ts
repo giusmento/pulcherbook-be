@@ -8,19 +8,19 @@
  */
 export type Appointment = {
   uid: string;
-  customer_user_id: string;
-  team_member_id: string;
-  service_id: string;
-  appointment_date: Date;
-  start_time: string;
-  end_time: string;
-  duration_minutes: number;
+  customerUserId: string;
+  teamMemberId: string;
+  serviceId: string;
+  appointmentDate: Date;
+  startTime: string;
+  endTime: string;
+  durationMinutes: number;
   status: string;
   notes: string | null;
-  customer_notes: string | null;
-  cancellation_reason: string | null;
-  created_at: Date;
-  updated_at: Date;
+  customerNotes: string | null;
+  cancellationReason: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 /**
@@ -28,18 +28,18 @@ export type Appointment = {
  */
 export type AppointmentPost = Pick<
   Appointment,
-  | "customer_user_id"
-  | "team_member_id"
-  | "service_id"
-  | "appointment_date"
-  | "start_time"
-  | "duration_minutes"
-  | "customer_notes"
+  | "customerUserId"
+  | "teamMemberId"
+  | "serviceId"
+  | "appointmentDate"
+  | "startTime"
+  | "durationMinutes"
+  | "customerNotes"
 >;
 
 /**
- * Fields that can be updated on an existing appointment (excluding customer_user_id, team_member_id, and service_id)
+ * Fields that can be updated on an existing appointment (excluding customerUserId, teamMemberId, and serviceId)
  */
 export type AppointmentPut = Partial<
-  Omit<AppointmentPost, "customer_user_id" | "team_member_id" | "service_id">
+  Omit<AppointmentPost, "customerUserId" | "teamMemberId" | "serviceId">
 >;

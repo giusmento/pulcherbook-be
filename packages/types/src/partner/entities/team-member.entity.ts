@@ -15,10 +15,10 @@ export type TeamMember = {
   status: string;
   teams: Array<{ uid: string; name: string }>;
   systemGroups: Array<{ uid: string; name: string }>;
-  external_uid: string;
-  joined_at: string;
-  created_at: string;
-  updated_at: string;
+  externalUid: string;
+  joinedAt: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 /**
@@ -31,11 +31,11 @@ export type IAMTeamMember = {
   email: string;
   phone: string;
   status: string;
-  external_uid: string;
+  externalUid: string;
   systemGroups: Array<{ uid: string; name: string }>;
-  joined_at: string;
-  created_at: string;
-  updated_at: string;
+  joinedAt: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 /**
@@ -43,11 +43,11 @@ export type IAMTeamMember = {
  */
 export type PartnerTeamMember = {
   uid: string;
-  external_uid: string;
+  externalUid: string;
   teams: Array<{ uid: string; name: string }>;
-  joined_at: string;
-  created_at: string;
-  updated_at: string;
+  joinedAt: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 /**

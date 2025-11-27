@@ -190,12 +190,12 @@ export class ServiceController {
   ): Promise<Response<PBTypes.partner.api.v1.services.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const partner_id = req.query.partner_id as string | undefined;
+      const partnerId = req.query.partnerId as string | undefined;
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = parseInt(req.query.offset as string) || 0;
 
       const services = await this.serviceService.findAll(
-        partner_id,
+        partnerId,
         limit,
         offset
       );

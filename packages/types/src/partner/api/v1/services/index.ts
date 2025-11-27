@@ -8,13 +8,13 @@ export * as DELETE from "./DELETE";
 export type ResponseBodyData = Pick<
   Service,
   | "uid"
-  | "partner_id"
+  | "partnerId"
   | "name"
   | "description"
-  | "duration_minutes"
+  | "durationMinutes"
   | "price"
   | "currency"
   | "status"
-  | "created_at"
-  | "updated_at"
+  | "createdAt"
+  | "updatedAt"
 >;

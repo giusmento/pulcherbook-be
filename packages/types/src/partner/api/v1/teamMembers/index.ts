@@ -18,8 +18,8 @@ export type ResponseBodyData = Pick<
   | "status"
   | "teams"
   | "systemGroups"
-  | "external_uid"
-  | "joined_at"
-  | "created_at"
-  | "updated_at"
+  | "externalUid"
+  | "joinedAt"
+  | "createdAt"
+  | "updatedAt"
 >;

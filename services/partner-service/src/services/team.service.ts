@@ -6,7 +6,11 @@ import {
   IPersistenceContext,
 } from "@giusmento/mangojs-core";
 import * as models from "../db/models";
-import { CreateTeamRequest, UpdateTeamRequest } from "../types/types";
+
+import type * as PBTypes from "@giusmento/pulcherbook-types";
+// Import service layer request types from shared package
+type CreateTeamRequest = PBTypes.partner.requests.team.CreateTeamRequest;
+type UpdateTeamRequest = PBTypes.partner.requests.team.UpdateTeamRequest;
 
 @injectable()
 export class TeamService {
@@ -23,7 +27,7 @@ export class TeamService {
    * @throws {APIError} 400 BAD_REQUEST if name or partner_id is missing
    */
   public async create(
-    partner_uid: string,
+    partner_external_uid: string,
     data: CreateTeamRequest
   ): Promise<models.Team> {
     const response = await this._persistenceContext.inTransaction(
@@ -38,7 +42,7 @@ export class TeamService {
         }
         // get partner relation
         const partner = await em.findOne(models.Partner, {
-          where: { external_uid: partner_uid },
+          where: { externalUid: partner_external_uid },
         });
         if (!partner) {
           throw new errors.APIError(
@@ -60,8 +64,8 @@ export class TeamService {
           description: responseApi.description,
           tags: responseApi.tags,
           status: responseApi.status,
-          created_at: responseApi.created_at,
-          updated_at: responseApi.updated_at,
+          createdAt: responseApi.createdAt,
+          updatedAt: responseApi.updatedAt,
           uid: responseApi.uid,
         };
         return response;
@@ -103,14 +107,14 @@ export class TeamService {
    * @returns Promise resolving to array of teams
    */
   public async findAll(
-    partner_id: string,
+    partnerUid: string,
     limit: number = 20,
     offset: number = 0
   ): Promise<models.Team[]> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         const teams = await em.find(models.Team, {
-          where: { partner: { uid: partner_id } },
+          where: { partner: { uid: partnerUid } },
         });
 
         return teams;

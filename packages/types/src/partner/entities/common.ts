@@ -3,8 +3,8 @@ export type BusinessType = {
   name: string;
   description: string | null;
   status: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type BusinessTypeShort = Pick<

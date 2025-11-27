@@ -8,16 +8,16 @@
  */
 export type TeamService = {
   uid: string;
-  team_id: string;
-  service_id: string;
-  created_at: Date;
-  updated_at: Date;
+  teamId: string;
+  serviceId: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 /**
  * Fields required when creating a new team-service mapping
  */
-export type TeamServicePost = Pick<TeamService, "team_id" | "service_id">;
+export type TeamServicePost = Pick<TeamService, "teamId" | "serviceId">;
 
 /**
  * Fields that can be updated on an existing team-service mapping

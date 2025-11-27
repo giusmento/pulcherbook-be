@@ -9,14 +9,14 @@
  */
 export type ShopWorkingHours = {
   uid: string;
-  shop_uid: string;
-  day_of_week: number; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-  start_time: string; // e.g., "08:00:00"
-  end_time: string; // e.g., "13:00:00"
-  slot_order: number;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  shopUid: string;
+  dayOfWeek: number; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  startTime: string; // e.g., "08:00:00"
+  endTime: string; // e.g., "13:00:00"
+  slotOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 };
 
 /**
@@ -26,6 +26,6 @@ export type ShopWorkingHours = {
 export type ShopWorkingHoursPut = Partial<
   Pick<
     ShopWorkingHours,
-    "day_of_week" | "start_time" | "end_time" | "slot_order" | "is_active"
+    "dayOfWeek" | "startTime" | "endTime" | "slotOrder" | "isActive"
   >
 >;

@@ -3,14 +3,14 @@
 
 // Partner types
 export interface CreatePartnerRequest {
-  external_uid: string;
-  company_name: string;
+  externalUid: string;
+  companyName: string;
   description?: string;
   address?: string;
   city?: string;
   state?: string;
   country?: string;
-  postal_code?: string;
+  postalCode?: string;
   latitude?: number;
   longitude?: number;
   phone?: string;
@@ -18,60 +18,29 @@ export interface CreatePartnerRequest {
   website?: string;
 }
 
-export interface UpdatePartnerRequest {
-  company_name: string;
-  description: string;
-  business_type: string;
-  address: string;
-  city: string;
-  state: string;
-  country: string;
-  postal_code: string;
-  latitude: number;
-  longitude: number;
-  phone: string;
-  email: string;
-  website?: string;
-  instagram?: string;
-  status: string;
-}
-
 export interface SearchPartnersRequest {
   latitude?: number;
   longitude?: number;
   radius?: number; // in kilometers
-  service_id?: string;
+  serviceId?: string;
   city?: string;
   limit?: number;
   offset?: number;
 }
 
-// Team types
-export interface CreateTeamRequest {
-  partner_id: string;
-  name: string;
-  description?: string;
-}
-
-export interface UpdateTeamRequest {
-  name?: string;
-  description?: string;
-  status?: string;
-}
-
 // TeamMember types
 export interface CreateTeamMemberRequest {
-  team_id: string;
-  user_id: string;
+  teamId: string;
+  userId: string;
   role?: string;
 }
 
 // Service types
 export interface CreateServiceRequest {
-  partner_id: string;
+  partnerId: string;
   name: string;
   description?: string;
-  duration_minutes: number;
+  durationMinutes: number;
   price: number;
   currency?: string;
 }
@@ -79,7 +48,7 @@ export interface CreateServiceRequest {
 export interface UpdateServiceRequest {
   name?: string;
   description?: string;
-  duration_minutes?: number;
+  durationMinutes?: number;
   price?: number;
   currency?: string;
   status?: string;
@@ -87,80 +56,80 @@ export interface UpdateServiceRequest {
 
 // TeamService types
 export interface CreateTeamServiceRequest {
-  team_id: string;
-  service_id: string;
+  teamId: string;
+  serviceId: string;
 }
 
 // CompanyMedia types
 export interface CreateCompanyMediaRequest {
-  partner_id: string;
+  partnerId: string;
   url: string;
   type: string;
-  display_order?: number;
-  alt_text?: string;
+  displayOrder?: number;
+  altText?: string;
 }
 
 export interface UpdateCompanyMediaRequest {
-  display_order?: number;
-  alt_text?: string;
+  displayOrder?: number;
+  altText?: string;
 }
 
 // Appointment types
 export interface CreateAppointmentRequest {
-  customer_user_id: string;
-  team_member_id: string;
-  service_id: string;
-  appointment_date: Date;
-  start_time: string; // HH:MM
-  duration_minutes: number;
-  customer_notes?: string | null;
+  customerUserId: string;
+  teamMemberId: string;
+  serviceId: string;
+  appointmentDate: Date;
+  startTime: string; // HH:MM
+  durationMinutes: number;
+  customerNotes?: string | null;
 }
 
 export interface UpdateAppointmentRequest {
-  appointment_date?: Date;
-  start_time?: string;
-  duration_minutes?: number;
-  customer_notes?: string | null;
+  appointmentDate?: Date;
+  startTime?: string;
+  durationMinutes?: number;
+  customerNotes?: string | null;
 }
 
 export interface UpdateAppointmentStatusRequest {
   status: string;
-  cancellation_reason?: string;
+  cancellationReason?: string;
 }
 
 export interface CheckAvailabilityRequest {
-  team_member_id: string;
-  appointment_date: string;
-  duration_minutes: number;
+  teamMemberId: string;
+  appointmentDate: string;
+  durationMinutes: number;
 }
 
 // TeamMemberAvailability types
 export interface CreateAvailabilityRequest {
-  team_member_id: string;
-  is_recurring: boolean;
-  day_of_week?: number | null; // 0-6 for recurring
-  specific_date?: Date | null; // for one-time
-  start_time: string; // HH:MM
-  end_time: string; // HH:MM
+  teamMemberId: string;
+  isRecurring: boolean;
+  dayOfWeek?: number | null; // 0-6 for recurring
+  specificDate?: Date | null; // for one-time
+  startTime: string; // HH:MM
+  endTime: string; // HH:MM
 }
 
 export interface UpdateAvailabilityRequest {
-  start_time?: string;
-  end_time?: string;
-  is_recurring?: boolean;
-  day_of_week?: number | null;
-  specific_date?: Date | null;
+  startTime?: string;
+  endTime?: string;
+  isRecurring?: boolean;
+  dayOfWeek?: number | null;
+  specificDate?: Date | null;
 }
 
 export interface GetAvailableSlotsRequest {
-  team_member_id: string;
+  teamMemberId: string;
   date: string; // YYYY-MM-DD
-  service_id: string;
+  serviceId: string;
 }
 
 export interface TimeSlot {
-  start_time: string;
-  end_time: string;
+  startTime: string;
+  endTime: string;
   available: boolean;
 }
 

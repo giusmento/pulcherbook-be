@@ -38,7 +38,7 @@ const iamClientService = partnerContainer.get<IAMClientService>(
  *   name: TeamMembers
  *   description: Team member management endpoints
  */
-@Controller("/api/v1/partners/:partner_uid/team-members")
+@Controller("/api/v1/partners/:partnerUid/team-members")
 export class TeamMemberController {
   private teamMemberService: TeamMemberService;
   private _iamClient: IAMClientService;
@@ -89,9 +89,13 @@ export class TeamMemberController {
     const logRequest = new utils.LogRequest(res);
     try {
       const data = req.body;
-      const partner_uid = req.params.partner_uid;
+      const partnerUid = req.params.partnerUid;
 
-      const teamMember = await this.teamMemberService.create(data, partner_uid);
+      const teamMember = await this.teamMemberService.create(
+        partnerUid,
+        "",
+        data
+      );
 
       const apiResponse = {
         ok: true,
@@ -138,18 +142,15 @@ export class TeamMemberController {
   > {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { uid, partner_uid } = req.params;
-      const teamMember = await this.teamMemberService.findById(
-        partner_uid,
-        uid
-      );
+      const { uid, partnerUid } = req.params;
+      const teamMember = await this.teamMemberService.findById(partnerUid, uid);
 
       if (!teamMember) {
         throw new errors.APIError(404, "NOT_FOUND", "Team member not found");
       }
       const iamTeamMembers = await this._iamClient.getPartnerUserByUid(
-        partner_uid,
-        teamMember.external_uid,
+        partnerUid,
+        teamMember.externalUid,
         req.cookies
       );
       const mergedTeamMember = {
@@ -161,10 +162,10 @@ export class TeamMemberController {
         phone: iamTeamMembers.phoneNumber || "",
         teams: teamMember.teams,
         systemGroups: [],
-        external_uid: iamTeamMembers.uid,
-        joined_at: teamMember.joined_at,
-        created_at: teamMember.created_at,
-        updated_at: teamMember.updated_at,
+        externalUid: iamTeamMembers.uid,
+        joinedAt: teamMember.joinedAt,
+        createdAt: teamMember.createdAt,
+        updatedAt: teamMember.updatedAt,
       };
 
       const apiResponse = {
@@ -219,23 +220,23 @@ export class TeamMemberController {
   ): Promise<Response<PBTypes.partner.api.v1.teamMembers.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const team_id = req.query.team_id as string | undefined;
+      const teamId = req.query.teamId as string | undefined;
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = parseInt(req.query.offset as string) || 0;
 
       const iamTeamMembers = await this._iamClient.getPartnerUsers(
-        req.params.partner_uid,
+        req.params.partnerUid,
         req.cookies
       );
 
       const partnerTeamMember = await this.teamMemberService.findAll(
-        req.params.partner_uid
+        req.params.partnerUid
       );
 
       //merge data from iamTeamMembers and partnerTeamMember
       const mergeTeamMembers = iamTeamMembers.map((iamMember) => {
         const partnerMember = partnerTeamMember.find(
-          (ptm) => ptm.external_uid === iamMember.uid
+          (ptm) => ptm.externalUid === iamMember.uid
         );
         return {
           uid: partnerMember ? partnerMember.uid : "",
@@ -249,13 +250,13 @@ export class TeamMemberController {
             name: group.name,
           })),
           phone: iamMember.phoneNumber || "",
-          external_uid: iamMember.uid,
-          joined_at: partnerMember ? partnerMember.joined_at : "",
-          created_at: partnerMember
-            ? partnerMember.created_at
+          externalUid: iamMember.uid,
+          joinedAt: partnerMember ? partnerMember.joinedAt : "",
+          createdAt: partnerMember
+            ? partnerMember.createdAt
             : String(iamMember.createdAt),
-          updated_at: partnerMember
-            ? partnerMember.updated_at
+          updatedAt: partnerMember
+            ? partnerMember.updatedAt
             : String(iamMember.updatedAt),
         };
       });
@@ -304,13 +305,13 @@ export class TeamMemberController {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const { partner_uid } = req.params;
+      const { partnerUid } = req.params;
       const data = req.body;
 
       const teamMember = await this.teamMemberService.modify(
         data,
         uid,
-        partner_uid
+        partnerUid
       );
 
       if (!teamMember) {
@@ -319,8 +320,8 @@ export class TeamMemberController {
 
       // update data on IAM service
       const response = await this._iamClient.updatePartnerUser(
-        partner_uid,
-        teamMember.external_uid,
+        partnerUid,
+        teamMember.externalUid,
         {
           firstName: data.firstName,
           lastName: data.lastName,
@@ -382,7 +383,7 @@ export class TeamMemberController {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const { partner_uid } = req.params;
+      const { partnerUid } = req.params;
       const data = req.body;
 
       const teamMember = await this.teamMemberService.updateGroups(uid, data);

@@ -8,15 +8,15 @@
  */
 export type Service = {
   uid: string;
-  partner_id: string;
+  partnerId: string;
   name: string;
   description: string | null;
-  duration_minutes: number;
+  durationMinutes: number;
   price: number;
   currency: string;
   status: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 /**
@@ -24,10 +24,10 @@ export type Service = {
  */
 export type ServicePost = Pick<
   Service,
-  "partner_id" | "name" | "description" | "duration_minutes" | "price" | "currency"
+  "partnerId" | "name" | "description" | "durationMinutes" | "price" | "currency"
 >;
 
 /**
- * Fields that can be updated on an existing service (excluding partner_id)
+ * Fields that can be updated on an existing service (excluding partnerId)
  */
-export type ServicePut = Partial<Omit<ServicePost, "partner_id">>;
+export type ServicePut = Partial<Omit<ServicePost, "partnerId">>;

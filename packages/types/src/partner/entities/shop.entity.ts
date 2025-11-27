@@ -11,24 +11,23 @@ import { BusinessTypeShort } from "./common";
  */
 export type Shop = {
   uid: string;
-  partner_uid: string;
-  shop_name: string;
-  business_type: BusinessTypeShort;
+  shopName: string;
+  businessType: BusinessTypeShort;
   description: string;
-  address: string | null;
-  city: string | null;
-  state: string | null;
-  country: string | null;
-  postal_code: string | null;
+  addressStreet: string | null;
+  addressCity: string | null;
+  addressState: string | null;
+  addressCountry: string | null;
+  addressPostalCode: string | null;
   latitude: number | null;
   longitude: number | null;
-  phone: string | null;
+  phoneNumber: string | null;
   email: string | null;
   website: string | null;
   instagram: string | null;
   status: string;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 /**
@@ -37,17 +36,17 @@ export type Shop = {
  */
 export type ShopPost = Pick<
   Shop,
-  | "partner_uid"
-  | "shop_name"
+  | "partnerUid"
+  | "shopName"
   | "description"
-  | "address"
-  | "city"
-  | "state"
-  | "country"
-  | "postal_code"
+  | "addressStreet"
+  | "addressCity"
+  | "addressState"
+  | "addressCountry"
+  | "addressPostalCode"
   | "latitude"
   | "longitude"
-  | "phone"
+  | "phoneNumber"
   | "email"
   | "website"
   | "instagram"
@@ -55,9 +54,9 @@ export type ShopPost = Pick<
 
 /**
  * API PUT request body - Fields that can be updated on an existing shop
- * Derived from Shop entity (excluding partner_uid, can add business_type and status)
+ * Derived from Shop entity (excluding partnerUid, can add businessType and status)
  */
-export type ShopPut = Partial<Omit<ShopPost, "partner_uid">> & {
-  business_type?: string;
+export type ShopPut = Partial<Omit<ShopPost, "partnerUid">> & {
+  businessType?: string;
   status?: string;
 };

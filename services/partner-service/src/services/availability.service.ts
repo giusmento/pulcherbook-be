@@ -31,13 +31,13 @@ export class AvailabilityService {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         // Validation
-        if (!data.team_member_id) {
+        if (!data.teamMemberId) {
           throw new errors.APIError(400, "BAD_REQUEST", "Team member ID is required");
         }
-        if (!data.start_time) {
+        if (!data.startTime) {
           throw new errors.APIError(400, "BAD_REQUEST", "Start time is required");
         }
-        if (!data.end_time) {
+        if (!data.endTime) {
           throw new errors.APIError(400, "BAD_REQUEST", "End time is required");
         }
 
@@ -93,12 +93,12 @@ export class AvailabilityService {
         const query = em
           .createQueryBuilder(models.TeamMemberAvailability, "availability")
           .leftJoinAndSelect("availability.teamMember", "teamMember")
-          .orderBy("availability.day_of_week", "ASC")
-          .addOrderBy("availability.start_time", "ASC");
+          .orderBy("availability.dayOfWeek", "ASC")
+          .addOrderBy("availability.startTime", "ASC");
 
         if (team_member_id) {
-          query.where("availability.team_member_id = :team_member_id", {
-            team_member_id,
+          query.where("availability.teamMemberId = :teamMemberId", {
+            teamMemberId: team_member_id,
           });
         }
 
@@ -174,7 +174,7 @@ export class AvailabilityService {
   ): Promise<TimeSlot[]> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
-        const { team_member_id, date, service_id } = data;
+        const { teamMemberId, date, serviceId } = data;
 
         // Get day of week from date (0 = Sunday, 6 = Saturday)
         const dateObj = new Date(date);
@@ -183,11 +183,11 @@ export class AvailabilityService {
         // Get availability rules for this team member
         const availabilities = await em
           .createQueryBuilder(models.TeamMemberAvailability, "availability")
-          .where("availability.team_member_id = :team_member_id", {
-            team_member_id,
+          .where("availability.teamMemberId = :teamMemberId", {
+            teamMemberId,
           })
           .andWhere(
-            "(availability.day_of_week = :dayOfWeek AND availability.is_recurring = true) OR (availability.specific_date = :date AND availability.is_recurring = false)",
+            "(availability.dayOfWeek = :dayOfWeek AND availability.isRecurring = true) OR (availability.specificDate = :date AND availability.isRecurring = false)",
             { dayOfWeek, date }
           )
           .getMany();
@@ -199,8 +199,8 @@ export class AvailabilityService {
         // Generate time slots (simplified - 30-minute intervals)
         const slots: TimeSlot[] = [];
         for (const avail of availabilities) {
-          const [startHour, startMin] = avail.start_time.split(":").map(Number);
-          const [endHour, endMin] = avail.end_time.split(":").map(Number);
+          const [startHour, startMin] = avail.startTime.split(":").map(Number);
+          const [endHour, endMin] = avail.endTime.split(":").map(Number);
 
           let currentMinutes = startHour * 60 + startMin;
           const endMinutes = endHour * 60 + endMin;
@@ -220,8 +220,8 @@ export class AvailabilityService {
             ).padStart(2, "0")}`;
 
             slots.push({
-              start_time: timeStr,
-              end_time: nextTimeStr,
+              startTime: timeStr,
+              endTime: nextTimeStr,
               available: true, // TODO: Check against existing appointments
             });
 

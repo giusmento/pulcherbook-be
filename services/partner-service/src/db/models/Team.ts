@@ -41,11 +41,11 @@ export class Team {
   })
   status: TeamStatus;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 
   // Relations
   @ManyToOne(() => Partner, (partner) => partner.uid)

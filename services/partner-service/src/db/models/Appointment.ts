@@ -20,35 +20,35 @@ export enum AppointmentStatus {
 }
 
 @Entity({ name: "appointments", schema: "partner" })
-@Index(["team_member_id", "appointment_date", "start_time"])
+@Index(["teamMemberId", "appointmentDate", "startTime"])
 export class Appointment {
   @PrimaryGeneratedColumn("uuid")
   uid: string;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column({ type: "varchar", length: 255, name: "customer_user_id" })
   @Index()
-  customer_user_id: string;
+  customerUserId: string;
 
-  @Column({ type: "uuid" })
+  @Column({ type: "uuid", name: "team_member_id" })
   @Index()
-  team_member_id: string;
+  teamMemberId: string;
 
-  @Column({ type: "uuid" })
+  @Column({ type: "uuid", name: "service_id" })
   @Index()
-  service_id: string;
+  serviceId: string;
 
-  @Column({ type: "date" })
+  @Column({ type: "date", name: "appointment_date" })
   @Index()
-  appointment_date: Date;
+  appointmentDate: Date;
 
-  @Column({ type: "time" })
-  start_time: string;
+  @Column({ type: "time", name: "start_time" })
+  startTime: string;
 
-  @Column({ type: "time" })
-  end_time: string;
+  @Column({ type: "time", name: "end_time" })
+  endTime: string;
 
-  @Column({ type: "int" })
-  duration_minutes: number;
+  @Column({ type: "int", name: "duration_minutes" })
+  durationMinutes: number;
 
   @Column({
     type: "enum",
@@ -60,17 +60,17 @@ export class Appointment {
   @Column({ type: "text", nullable: true })
   notes: string;
 
-  @Column({ type: "text", nullable: true })
-  customer_notes: string;
+  @Column({ type: "text", nullable: true, name: "customer_notes" })
+  customerNotes: string;
 
-  @Column({ type: "text", nullable: true })
-  cancellation_reason: string;
+  @Column({ type: "text", nullable: true, name: "cancellation_reason" })
+  cancellationReason: string;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 
   // Relations
   //@ManyToOne(() => TeamMember, (member) => member.appointments, {

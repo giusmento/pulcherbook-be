@@ -45,40 +45,40 @@ export class SpecialHoursService {
           );
         }
 
-        // Validate: if not closed, must have start_time and end_time
-        if (!data.is_closed && (!data.start_time || !data.end_time)) {
+        // Validate: if not closed, must have startTime and endTime
+        if (!data.isClosed && (!data.startTime || !data.endTime)) {
           throw new errors.APIError(
             400,
             "BAD_REQUEST",
-            "start_time and end_time are required when is_closed is false"
+            "startTime and endTime are required when isClosed is false"
           );
         }
 
         // Validate time format if provided
         const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
-        if (data.start_time && !timeRegex.test(data.start_time)) {
+        if (data.startTime && !timeRegex.test(data.startTime)) {
           throw new errors.APIError(
             400,
             "BAD_REQUEST",
-            "Invalid start_time format"
+            "Invalid startTime format"
           );
         }
-        if (data.end_time && !timeRegex.test(data.end_time)) {
+        if (data.endTime && !timeRegex.test(data.endTime)) {
           throw new errors.APIError(
             400,
             "BAD_REQUEST",
-            "Invalid end_time format"
+            "Invalid endTime format"
           );
         }
 
         const specialHours = em.create(models.ShopSpecialHours, {
           shop,
-          special_date: data.special_date,
-          is_recurring_annual: data.is_recurring_annual || false,
-          start_time: data.start_time || null,
-          end_time: data.end_time || null,
-          slot_order: data.slot_order || 0,
-          is_closed: data.is_closed || false,
+          specialDate: data.specialDate,
+          isRecurringAnnual: data.isRecurringAnnual || false,
+          startTime: data.startTime || null,
+          endTime: data.endTime || null,
+          slotOrder: data.slotOrder || 0,
+          isClosed: data.isClosed || false,
           description: data.description || null,
         });
         await em.save(specialHours);
@@ -137,8 +137,8 @@ export class SpecialHoursService {
         }
 
         const specialHours = await em.find(models.ShopSpecialHours, {
-          where: { shop: { uid: shop_uid }, is_active: true },
-          order: { special_date: "ASC", slot_order: "ASC" },
+          where: { shop: { uid: shop_uid }, isActive: true },
+          order: { specialDate: "ASC", slotOrder: "ASC" },
         });
 
         return specialHours;
@@ -170,10 +170,10 @@ export class SpecialHoursService {
         const specialHours = await em.find(models.ShopSpecialHours, {
           where: {
             shop: { uid: shop_uid },
-            special_date: date,
-            is_active: true,
+            specialDate: date,
+            isActive: true,
           },
-          order: { slot_order: "ASC" },
+          order: { slotOrder: "ASC" },
         });
 
         return specialHours;
@@ -208,18 +208,18 @@ export class SpecialHoursService {
 
         // Validate time format if provided
         const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
-        if (data.start_time && !timeRegex.test(data.start_time)) {
+        if (data.startTime && !timeRegex.test(data.startTime)) {
           throw new errors.APIError(
             400,
             "BAD_REQUEST",
-            "Invalid start_time format"
+            "Invalid startTime format"
           );
         }
-        if (data.end_time && !timeRegex.test(data.end_time)) {
+        if (data.endTime && !timeRegex.test(data.endTime)) {
           throw new errors.APIError(
             400,
             "BAD_REQUEST",
-            "Invalid end_time format"
+            "Invalid endTime format"
           );
         }
 
@@ -251,29 +251,29 @@ export class SpecialHoursService {
         for (const item of data) {
           // Validate time format if provided
           const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
-          if (item.start_time && !timeRegex.test(item.start_time)) {
+          if (item.startTime && !timeRegex.test(item.startTime)) {
             throw new errors.APIError(
               400,
               "BAD_REQUEST",
-              "Invalid start_time format"
+              "Invalid startTime format"
             );
           }
-          if (item.end_time && !timeRegex.test(item.end_time)) {
+          if (item.endTime && !timeRegex.test(item.endTime)) {
             throw new errors.APIError(
               400,
               "BAD_REQUEST",
-              "Invalid end_time format"
+              "Invalid endTime format"
             );
           }
           specialHours.push({
-            special_date: item.special_date,
-            is_recurring_annual: item.is_recurring_annual,
-            start_time: item.start_time,
-            end_time: item.end_time,
-            slot_order: item.slot_order || 0,
-            is_closed: item.is_closed,
+            specialDate: item.specialDate,
+            isRecurringAnnual: item.isRecurringAnnual,
+            startTime: item.startTime,
+            endTime: item.endTime,
+            slotOrder: item.slotOrder || 0,
+            isClosed: item.isClosed,
             description: item.description,
-            is_active: item.is_active,
+            isActive: item.isActive,
           });
         }
 
@@ -304,16 +304,16 @@ export class SpecialHoursService {
         const response = responseApi.map((wh) => {
           return {
             uid: wh.uid,
-            special_date: wh.special_date,
-            is_recurring_annual: wh.is_recurring_annual,
-            shop_uid: shop.uid,
+            specialDate: wh.specialDate,
+            isRecurringAnnual: wh.isRecurringAnnual,
+            shopUid: shop.uid,
             description: wh.description,
-            start_time: wh.start_time,
-            end_time: wh.end_time,
-            slot_order: wh.slot_order,
-            is_active: wh.is_active,
-            created_at: wh.created_at,
-            updated_at: wh.updated_at,
+            startTime: wh.startTime,
+            endTime: wh.endTime,
+            slotOrder: wh.slotOrder,
+            isActive: wh.isActive,
+            createdAt: wh.createdAt,
+            updatedAt: wh.updatedAt,
           };
         });
 
@@ -343,7 +343,7 @@ export class SpecialHoursService {
           );
         }
 
-        specialHours.is_active = false;
+        specialHours.isActive = false;
         await em.save(specialHours);
         return true;
       }

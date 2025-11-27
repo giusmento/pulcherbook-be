@@ -8,14 +8,14 @@
  */
 export type TeamMemberAvailability = {
   uid: string;
-  team_member_id: string;
-  is_recurring: boolean;
-  day_of_week: number | null;
-  specific_date: Date | null;
-  start_time: string;
-  end_time: string;
-  created_at: Date;
-  updated_at: Date;
+  teamMemberId: string;
+  isRecurring: boolean;
+  dayOfWeek: number | null;
+  specificDate: Date | null;
+  startTime: string;
+  endTime: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 /**
@@ -23,15 +23,15 @@ export type TeamMemberAvailability = {
  */
 export type AvailabilityPost = Pick<
   TeamMemberAvailability,
-  | "team_member_id"
-  | "is_recurring"
-  | "day_of_week"
-  | "specific_date"
-  | "start_time"
-  | "end_time"
+  | "teamMemberId"
+  | "isRecurring"
+  | "dayOfWeek"
+  | "specificDate"
+  | "startTime"
+  | "endTime"
 >;
 
 /**
- * Fields that can be updated on an existing availability (excluding team_member_id)
+ * Fields that can be updated on an existing availability (excluding teamMemberId)
  */
-export type AvailabilityPut = Partial<Omit<AvailabilityPost, "team_member_id">>;
+export type AvailabilityPut = Partial<Omit<AvailabilityPost, "teamMemberId">>;

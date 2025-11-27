@@ -18,60 +18,87 @@ export class Partner {
   @PrimaryGeneratedColumn("uuid")
   uid: string;
 
-  @Column({ type: "uuid" })
+  @Column({ type: "uuid", name: "external_uid" })
   @Index()
-  external_uid: string;
+  externalUid: string;
 
-  @Column({ type: "varchar", length: 255 })
-  company_name: string;
+  @Column({ type: "varchar", length: 255, name: "company_name" })
+  companyName: string;
 
-  @Column({ type: "text", nullable: true })
+  @Column({ type: "text", nullable: true, name: "description" })
   description: string;
 
-  @Column({ type: "varchar", length: 500, nullable: true })
-  address: string;
+  @Column({
+    type: "varchar",
+    length: 500,
+    nullable: true,
+    name: "address_street",
+  })
+  addressStreet: string;
 
-  @Column({ type: "varchar", length: 100, nullable: true })
-  city: string;
+  @Column({
+    type: "varchar",
+    length: 100,
+    nullable: true,
+    name: "address_city",
+  })
+  addressCity: string;
 
-  @Column({ type: "varchar", length: 100, nullable: true })
-  state: string;
+  @Column({
+    type: "varchar",
+    length: 100,
+    nullable: true,
+    name: "address_state",
+  })
+  addressState: string;
 
-  @Column({ type: "varchar", length: 100, nullable: true })
-  country: string;
+  @Column({
+    type: "varchar",
+    length: 100,
+    nullable: true,
+    name: "address_country",
+  })
+  addressCountry: string;
 
-  @Column({ type: "varchar", length: 20, nullable: true })
-  postal_code: string;
+  @Column({
+    type: "varchar",
+    length: 20,
+    nullable: true,
+    name: "address_postal_code",
+  })
+  addressPostalCode: string;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
-  phone: string;
+  @Column({ type: "varchar", length: 50, nullable: true, name: "phone_number" })
+  phoneNumber: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "varchar", length: 255, nullable: true, name: "email" })
   email: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "varchar", length: 255, nullable: true, name: "website" })
   website: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "varchar", length: 255, nullable: true, name: "instagram" })
   instagram: string;
 
   @Column({
     type: "enum",
     enum: PartnerStatus,
     default: PartnerStatus.ACTIVE,
+    name: "status",
   })
   status: PartnerStatus;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 
   // Relations
   @OneToMany(() => Shop, (shop) => shop.partner)
   shops: Shop[];
 
   @ManyToOne(() => BusinessType, (businessType) => businessType.partners)
-  business_type: BusinessType;
+  @JoinColumn({ name: "business_type_uid" })
+  businessType: BusinessType;
 }

@@ -13,10 +13,10 @@ import { ResponseBodyData } from "..";
  */
 
 // For GET / (all teams)
-export type Params = { partner_uid: string };
+export type Params = { partnerUid: string };
 
 // For GET /:uid (single team)
-export type ParamsSingle = { partner_uid: string; uid: string };
+export type ParamsSingle = { partnerUid: string; uid: string };
 export type RequestBody = {};
 
 /**

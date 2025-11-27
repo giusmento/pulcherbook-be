@@ -196,13 +196,13 @@ export class CompanyMediaController {
   ): Promise<Response<PBTypes.partner.api.v1.companyMedia.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const partner_id = req.query.partner_id as string | undefined;
+      const partnerId = req.query.partnerId as string | undefined;
       const type = req.query.type as string | undefined;
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = parseInt(req.query.offset as string) || 0;
 
       const media = await this.companyMediaService.findAll(
-        partner_id,
+        partnerId,
         type,
         limit,
         offset

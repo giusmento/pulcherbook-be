@@ -9,17 +9,17 @@
  */
 export type ShopSpecialHours = {
   uid: string;
-  shop_uid: string;
-  special_date: string; // ISO date format: "2025-12-25"
-  is_recurring_annual: boolean;
-  start_time: string | null; // e.g., "10:00:00"
-  end_time: string | null; // e.g., "14:00:00"
-  slot_order: number;
-  is_closed: boolean;
+  shopUid: string;
+  specialDate: string; // ISO date format: "2025-12-25"
+  isRecurringAnnual: boolean;
+  startTime: string | null; // e.g., "10:00:00"
+  endTime: string | null; // e.g., "14:00:00"
+  slotOrder: number;
+  isClosed: boolean;
   description: string | null;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 };
 
 /**
@@ -28,12 +28,12 @@ export type ShopSpecialHours = {
  */
 export type ShopSpecialHoursPost = Pick<
   ShopSpecialHours,
-  | "special_date"
-  | "is_recurring_annual"
-  | "start_time"
-  | "end_time"
-  | "slot_order"
-  | "is_closed"
+  | "specialDate"
+  | "isRecurringAnnual"
+  | "startTime"
+  | "endTime"
+  | "slotOrder"
+  | "isClosed"
   | "description"
 >;
 
@@ -44,13 +44,13 @@ export type ShopSpecialHoursPost = Pick<
 export type ShopSpecialHoursPut = Partial<
   Pick<
     ShopSpecialHours,
-    | "special_date"
-    | "is_recurring_annual"
-    | "start_time"
-    | "end_time"
-    | "slot_order"
-    | "is_closed"
+    | "specialDate"
+    | "isRecurringAnnual"
+    | "startTime"
+    | "endTime"
+    | "slotOrder"
+    | "isClosed"
     | "description"
-    | "is_active"
+    | "isActive"
   >
 >;

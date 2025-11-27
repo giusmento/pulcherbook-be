@@ -21,9 +21,9 @@ export class CompanyMedia {
   @PrimaryGeneratedColumn("uuid")
   uid: string;
 
-  @Column({ type: "uuid" })
+  @Column({ type: "uuid", name: "partner_id" })
   @Index()
-  partner_id: string;
+  partnerId: string;
 
   @Column({ type: "varchar", length: 500 })
   url: string;
@@ -34,17 +34,17 @@ export class CompanyMedia {
   })
   type: MediaType;
 
-  @Column({ type: "int", default: 0 })
-  display_order: number;
+  @Column({ type: "int", default: 0, name: "display_order" })
+  displayOrder: number;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
-  alt_text: string;
+  @Column({ type: "varchar", length: 255, nullable: true, name: "alt_text" })
+  altText: string;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 
   @JoinColumn({ name: "partner_id" })
   partner: Partner;

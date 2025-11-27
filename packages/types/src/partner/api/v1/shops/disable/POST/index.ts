@@ -8,7 +8,7 @@
 import { Types } from "@giusmento/mangojs-core";
 import { ResponseBodyData } from "../../";
 
-export type RequestParams = { partner_uid: string; uid: string };
+export type RequestParams = { partnerUid: string; uid: string };
 
 export type RequestBody = undefined;
 

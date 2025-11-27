@@ -19,9 +19,9 @@ export class Service {
   @PrimaryGeneratedColumn("uuid")
   uid: string;
 
-  @Column({ type: "uuid" })
+  @Column({ type: "uuid", name: "partner_id" })
   @Index()
-  partner_id: string;
+  partnerId: string;
 
   @Column({ type: "varchar", length: 255 })
   name: string;
@@ -29,8 +29,8 @@ export class Service {
   @Column({ type: "text", nullable: true })
   description: string;
 
-  @Column({ type: "int" })
-  duration_minutes: number;
+  @Column({ type: "int", name: "duration_minutes" })
+  durationMinutes: number;
 
   @Column({ type: "decimal", precision: 10, scale: 2 })
   price: number;
@@ -45,11 +45,11 @@ export class Service {
   })
   status: ServiceStatus;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 
   // Relations
   @ManyToOne(() => Shop, (shop) => shop.services)

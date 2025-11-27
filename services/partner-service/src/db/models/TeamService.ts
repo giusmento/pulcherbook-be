@@ -12,21 +12,21 @@ import { Team } from "./Team";
 import { Service } from "./Service";
 
 @Entity({ name: "team_services", schema: "partner" })
-@Unique(["team_id", "service_id"])
+@Unique(["teamId", "serviceId"])
 export class TeamService {
   @PrimaryGeneratedColumn("uuid")
   uid: string;
 
-  @Column({ type: "uuid" })
+  @Column({ type: "uuid", name: "team_id" })
   @Index()
-  team_id: string;
+  teamId: string;
 
-  @Column({ type: "uuid" })
+  @Column({ type: "uuid", name: "service_id" })
   @Index()
-  service_id: string;
+  serviceId: string;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
   // Relations
   @ManyToOne(() => Team, (team) => team.teamServices, {

@@ -8,11 +8,11 @@ export * as DELETE from "./DELETE";
 export type ResponseBodyData = Pick<
   CompanyMedia,
   | "uid"
-  | "partner_id"
+  | "partnerId"
   | "url"
   | "type"
-  | "display_order"
-  | "alt_text"
-  | "created_at"
-  | "updated_at"
+  | "displayOrder"
+  | "altText"
+  | "createdAt"
+  | "updatedAt"
 >;

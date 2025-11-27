@@ -10,9 +10,9 @@ import { Types } from "@giusmento/mangojs-core";
 export type Params = undefined;
 
 export type RequestBody = {
-  team_member_id: string;
+  teamMemberId: string;
   date: string; // YYYY-MM-DD
-  service_id: string;
+  serviceId: string;
 };
 
 /**
@@ -22,8 +22,8 @@ export type RequestBody = {
  */
 
 export type TimeSlot = {
-  start_time: string;
-  end_time: string;
+  startTime: string;
+  endTime: string;
   available: boolean;
 };
 

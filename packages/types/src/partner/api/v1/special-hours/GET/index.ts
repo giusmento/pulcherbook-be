@@ -11,7 +11,7 @@ import { Types } from "@giusmento/mangojs-core";
 import { ResponseBodyData } from "..";
 
 // Get all special hours for a shop
-export type Params = { partner_uid: string; shop_uid: string };
+export type Params = { partnerUid: string; shopUid: string };
 export type RequestBody = {};
 export type QueryParams = {
   date?: string; // Optional date filter in YYYY-MM-DD format
@@ -22,8 +22,8 @@ export type ResponseBody = Types.v1.api.response.response<
 
 // Get single special hours
 export type ParamsSingle = {
-  partner_uid: string;
-  shop_uid: string;
+  partnerUid: string;
+  shopUid: string;
   uid: string;
 };
 export type QueryParamsSingle = {};

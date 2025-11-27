@@ -202,12 +202,12 @@ export class AvailabilityController {
   ): Promise<Response<PBTypes.partner.api.v1.availability.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const team_member_id = req.query.team_member_id as string | undefined;
+      const teamMemberId = req.query.teamMemberId as string | undefined;
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = parseInt(req.query.offset as string) || 0;
 
       const availabilities = await this.availabilityService.findAll(
-        team_member_id,
+        teamMemberId,
         limit,
         offset
       );

@@ -33,35 +33,29 @@ export class ShopService {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         // Validation
-        if (!data.shop_name) {
+        if (!data.shopName) {
           throw new errors.APIError(
             400,
             "BAD_REQUEST",
             "Shop name is required"
           );
         }
-        if (!data.partner_uid) {
-          throw new errors.APIError(
-            400,
-            "BAD_REQUEST",
-            "Partner UID is required"
-          );
-        }
 
         // Verify partner exists
         const partner = await em.findOne(models.Partner, {
-          where: { uid: data.partner_uid },
+          where: { uid: data.partnerUid },
         });
         if (!partner) {
           throw new errors.APIError(
             400,
             "BAD_REQUEST",
-            `Partner with UID ${data.partner_uid} not found`
+            `Partner with UID ${data.partnerUid} not found`
           );
         }
-
+        //  add partner relation to data
+        const shopData = { ...data, partner };
         // Create and save using em
-        const shop = em.create(models.Shop, data);
+        const shop = em.create(models.Shop, shopData);
         await em.save(shop);
         return shop;
       }
@@ -81,7 +75,7 @@ export class ShopService {
       async (em: EntityManager) => {
         const shop = await em.findOne(models.Shop, {
           where: { uid },
-          relations: ["business_type", "services"],
+          relations: ["businessType", "services"],
         });
 
         if (!shop) {
@@ -90,11 +84,11 @@ export class ShopService {
 
         return {
           ...shop,
-          business_type: shop.business_type
+          businessType: shop.businessType
             ? {
-                uid: shop.business_type.uid,
-                name: shop.business_type.name,
-                description: shop.business_type.description,
+                uid: shop.businessType.uid,
+                name: shop.businessType.name,
+                description: shop.businessType.description,
               }
             : null,
         };
@@ -124,14 +118,14 @@ export class ShopService {
         }
         // check the partner id from external uid
         const partner = await em.findOne(models.Partner, {
-          where: { external_uid: partner_uid },
+          where: { externalUid: partner_uid },
         });
         if (!partner) {
           throw new errors.APIError(400, "BAD_REQUEST", "Invalid partner UID");
         }
         const response = await em.find(models.Shop, {
-          where: { partner_uid: partner.uid },
-          relations: ["business_type"],
+          where: { partner: { uid: partner.uid } },
+          relations: ["businessType"],
         });
 
         return response;
@@ -156,18 +150,18 @@ export class ShopService {
       async (em: EntityManager) => {
         const shop = await em.findOne(models.Shop, {
           where: { uid },
-          relations: ["business_type"],
+          relations: ["businessType"],
         });
         if (!shop) {
           throw new errors.APIError(404, "NOT_FOUND", "Shop not found");
         }
-        // load business_type relation
-        const business_type = await em.findOne(models.BusinessType, {
-          where: { uid: data.business_type },
+        // load businessType relation
+        const businessType = await em.findOne(models.BusinessType, {
+          where: { uid: data.businessType },
         });
 
         // Update shop
-        Object.assign(shop, data, { business_type });
+        Object.assign(shop, data, { businessType });
         await em.save(shop);
 
         return shop;
@@ -212,7 +206,7 @@ export class ShopService {
       async (em: EntityManager) => {
         const shop = await em.findOne(models.Shop, {
           where: { uid },
-          relations: ["business_type"],
+          relations: ["businessType"],
         });
         if (!shop) {
           throw new errors.APIError(404, "NOT_FOUND", "Shop not found");
@@ -238,7 +232,7 @@ export class ShopService {
       async (em: EntityManager) => {
         const shop = await em.findOne(models.Shop, {
           where: { uid },
-          relations: ["business_type"],
+          relations: ["businessType"],
         });
         if (!shop) {
           throw new errors.APIError(404, "NOT_FOUND", "Shop not found");

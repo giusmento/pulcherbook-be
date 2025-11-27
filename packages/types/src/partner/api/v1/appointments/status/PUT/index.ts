@@ -12,7 +12,7 @@ export type Params = { uid: string };
 
 export type RequestBody = {
   status: string;
-  cancellation_reason: string | null;
+  cancellationReason: string | null;
 };
 
 /**

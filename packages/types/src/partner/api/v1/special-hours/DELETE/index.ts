@@ -7,7 +7,7 @@
 
 import { Types } from "@giusmento/mangojs-core";
 
-export type Params = { partner_uid: string; shop_uid: string; uid: string };
+export type Params = { partnerUid: string; shopUid: string; uid: string };
 
 export type RequestBody = {};
 

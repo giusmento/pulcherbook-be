@@ -32,8 +32,9 @@ export class TeamMemberService {
    * @throws {APIError} 503 SERVICE_UNAVAILABLE if IAM service is down
    */
   public async create(
-    data: CreateTeamMemberRequest,
-    partner_uid: string
+    partnerExternalUid: string,
+    userExternalUid: string,
+    data: CreateTeamMemberRequest
   ): Promise<PBTypes.partner.entities.TeamMember> {
     // Validation
     if (!data.firstName || !data.lastName) {
@@ -47,25 +48,26 @@ export class TeamMemberService {
       throw new errors.APIError(400, "BAD_REQUEST", "Email is required");
     }
 
+    // Move to controller to get cookies from request
     // Step 1: Create user in IAM service first
-    const iamUser = {
-      email: data.email,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      groups: [],
-    };
-    let iamUserResponse: { uid: string; email: string };
-    // TODO move to controller to get cookies from request
-    try {
-      iamUserResponse = await this._iamClient.createPartnerUser(
-        partner_uid,
-        iamUser,
-        {}
-      );
-    } catch (error) {
-      console.error("[TeamMemberService] Failed to create IAM user:", error);
-      throw error; // Re-throw IAM errors
-    }
+    //const iamUser = {
+    //  email: data.email,
+    //  firstName: data.firstName,
+    //  lastName: data.lastName,
+    //  groups: [],
+    //};
+    //let iamUserResponse: { uid: string; email: string };
+    //// TODO move to controller to get cookies from request
+    //try {
+    //  iamUserResponse = await this._iamClient.createPartnerUser(
+    //    partner_uid,
+    //    iamUser,
+    //    {}
+    //  );
+    //} catch (error) {
+    //  console.error("[TeamMemberService] Failed to create IAM user:", error);
+    //  throw error; // Re-throw IAM errors
+    //}
 
     // Step 2: Create team member in partner service with IAM user UID
     const response = await this._persistenceContext.inTransaction(
@@ -75,12 +77,11 @@ export class TeamMemberService {
           lastName: data.lastName,
           email: data.email,
           phone: data.phone || "",
-          external_uid: iamUserResponse.uid, // Link to IAM user
+          externalUid: userExternalUid, // Link to IAM user
         };
         // get partner
         const partner = await em.findOne(models.Partner, {
-          where: { external_uid: partner_uid },
-          relations: ["partner"],
+          where: { externalUid: partnerExternalUid },
         });
         if (!partner) {
           throw new errors.APIError(
@@ -178,7 +179,7 @@ export class TeamMemberService {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         const teams = await em.find(models.TeamMember, {
-          where: { partner: { external_uid: partner_uid } },
+          where: { partner: { externalUid: partner_uid } },
           relations: ["teams"],
         });
         if (!teams) {
@@ -188,11 +189,11 @@ export class TeamMemberService {
         const response = teams.map((team) => {
           return {
             uid: team.uid,
-            external_uid: team.external_uid,
+            externalUid: team.externalUid,
             teams: team.teams.map((t) => ({ uid: t.uid, name: t.name })),
-            joined_at: team.joined_at,
-            created_at: team.created_at,
-            updated_at: team.updated_at,
+            joinedAt: team.joinedAt,
+            createdAt: team.createdAt,
+            updatedAt: team.updatedAt,
           };
         });
         return response;
@@ -271,6 +272,7 @@ export class TeamMemberService {
         // find admin user
         const user = await em.findOne(models.TeamMember, {
           where: { uid },
+          relations: ["teams"],
         });
 
         if (!user) {
@@ -298,8 +300,6 @@ export class TeamMemberService {
         }
 
         // save updated user
-        //
-        user.teams = groups;
         const updateResult = await em.save(user);
         return updateResult;
       }
@@ -324,8 +324,8 @@ export class TeamMemberService {
           throw new errors.APIError(404, "NOT_FOUND", "Team member not found");
         }
 
-        // Store external_uid before deletion
-        const externalUid = teamMember.external_uid;
+        // Store externalUid before deletion
+        const externalUid = teamMember.externalUid;
 
         // Delete team member from partner service
         await em.remove(teamMember);

@@ -31,7 +31,7 @@ const specialHoursService = partnerContainer.get<SpecialHoursService>(
  *   name: SpecialHours
  *   description: Shop special hours management endpoints
  */
-@Controller("/api/v1/partners/:partner_uid/shops/:shop_uid/special-hours")
+@Controller("/api/v1/partners/:partnerUid/shops/:shopUid/special-hours")
 export class SpecialHoursController {
   /**
    * @swagger
@@ -128,17 +128,17 @@ export class SpecialHoursController {
   ): Promise<Response<PBTypes.partner.api.v1.specialHours.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { shop_uid } = req.params;
+      const { shopUid } = req.params;
       const { date } = req.query;
 
       let specialHours;
       if (date) {
         specialHours = await specialHoursService.findByDate(
-          shop_uid,
+          shopUid,
           new Date(date as string)
         );
       } else {
-        specialHours = await specialHoursService.findByShop(shop_uid);
+        specialHours = await specialHoursService.findByShop(shopUid);
       }
 
       const apiResponse = {
@@ -215,13 +215,13 @@ export class SpecialHoursController {
   > {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { shop_uid } = req.params;
+      const { shopUid } = req.params;
       const data: ShopSpecialHoursPut[] = req.body;
       const updateData = data.map((item) => ({
         ...item,
       }));
       const specialHours = await specialHoursService.updateMultiple(
-        shop_uid,
+        shopUid,
         updateData
       );
 
@@ -356,8 +356,8 @@ export class SpecialHoursController {
   > {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { shop_uid, uid } = req.params;
-      const success = await specialHoursService.delete(shop_uid, uid);
+      const { shopUid, uid } = req.params;
+      const success = await specialHoursService.delete(shopUid, uid);
 
       const apiResponse = {
         ok: true,

@@ -8,7 +8,6 @@ import {
 import * as models from "../db/models";
 import {
   CreatePartnerRequest,
-  UpdatePartnerRequest,
   SearchPartnersRequest,
   ProfileCompletionResponse,
 } from "../types/types";
@@ -30,19 +29,19 @@ export class PartnerService {
    * @throws {APIError} 400 BAD_REQUEST if company name or owner user ID is missing
    */
   public async create(
-    data: CreatePartnerRequest
+    data: PBTypes.partner.entities.PartnerPost
   ): Promise<PBTypes.partner.entities.Partner> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         // Validation
-        if (!data.company_name) {
+        if (!data.companyName) {
           throw new errors.APIError(
             400,
             "BAD_REQUEST",
             "Company name is required"
           );
         }
-        if (!data.external_uid) {
+        if (!data.externalUid) {
           throw new errors.APIError(
             400,
             "BAD_REQUEST",
@@ -72,8 +71,8 @@ export class PartnerService {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         const partner = await em.findOne(models.Partner, {
-          where: { external_uid: uid },
-          relations: ["business_type"],
+          where: { externalUid: uid },
+          relations: ["businessType"],
         });
 
         if (!partner) {
@@ -82,11 +81,11 @@ export class PartnerService {
 
         return {
           ...partner,
-          business_type: partner.business_type
+          businessType: partner.businessType
             ? {
-                uid: partner.business_type.uid,
-                name: partner.business_type.name,
-                description: partner.business_type.description,
+                uid: partner.businessType.uid,
+                name: partner.businessType.name,
+                description: partner.businessType.description,
               }
             : null,
         };
@@ -128,46 +127,45 @@ export class PartnerService {
    */
   public async update(
     uid: string,
-    data: Partial<UpdatePartnerRequest>
+    data: Partial<PBTypes.partner.entities.PartnerPut>
   ): Promise<PBTypes.partner.entities.Partner> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         // get business type
         const businessType = await em.findOne(models.BusinessType, {
-          where: { uid: data.business_type },
+          where: { uid: data.businessType },
         });
         if (!businessType) {
           throw new errors.APIError(
             400,
             "BAD_REQUEST",
-            `Invalid business type: ${data.business_type}`
+            `Invalid business type: ${data.businessType}`
           );
         }
 
         // Update partner
         const update = {
-          company_name: data.company_name,
-          business_type: businessType,
+          companyName: data.companyName,
+          businessType: businessType,
           description: data.description,
-          address: data.address,
-          city: data.city,
-          state: data.state,
-          country: data.country,
-          postal_code: data.postal_code,
-          latitude: data.latitude,
-          longitude: data.longitude,
-          phone: data.phone,
-          email: data.email,
-          website: data.website,
-          instagram: data.instagram,
+          addressStreet: data.addressStreet,
+          addressCity: data.addressCity,
+          addressState: data.addressState,
+          addressCountry: data.addressCountry,
+          addressPostalCode: data.addressPostalCode,
+          phoneNumber: data.phoneNumber,
         };
-        const partner = await em.update(
-          models.Partner,
-          { external_uid: uid },
-          update
-        );
+        //  search and update partner by externalUid
+        const partner = await em.findOne(models.Partner, {
+          where: { externalUid: uid },
+        });
+        if (!partner) {
+          throw new errors.APIError(404, "NOT_FOUND", "Partner not found");
+        }
+        const updatedPartner = Object.assign(partner, update);
+        await em.save(updatedPartner);
 
-        return partner;
+        return updatedPartner;
       }
     );
     return response as PBTypes.partner.entities.Partner;
@@ -222,9 +220,9 @@ export class PartnerService {
           });
         }
 
-        if (params.service_id) {
+        if (params.serviceId) {
           query.andWhere("service.uid = :serviceId", {
-            serviceId: params.service_id,
+            serviceId: params.serviceId,
           });
         }
 
@@ -281,7 +279,7 @@ export class PartnerService {
         return {
           partner: {
             uid: partner.uid,
-            company_name: partner.company_name,
+            companyName: partner.companyName,
           },
         };
       }
@@ -306,17 +304,17 @@ export class PartnerService {
           field: keyof models.Partner;
           label: string;
         }> = [
-          { field: "description", label: "description" },
-          { field: "phone", label: "phone" },
+          { field: "companyName", label: "Company Name" },
+          { field: "phoneNumber", label: "phone" },
           { field: "email", label: "email" },
-          { field: "address", label: "address" },
-          { field: "city", label: "city" },
-          { field: "country", label: "country" },
-          { field: "postal_code", label: "postal_code" },
+          { field: "addressStreet", label: "address" },
+          { field: "addressCity", label: "city" },
+          { field: "addressCountry", label: "country" },
+          { field: "addressPostalCode", label: "postalCode" },
         ];
 
         const partner = await em.findOne(models.Partner, {
-          where: { external_uid: uid },
+          where: { externalUid: uid },
         });
 
         if (!partner) {

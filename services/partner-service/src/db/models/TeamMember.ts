@@ -18,18 +18,18 @@ export class TeamMember {
   @PrimaryGeneratedColumn("uuid")
   uid: string;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column({ type: "varchar", length: 255, name: "external_uid" })
   @Index()
-  external_uid: string;
+  externalUid: string;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-  joined_at: Date;
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", name: "joined_at" })
+  joinedAt: Date;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 
   // Relations
   @ManyToOne(() => Partner, (partner) => partner.uid)

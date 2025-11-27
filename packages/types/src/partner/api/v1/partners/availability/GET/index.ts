@@ -18,7 +18,7 @@ export type RequestBody = {};
  * @see
  */
 
-export type ResponseBodyData = Omit<TeamMemberAvailability, "created_at" | "updated_at">;
+export type ResponseBodyData = Omit<TeamMemberAvailability, "createdAt" | "updatedAt">;
 
 export type ResponseBody = Types.v1.api.response.response<
   Array<ResponseBodyData>

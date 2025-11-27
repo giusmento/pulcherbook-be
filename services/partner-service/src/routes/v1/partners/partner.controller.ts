@@ -12,13 +12,16 @@ import {
   Containers,
 } from "@giusmento/mangojs-core";
 import { PartnerService } from "../../../services/partner.service";
-import { SearchPartnersRequest } from "../../../types/types";
 import { IAMClientService } from "../../../services/iam-client.service";
+import { TeamService } from "../../../services/team.service";
+import { TeamMemberService } from "../../../services/team-member.service";
+
+import { SearchPartnersRequest } from "../../../types/types";
 
 // Import API types from package
 import type * as PBTypes from "@giusmento/pulcherbook-types";
 import { partnerContainer } from "../../../inversify.config";
-type PartnerPost = PBTypes.partner.entities.PartnerPost;
+type PartnerWithUserPost = PBTypes.partner.entities.PartnerWithUserPost;
 type PartnerPut = PBTypes.partner.entities.PartnerPut;
 
 // Resolve service from container
@@ -28,6 +31,17 @@ const partnerService = partnerContainer.get<PartnerService>(PartnerService, {
 // Resolve service from container
 const iamClientService = partnerContainer.get<IAMClientService>(
   IAMClientService,
+  {
+    autobind: true,
+  }
+);
+// Resolve service from container
+const teamService = partnerContainer.get<TeamService>(TeamService, {
+  autobind: true,
+});
+// Resolve service from container
+const teamMemberService = partnerContainer.get<TeamMemberService>(
+  TeamMemberService,
   {
     autobind: true,
   }
@@ -102,18 +116,77 @@ export class PartnerController {
   ): Promise<Response<PBTypes.partner.api.v1.partners.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const data: PartnerPost = req.body;
+      const data: PartnerWithUserPost = req.body;
       // start create partner process
       // create iam partner profile
-      await iamClientService.registerPartner(data, req.cookies);
+      const partnerRegistered = {
+        companyName: data.companyName,
+        email: data.user.email,
+        first_name: data.user.firstName,
+        last_name: data.user.lastName,
+        password: data.user.password,
+        businessType: data.businessType,
+        taxCode: data.taxCode,
+        addressStreet: data.addressStreet || "",
+        addressCity: data.addressCity || "",
+        addressState: data.addressState || "",
+        addressCountry: data.addressCountry || "",
+        addressPostalCode: data.addressPostalCode || "",
+        user: {
+          firstName: data.user.firstName,
+          lastName: data.user.lastName,
+          email: data.user.email,
+          password: data.user.password,
+          phoneNumber: data.user.phoneNumber || "",
+        },
+      };
+      const iamResponse = await iamClientService.registerPartner(
+        partnerRegistered,
+        req.cookies
+      );
 
-      const partner = await partnerService.create(data);
+      if (!iamResponse || !iamResponse.partner.uid) {
+        throw new errors.APIError(
+          500,
+          "IAM_SERVICE_ERROR",
+          "Failed to create partner in IAM service"
+        );
+      }
+      // create partner in partner service db
+      const createPartnerRequest = {
+        ...data,
+        externalUid: iamResponse.partner.uid,
+      };
+      const partner = await partnerService.create(createPartnerRequest);
+      const response = { ...partner };
+
+      // create default team
+      const team = await teamService.create(iamResponse.partner.uid, {
+        name: "Default Team",
+        description: "Default team created on partner creation",
+        tags: ["default"],
+      });
+      // create team member for owner user id
+      const responseTeam = await teamMemberService.create(
+        iamResponse.partner.uid,
+        iamResponse.user.uid,
+        {
+          firstName: data.user.firstName,
+          lastName: data.user.lastName,
+          email: data.user.email,
+          phone: data.user.phoneNumber || "",
+        }
+      );
+      // assign group to team member
+      await teamMemberService.updateGroups(responseTeam.uid, {
+        add: [team.uid],
+      });
 
       const apiResponse = {
         ok: true,
         timestamp: logRequest.timestamp,
         requestId: logRequest.requestId,
-        data: partner,
+        data: response,
       };
       return res.status(201).send(apiResponse);
     } catch (error: unknown) {

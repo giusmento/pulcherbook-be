@@ -15,33 +15,33 @@ export class ShopWorkingHours {
   @PrimaryGeneratedColumn("uuid")
   uid: string;
 
-  @ManyToOne(() => Shop, (shop) => shop.working_hours)
+  @ManyToOne(() => Shop, (shop) => shop.workingHours)
   @JoinColumn({ name: "shop_uid" })
   @Index()
   shop: Shop;
 
   // Day of week: 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-  @Column({ type: "smallint" })
+  @Column({ type: "smallint", name: "day_of_week" })
   @Index()
-  day_of_week: number;
+  dayOfWeek: number;
 
   // Time slots stored as time without timezone
-  @Column({ type: "time" })
-  start_time: string; // e.g., "08:00:00"
+  @Column({ type: "time", name: "start_time" })
+  startTime: string; // e.g., "08:00:00"
 
-  @Column({ type: "time" })
-  end_time: string; // e.g., "13:00:00"
+  @Column({ type: "time", name: "end_time" })
+  endTime: string; // e.g., "13:00:00"
 
   // For ordering multiple slots in the same day
-  @Column({ type: "smallint", default: 0 })
-  slot_order: number;
+  @Column({ type: "smallint", default: 0, name: "slot_order" })
+  slotOrder: number;
 
-  @Column({ type: "boolean", default: true })
-  is_active: boolean;
+  @Column({ type: "boolean", default: true, name: "is_active" })
+  isActive: boolean;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 }

@@ -14,7 +14,7 @@ export type RequestBody = {
   latitude?: number;
   longitude?: number;
   radius?: number; // in kilometers
-  service_id?: string;
+  serviceId?: string;
   city?: string;
   limit?: number;
   offset?: number;

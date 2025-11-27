@@ -31,38 +31,38 @@ export class AppointmentService {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         // Validation
-        if (!data.customer_user_id) {
+        if (!data.customerUserId) {
           throw new errors.APIError(400, "BAD_REQUEST", "Customer user ID is required");
         }
-        if (!data.team_member_id) {
+        if (!data.teamMemberId) {
           throw new errors.APIError(400, "BAD_REQUEST", "Team member ID is required");
         }
-        if (!data.service_id) {
+        if (!data.serviceId) {
           throw new errors.APIError(400, "BAD_REQUEST", "Service ID is required");
         }
-        if (!data.appointment_date) {
+        if (!data.appointmentDate) {
           throw new errors.APIError(400, "BAD_REQUEST", "Appointment date is required");
         }
-        if (!data.start_time) {
+        if (!data.startTime) {
           throw new errors.APIError(400, "BAD_REQUEST", "Start time is required");
         }
-        if (!data.duration_minutes || data.duration_minutes <= 0) {
+        if (!data.durationMinutes || data.durationMinutes <= 0) {
           throw new errors.APIError(400, "BAD_REQUEST", "Valid duration is required");
         }
 
-        // Calculate end_time based on start_time and duration
-        const [hours, minutes] = data.start_time.split(":");
+        // Calculate endTime based on startTime and duration
+        const [hours, minutes] = data.startTime.split(":");
         const startMinutes = parseInt(hours) * 60 + parseInt(minutes);
-        const endMinutes = startMinutes + data.duration_minutes;
+        const endMinutes = startMinutes + data.durationMinutes;
         const endHours = Math.floor(endMinutes / 60);
         const endMins = endMinutes % 60;
-        const end_time = `${String(endHours).padStart(2, "0")}:${String(
+        const endTime = `${String(endHours).padStart(2, "0")}:${String(
           endMins
         ).padStart(2, "0")}`;
 
         const appointment = em.create(models.Appointment, {
           ...data,
-          end_time,
+          endTime,
         });
 
         await em.save(appointment);
@@ -123,23 +123,23 @@ export class AppointmentService {
           .leftJoinAndSelect("appointment.teamMember", "teamMember")
           .leftJoinAndSelect("teamMember.team", "team")
           .leftJoinAndSelect("appointment.service", "service")
-          .orderBy("appointment.appointment_date", "DESC")
-          .addOrderBy("appointment.start_time", "DESC");
+          .orderBy("appointment.appointmentDate", "DESC")
+          .addOrderBy("appointment.startTime", "DESC");
 
         if (customer_user_id) {
-          query.andWhere("appointment.customer_user_id = :customer_user_id", {
-            customer_user_id,
+          query.andWhere("appointment.customerUserId = :customerUserId", {
+            customerUserId: customer_user_id,
           });
         }
 
         if (team_member_id) {
-          query.andWhere("appointment.team_member_id = :team_member_id", {
-            team_member_id,
+          query.andWhere("appointment.teamMemberId = :teamMemberId", {
+            teamMemberId: team_member_id,
           });
         }
 
         if (service_id) {
-          query.andWhere("appointment.service_id = :service_id", { service_id });
+          query.andWhere("appointment.serviceId = :serviceId", { serviceId: service_id });
         }
 
         if (status) {
@@ -175,21 +175,21 @@ export class AppointmentService {
           throw new errors.APIError(404, "NOT_FOUND", "Appointment not found");
         }
 
-        // Recalculate end_time if start_time or duration changes
-        if (data.start_time || data.duration_minutes) {
-          const startTime = data.start_time || appointment.start_time;
-          const duration = data.duration_minutes || appointment.duration_minutes;
+        // Recalculate endTime if startTime or duration changes
+        if (data.startTime || data.durationMinutes) {
+          const startTime = data.startTime || appointment.startTime;
+          const duration = data.durationMinutes || appointment.durationMinutes;
 
           const [hours, minutes] = startTime.split(":");
           const startMinutes = parseInt(hours) * 60 + parseInt(minutes);
           const endMinutes = startMinutes + duration;
           const endHours = Math.floor(endMinutes / 60);
           const endMins = endMinutes % 60;
-          const end_time = `${String(endHours).padStart(2, "0")}:${String(
+          const endTime = `${String(endHours).padStart(2, "0")}:${String(
             endMins
           ).padStart(2, "0")}`;
 
-          Object.assign(appointment, { ...data, end_time });
+          Object.assign(appointment, { ...data, endTime });
         } else {
           Object.assign(appointment, data);
         }
@@ -223,8 +223,8 @@ export class AppointmentService {
         }
 
         appointment.status = data.status as models.AppointmentStatus;
-        if (data.cancellation_reason) {
-          appointment.cancellation_reason = data.cancellation_reason;
+        if (data.cancellationReason) {
+          appointment.cancellationReason = data.cancellationReason;
         }
 
         await em.save(appointment);
@@ -265,14 +265,14 @@ export class AppointmentService {
   public async checkAvailability(data: CheckAvailabilityRequest): Promise<boolean> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
-        const { team_member_id, appointment_date, duration_minutes } = data;
+        const { teamMemberId, appointmentDate, durationMinutes } = data;
 
         // Check for overlapping appointments
         const existingAppointments = await em
           .createQueryBuilder(models.Appointment, "appointment")
-          .where("appointment.team_member_id = :team_member_id", { team_member_id })
-          .andWhere("appointment.appointment_date = :appointment_date", {
-            appointment_date,
+          .where("appointment.teamMemberId = :teamMemberId", { teamMemberId })
+          .andWhere("appointment.appointmentDate = :appointmentDate", {
+            appointmentDate,
           })
           .andWhere("appointment.status IN (:...statuses)", {
             statuses: [models.AppointmentStatus.PENDING, models.AppointmentStatus.CONFIRMED],

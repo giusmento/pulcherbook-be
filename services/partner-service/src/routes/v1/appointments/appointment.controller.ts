@@ -220,17 +220,17 @@ export class AppointmentController {
   ): Promise<Response<PBTypes.partner.api.v1.appointments.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const customer_user_id = req.query.customer_user_id as string | undefined;
-      const team_member_id = req.query.team_member_id as string | undefined;
-      const service_id = req.query.service_id as string | undefined;
+      const customerUserId = req.query.customerUserId as string | undefined;
+      const teamMemberId = req.query.teamMemberId as string | undefined;
+      const serviceId = req.query.serviceId as string | undefined;
       const status = req.query.status as string | undefined;
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = parseInt(req.query.offset as string) || 0;
 
       const appointments = await this.appointmentService.findAll(
-        customer_user_id,
-        team_member_id,
-        service_id,
+        customerUserId,
+        teamMemberId,
+        serviceId,
         status,
         limit,
         offset

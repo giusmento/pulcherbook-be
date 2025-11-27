@@ -7,21 +7,21 @@ import {
   Delete,
   utils,
   errors,
-  Containers,
-  Decorators,
 } from "@giusmento/mangojs-core";
 import { TeamService } from "../../../services/team.service";
+import { PartnerService } from "../../../services/partner.service";
 import { partnerContainer } from "../../../inversify.config";
 
 // Import API types from package
 import type * as PBTypes from "@giusmento/pulcherbook-types";
-import { authUser } from "node_modules/@giusmento/mangojs-core/dist/services/iam_server/src/types/entities";
-import { AuthUserType } from "@giusmento/mangojs-core/types/enums";
 type TeamPost = PBTypes.partner.entities.TeamPost;
 type TeamPut = PBTypes.partner.entities.TeamPut;
 
 // Resolve service from container
 const teamService = partnerContainer.get<TeamService>(TeamService, {
+  autobind: true,
+});
+const partnerService = partnerContainer.get<PartnerService>(PartnerService, {
   autobind: true,
 });
 
@@ -31,12 +31,14 @@ const teamService = partnerContainer.get<TeamService>(TeamService, {
  *   name: Teams
  *   description: Team management endpoints
  */
-@Controller("/api/v1/partners/:partner_uid/teams")
+@Controller("/api/v1/partners/:partnerUid/teams")
 export class TeamController {
   private teamService: TeamService;
+  private partnerService: PartnerService;
 
   constructor() {
     this.teamService = teamService;
+    this.partnerService = partnerService;
   }
 
   /**
@@ -81,8 +83,8 @@ export class TeamController {
     const logRequest = new utils.LogRequest(res);
     try {
       const data = req.body;
-      const partner_uid = req.params.partner_uid;
-      const team = await this.teamService.create(partner_uid, data);
+      const partnerUid = req.params.partnerUid;
+      const team = await this.teamService.create(partnerUid, data);
 
       const apiResponse = {
         ok: true,
@@ -187,11 +189,18 @@ export class TeamController {
   ): Promise<Response<PBTypes.partner.api.v1.teams.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const partner_id = req.query.partner_id as string | undefined;
+      const partnerExternalUid = req.params.partnerUid;
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = parseInt(req.query.offset as string) || 0;
 
-      const teams = await this.teamService.findAll(partner_id, limit, offset);
+      // get partner id from externalUid
+      const partner = await this.partnerService.findByExternalUid(
+        partnerExternalUid
+      );
+      if (!partner) {
+        throw new errors.APIError(400, "BAD_REQUEST", "Invalid partner UID");
+      }
+      const teams = await this.teamService.findAll(partner.uid, limit, offset);
 
       const apiResponse = {
         ok: true,

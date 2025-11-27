@@ -15,31 +15,31 @@ export class TeamMemberAvailability {
   @PrimaryGeneratedColumn("uuid")
   uid: string;
 
-  @Column({ type: "uuid" })
+  @Column({ type: "uuid", name: "team_member_id" })
   @Index()
-  team_member_id: string;
+  teamMemberId: string;
 
-  @Column({ type: "int", nullable: true })
-  day_of_week: number; // 0-6 (Sunday to Saturday)
+  @Column({ type: "int", nullable: true, name: "day_of_week" })
+  dayOfWeek: number; // 0-6 (Sunday to Saturday)
 
-  @Column({ type: "date", nullable: true })
+  @Column({ type: "date", nullable: true, name: "specific_date" })
   @Index()
-  specific_date: Date;
+  specificDate: Date;
 
-  @Column({ type: "time" })
-  start_time: string;
+  @Column({ type: "time", name: "start_time" })
+  startTime: string;
 
-  @Column({ type: "time" })
-  end_time: string;
+  @Column({ type: "time", name: "end_time" })
+  endTime: string;
 
-  @Column({ type: "boolean", default: true })
-  is_recurring: boolean;
+  @Column({ type: "boolean", default: true, name: "is_recurring" })
+  isRecurring: boolean;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 
   // Relations
   //@ManyToOne(() => TeamMember, (member) => member.availabilities, {

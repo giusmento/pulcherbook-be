@@ -35,7 +35,7 @@ export class IAMClientService {
   public async registerPartner(
     data: IAMTypes.api.v1.auth.partners.register.POST.RequestBody,
     cookies: Record<string, string>
-  ): Promise<IAMTypes.api.v1.auth.partners.register.POST.ResponseBody> {
+  ): Promise<IAMTypes.api.v1.auth.partners.ResponseBodyData> {
     try {
       const response =
         await this.client.post<IAMTypes.api.v1.auth.partners.register.POST.RequestBody>(

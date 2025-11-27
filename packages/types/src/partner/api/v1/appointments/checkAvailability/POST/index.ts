@@ -10,9 +10,9 @@ import { Types } from "@giusmento/mangojs-core";
 export type Params = undefined;
 
 export type RequestBody = {
-  team_member_id: string;
-  appointment_date: string;
-  duration_minutes: number;
+  teamMemberId: string;
+  appointmentDate: string;
+  durationMinutes: number;
 };
 
 /**

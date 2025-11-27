@@ -10,50 +10,82 @@ import { BusinessType } from "./common";
  */
 export type Partner = {
   uid: string;
-  external_uid: string;
-  company_name: string;
-  tax_code: string;
-  first_name: string;
-  last_name: string;
+  externalUid: string;
+  companyName: string;
+  taxCode: string;
+  firstName: string;
+  lastName: string;
   email: string;
   description?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  postal_code?: string;
-  phone?: string;
+  addressStreet?: string;
+  addressCity?: string;
+  addressState?: string;
+  addressCountry?: string;
+  addressPostalCode?: string;
+  phoneNumber?: string;
   website?: string;
-  business_type: BusinessType;
+  businessType: BusinessType; // Can be full object or just UID
   status: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 /**
  * Fields required when creating a new partner
  */
-export type PartnerPost = Pick<
-  Partner,
-  | "company_name"
-  | "tax_code"
-  | "first_name"
-  | "last_name"
-  | "email"
-  | "business_type"
-  | "address"
-  | "city"
-  | "state"
-  | "country"
-  | "postal_code"
-  | "phone"
-  | "website"
-  | "description"
-> & {
-  password: string;
+export type PartnerWithUserPost = {
+  companyName: string;
+  addressCity: string;
+  addressStreet: string;
+  addressPostalCode: string;
+  addressState: string;
+  addressCountry: string;
+  businessType: string;
+  taxCode: string;
+  user: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    phoneNumber: string;
+  };
 };
 
 /**
- * Fields that can be updated on an existing partner (excluding external_uid)
+ * Fields required when creating a new partner
  */
-export type PartnerPut = Partial<Omit<PartnerPost, "external_uid" | "uid">>;
+export type PartnerPost = {
+  externalUid: string;
+  companyName: string;
+  description?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postalCode?: string;
+  latitude?: number;
+  longitude?: number;
+  phone?: string;
+  email?: string;
+  website?: string;
+};
+
+/**
+ * Fields that can be updated on an existing partner (excluding externalUid)
+ */
+export type PartnerPut = Partial<
+  Pick<
+    Partner,
+    | "companyName"
+    | "taxCode"
+    | "description"
+    | "phoneNumber"
+    | "addressStreet"
+    | "addressCity"
+    | "addressPostalCode"
+    | "addressCountry"
+    | "addressState"
+  >
+> & {
+  businessType?: string;
+};

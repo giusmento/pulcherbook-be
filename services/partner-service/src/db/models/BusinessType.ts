@@ -33,16 +33,16 @@ export class BusinessType {
   })
   status: BusinessTypeStatus;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt: Date;
 
   // Relations
-  @OneToMany(() => Partner, (partner) => partner.business_type)
+  @OneToMany(() => Partner, (partner) => partner.businessType)
   partners: Partner[];
 
-  @OneToMany(() => Shop, (shop) => shop.business_type)
+  @OneToMany(() => Shop, (shop) => shop.businessType)
   shops: Shop[];
 }

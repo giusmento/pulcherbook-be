@@ -17,7 +17,7 @@ export type RequestBody = {};
  * @see
  */
 
-export type ResponseBodyData = Omit<Appointment, "cancellation_reason" | "created_at" | "updated_at">;
+export type ResponseBodyData = Omit<Appointment, "cancellationReason" | "createdAt" | "updatedAt">;
 
 export type ResponseBody = Types.v1.api.response.response<
   Array<ResponseBodyData>

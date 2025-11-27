@@ -35,7 +35,7 @@ const partnerService = partnerContainer.get<PartnerService>(PartnerService, {
  *   name: Shops
  *   description: Shop management endpoints
  */
-@Controller("/api/v1/partners/:partner_uid/shops")
+@Controller("/api/v1/partners/:partnerUid/shops")
 export class ShopController {
   private shopService: ShopService;
   private partnerService: PartnerService;
@@ -113,15 +113,14 @@ export class ShopController {
     const logRequest = new utils.LogRequest(res);
     try {
       const data: ShopPost = req.body;
-      const partner_uid = req.params.partner_uid;
-      // get partner id from external_uid
-      const partner = await this.partnerService.findByExternalUid(partner_uid);
+      const partnerUid = req.params.partnerUid;
+      // get partner id from externalUid
+      const partner = await this.partnerService.findByExternalUid(partnerUid);
       if (!partner) {
         throw new errors.APIError(400, "BAD_REQUEST", "Invalid partner UID");
       }
       const shop = await this.shopService.create({
         ...data,
-        partner_uid: partner.uid,
       });
 
       const shopData: PBTypes.partner.api.v1.shops.ResponseBodyData = shop;
@@ -234,10 +233,10 @@ export class ShopController {
   ): Promise<Response<PBTypes.partner.api.v1.shops.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { partner_uid } = req.params as any;
+      const { partnerUid } = req.params as any;
       const { limit = 20, offset = 0 } = req.query as any;
       const shops = await this.shopService.findAllByPartner(
-        partner_uid,
+        partnerUid,
         Number(limit),
         Number(offset)
       );

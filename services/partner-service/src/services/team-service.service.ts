@@ -26,10 +26,10 @@ export class TeamServiceService {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         // Validation
-        if (!data.team_id) {
+        if (!data.teamId) {
           throw new errors.APIError(400, "BAD_REQUEST", "Team ID is required");
         }
-        if (!data.service_id) {
+        if (!data.serviceId) {
           throw new errors.APIError(400, "BAD_REQUEST", "Service ID is required");
         }
 
@@ -90,11 +90,11 @@ export class TeamServiceService {
           .leftJoinAndSelect("teamService.service", "service");
 
         if (team_id) {
-          query.andWhere("teamService.team_id = :team_id", { team_id });
+          query.andWhere("teamService.teamId = :teamId", { teamId: team_id });
         }
 
         if (service_id) {
-          query.andWhere("teamService.service_id = :service_id", { service_id });
+          query.andWhere("teamService.serviceId = :serviceId", { serviceId: service_id });
         }
 
         query.take(limit).skip(offset);
