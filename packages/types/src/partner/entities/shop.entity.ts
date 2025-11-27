@@ -36,7 +36,6 @@ export type Shop = {
  */
 export type ShopPost = Pick<
   Shop,
-  | "partnerUid"
   | "shopName"
   | "description"
   | "addressStreet"
