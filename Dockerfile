@@ -46,6 +46,9 @@ RUN echo "Checking GITHUB_TOKEN..." && \
 
 # Copy services directory (node_modules excluded by .dockerignore)
 COPY services ./services/
+# Copy packages directory (node_modules excluded by .dockerignore)
+COPY packages ./packages/
+
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
