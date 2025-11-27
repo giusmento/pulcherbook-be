@@ -1,0 +1,181 @@
+---
+config:
+  layout: elk
+---
+erDiagram
+    business_types ||--o{ partners : "business_type"
+    business_types ||--o{ shops : "business_type"
+
+    partners ||--o{ shops : "partner_uid"
+    partners ||--o{ teams : "partner_id"
+    partners ||--o{ company_media : "partner_id"
+
+    shops ||--o{ services : "shop_uid"
+    shops ||--o{ shop_working_hours : "shop_uid"
+    shops ||--o{ shop_special_hours : "shop_uid"
+
+    teams ||--o{ team_members : "team_id"
+    teams ||--o{ team_services : "team_id"
+
+    services ||--o{ team_services : "service_id"
+    services ||--o{ appointments : "service_id"
+
+    team_members ||--o{ appointments : "team_member_id"
+    team_members ||--o{ team_member_availability : "team_member_id"
+
+    business_types {
+        uuid uid PK "UUID"
+        varchar name UK "NOT NULL, UNIQUE"
+        text description
+        enum status "active/inactive"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    partners {
+        uuid uid PK "UUID"
+        uuid external_uid UK "Index"
+        varchar company_name "NOT NULL"
+        text description
+        varchar address
+        varchar city
+        varchar state
+        varchar country
+        varchar postal_code
+        varchar phone
+        varchar email
+        varchar website
+        varchar instagram
+        enum status "active/inactive/pending"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    shops {
+        uuid uid PK "UUID"
+        uuid partner_uid FK "Index"
+        varchar shop_name "NOT NULL"
+        text description
+        varchar address
+        varchar city
+        varchar state
+        varchar country
+        varchar postal_code
+        decimal latitude "10,8"
+        decimal longitude "11,8"
+        varchar phone
+        varchar email
+        varchar website
+        varchar instagram
+        enum status "online/offline/maintenance"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    teams {
+        uuid uid PK "UUID"
+        uuid partner_id FK "Index"
+        varchar name "NOT NULL"
+        text description
+        enum status "active/inactive"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    team_members {
+        uuid uid PK "UUID"
+        uuid team_id FK "Index"
+        varchar user_id UK "Index, UNIQUE(team_id,user_id)"
+        varchar role "member/admin"
+        timestamp joined_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    services {
+        uuid uid PK "UUID"
+        uuid partner_id FK "Index"
+        uuid shop_uid FK
+        varchar name "NOT NULL"
+        text description
+        integer duration_minutes "NOT NULL"
+        decimal price "10,2 NOT NULL"
+        varchar currency "USD"
+        enum status "active/inactive"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    shop_working_hours {
+        uuid uid PK "UUID"
+        uuid shop_uid FK "Index"
+        smallint day_of_week "0-6, Index"
+        time start_time "NOT NULL"
+        time end_time "NOT NULL"
+        smallint slot_order "0"
+        boolean is_active "true"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    shop_special_hours {
+        uuid uid PK "UUID"
+        uuid shop_uid FK "Index"
+        date special_date "Index"
+        boolean is_recurring_annual "false"
+        time start_time "nullable"
+        time end_time "nullable"
+        smallint slot_order "0"
+        boolean is_closed "false"
+        varchar description
+        boolean is_active "true"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    team_services {
+        uuid uid PK "UUID"
+        uuid team_id FK "Index, UNIQUE(team_id,service_id)"
+        uuid service_id FK "Index"
+        timestamp created_at
+    }
+
+    company_media {
+        uuid uid PK "UUID"
+        uuid partner_id FK "Index"
+        varchar url "NOT NULL"
+        enum type "logo/cover/gallery"
+        integer display_order
+        varchar alt_text
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    appointments {
+        uuid uid PK "UUID"
+        varchar customer_user_id "Index"
+        uuid team_member_id FK "Index"
+        uuid service_id FK "Index"
+        date appointment_date "Index"
+        time start_time
+        time end_time
+        integer duration_minutes
+        enum status "pending/confirmed/cancelled/completed/no_show"
+        text notes
+        text customer_notes
+        text cancellation_reason
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    team_member_availability {
+        uuid uid PK "UUID"
+        uuid team_member_id FK "Index"
+        integer day_of_week "0-6 for recurring"
+        date specific_date "Index, for one-time"
+        time start_time
+        time end_time
+        boolean is_recurring "true/false"
+        timestamp created_at
+        timestamp updated_at
+    }

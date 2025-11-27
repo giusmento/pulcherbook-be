@@ -1,6 +1,6 @@
 {
   "name": "@giusmento/pulcherbook-types",
-  "version": "0.0.1-20",
+  "version": "0.0.1-21",
   "description": "Shared types for PulcherBook backend services",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,6 +10,7 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./src/*": "./src/*",
     "./docs/*": "./src/docs/*"
   },
   "files": [
@@ -40,6 +41,6 @@
     "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@giusmento/mangojs-core": "^0.0.1-22"
+    "@giusmento/mangojs-core": "^0.0.1-23"
   }
 }

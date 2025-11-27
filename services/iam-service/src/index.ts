@@ -13,7 +13,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import swaggerJSDoc from "swagger-jsdoc";
-import swaggerJson from "../docs/swagger.api.json";
+import swaggerJson from "../swagger.json";
 
 ///////////////////
 // VARIABLES
@@ -48,10 +48,6 @@ const corsOriginFunction = function (origin, callback) {
 (async () => {
   try {
     console.log("[IAM Service] Starting initialization...");
-
-    // Step 1: Configure container BEFORE loading services
-    //console.log("[IAM Service] Step 1: Configuring container...");
-    //await import("./inversify.config");
 
     // Step 2: NOW import services after container is configured
     console.log("[IAM Service] Step 1: Loading services...");
