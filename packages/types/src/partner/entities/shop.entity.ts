@@ -11,6 +11,7 @@ import { BusinessTypeShort } from "./common";
  */
 export type Shop = {
   uid: string;
+  partnerUid: string;
   shopName: string;
   businessType: BusinessTypeShort;
   description: string;
@@ -37,6 +38,7 @@ export type Shop = {
 export type ShopPost = Pick<
   Shop,
   | "shopName"
+  | "partnerUid"
   | "description"
   | "addressStreet"
   | "addressCity"
