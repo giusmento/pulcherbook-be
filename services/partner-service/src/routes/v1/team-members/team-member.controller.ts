@@ -38,7 +38,7 @@ const iamClientService = partnerContainer.get<IAMClientService>(
  *   name: TeamMembers
  *   description: Team member management endpoints
  */
-@Controller("/api/v1/partners/:partnerUid/team-members")
+@Controller("/api/partner/v1/partners/:partnerUid/team-members")
 export class TeamMemberController {
   private teamMemberService: TeamMemberService;
   private _iamClient: IAMClientService;

@@ -28,7 +28,7 @@ const teamServiceService = partnerContainer.get<TeamServiceService>(
  *   name: TeamServices
  *   description: Team service assignment endpoints
  */
-@Controller("/api/v1/team-services")
+@Controller("/api/partner/v1/team-services")
 export class TeamServiceController {
   private teamServiceService: TeamServiceService;
 

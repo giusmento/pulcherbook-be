@@ -23,7 +23,7 @@ const catalogService = partnerContainer.get<CatalogService>(CatalogService, {
  *   name: Catalog
  *   description: Catalog data endpoints
  */
-@Controller("/api/v1/catalog")
+@Controller("/api/partner/v1/catalog")
 export class CatalogController {
   private catalogService: CatalogService;
 
