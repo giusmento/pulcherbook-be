@@ -126,6 +126,46 @@ services:
     profiles:
       - multi
 
+  # Partner Service
+  partner-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICES: partner-service
+        NODE_VERSION: ${NODE_VERSION:-18-alpine}
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    container_name: pulcherbook-partner-service
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - SERVICES=partner-service
+      - DB_HOST=${DB_HOST:-postgres}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-pulcherbook}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+    ports:
+      - "3002:3002"
+    networks:
+      - pulcherbook-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3002/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)}).on('error', () => process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+    profiles:
+      - multi
+
   # Add more services here as needed
   # payment-service:
   #   build:
@@ -138,7 +178,7 @@ services:
   #     - NODE_ENV=${NODE_ENV:-production}
   #     - SERVICES=payment-service
   #   ports:
-  #     - "3002:3002"
+  #     - "3003:3003"
   #   networks:
   #     - pulcherbook-network
   #   restart: unless-stopped

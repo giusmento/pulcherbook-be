@@ -46,6 +46,9 @@ RUN echo "Checking GITHUB_TOKEN..." && \
 
 # Copy services directory (node_modules excluded by .dockerignore)
 COPY services ./services/
+# Copy packages directory (node_modules excluded by .dockerignore)
+COPY packages ./packages/
+
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
@@ -69,5 +72,14 @@ EXPOSE 3001 3002 3003 3004 3005
 # Copy source code files only (preserving pnpm workspace structure and node_modules)
 COPY tsconfig.json* ./
 
-#ENTRYPOINT ["tail", "-f", "/dev/null"]
-CMD ["pnpm", "start:prod:docker"]
+# Copy PM2 ecosystem file for single-container mode
+COPY ecosystem.config.js ./
+
+# Default command - can be overridden based on SERVICES arg
+# Single-container mode (SERVICES=all): Use PM2 ecosystem to run all services
+# Multi-container mode (SERVICES=service-name): Run specific service with pm2-runtime
+CMD if [ "$SERVICES" = "all" ]; then \
+      pm2-runtime start ecosystem.config.js; \
+    else \
+      pnpm --filter "*${SERVICES}*" run start:prod:docker; \
+    fi
