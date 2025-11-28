@@ -35,7 +35,7 @@ const appointmentService = partnerContainer.get<AppointmentService>(
  *   name: Appointments
  *   description: Appointment management endpoints
  */
-@Controller("/api/v1/appointments")
+@Controller("/api/partner/v1/appointments")
 export class AppointmentController {
   private appointmentService: AppointmentService;
 

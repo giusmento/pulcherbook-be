@@ -31,7 +31,7 @@ const partnerService = partnerContainer.get<PartnerService>(PartnerService, {
  *   name: Teams
  *   description: Team management endpoints
  */
-@Controller("/api/v1/partners/:partnerUid/teams")
+@Controller("/api/partner/v1/partners/:partnerUid/teams")
 export class TeamController {
   private teamService: TeamService;
   private partnerService: PartnerService;

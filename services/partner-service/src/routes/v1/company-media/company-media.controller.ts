@@ -31,7 +31,7 @@ const companyMediaService = partnerContainer.get<CompanyMediaService>(
  *   name: CompanyMedia
  *   description: Company media management endpoints
  */
-@Controller("/api/v1/company-media")
+@Controller("/api/partner/v1/company-media")
 export class CompanyMediaController {
   private companyMediaService: CompanyMediaService;
 

@@ -28,7 +28,7 @@ const serviceService = partnerContainer.get<ServiceService>(ServiceService, {
  *   name: Services
  *   description: Service management endpoints
  */
-@Controller("/api/v1/services")
+@Controller("/api/partner/v1/services")
 export class ServiceController {
   private serviceService: ServiceService;
 

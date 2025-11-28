@@ -31,7 +31,7 @@ const specialHoursService = partnerContainer.get<SpecialHoursService>(
  *   name: SpecialHours
  *   description: Shop special hours management endpoints
  */
-@Controller("/api/v1/partners/:partnerUid/shops/:shopUid/special-hours")
+@Controller("/api/partner/v1/partners/:partnerUid/shops/:shopUid/special-hours")
 export class SpecialHoursController {
   /**
    * @swagger

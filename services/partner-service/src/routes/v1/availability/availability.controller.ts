@@ -32,7 +32,7 @@ const availabilityService = partnerContainer.get<AvailabilityService>(
  *   name: Availability
  *   description: Team member availability management endpoints
  */
-@Controller("/api/v1/availability")
+@Controller("/api/partner/v1/availability")
 export class AvailabilityController {
   private availabilityService: AvailabilityService;
 

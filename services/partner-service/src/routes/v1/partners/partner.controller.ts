@@ -53,7 +53,7 @@ const teamMemberService = partnerContainer.get<TeamMemberService>(
  *   name: Partners
  *   description: Partner management endpoints
  */
-@Controller("/api/v1/partners")
+@Controller("/api/partner/v1/partners")
 export class PartnerController {
   /**
    * @swagger

@@ -35,7 +35,7 @@ const partnerService = partnerContainer.get<PartnerService>(PartnerService, {
  *   name: Shops
  *   description: Shop management endpoints
  */
-@Controller("/api/v1/partners/:partnerUid/shops")
+@Controller("/api/partner/v1/partners/:partnerUid/shops")
 export class ShopController {
   private shopService: ShopService;
   private partnerService: PartnerService;

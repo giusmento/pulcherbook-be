@@ -32,7 +32,7 @@ const workingHoursService = partnerContainer.get<WorkingHoursService>(
  *   name: WorkingHours
  *   description: Shop working hours management endpoints
  */
-@Controller("/api/v1/partners/:partnerUid/shops/:shopUid/working-hours")
+@Controller("/api/partner/v1/partners/:partnerUid/shops/:shopUid/working-hours")
 export class WorkingHoursController {
   /**
    * @swagger
