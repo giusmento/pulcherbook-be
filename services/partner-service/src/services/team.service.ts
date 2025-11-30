@@ -151,6 +151,32 @@ export class TeamService {
   }
 
   /**
+   * Soft Delete Team - Soft delete team information
+   *
+   * @param uid - Team ID
+   * @param data - Fields to update
+   * @returns Promise resolving to updated team
+   * @throws {APIError} 404 NOT_FOUND if team doesn't exist
+   */
+  public async softDelete(uid: string): Promise<models.Team> {
+    const response = await this._persistenceContext.inTransaction(
+      async (em: EntityManager) => {
+        const team = await em.findOne(models.Team, { where: { uid } });
+        if (!team) {
+          throw new errors.APIError(404, "NOT_FOUND", "Team not found");
+        }
+
+        team.deletedAt = new Date();
+        team.status = models.TeamStatus.DELETED;
+
+        await em.save(team);
+        return team;
+      }
+    );
+    return response as models.Team;
+  }
+
+  /**
    * Delete Team - Remove a team (hard delete)
    *
    * @param uid - Team ID

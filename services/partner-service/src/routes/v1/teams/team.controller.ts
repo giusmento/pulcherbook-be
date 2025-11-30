@@ -300,6 +300,57 @@ export class TeamController {
    *       404:
    *         description: Team not found
    */
+  @Delete("/:uid/soft")
+  //@Decorators.auth.HasGroups(["Admin", "Partner"])
+  public async softDelete(
+    req: Request<
+      PBTypes.partner.api.v1.teams.DELETE.Params,
+      PBTypes.partner.api.v1.teams.DELETE.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.teams.DELETE.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.teams.DELETE.ResponseBody>> {
+    const logRequest = new utils.LogRequest(res);
+    try {
+      const { uid } = req.params;
+      const success = await this.teamService.softDelete(uid);
+
+      if (!success) {
+        throw new errors.APIError(404, "NOT_FOUND", "Team not found");
+      }
+
+      const apiResponse = {
+        ok: true,
+        timestamp: logRequest.timestamp,
+        requestId: logRequest.requestId,
+        data: { ok: true },
+      };
+      return res.status(200).send(apiResponse);
+    } catch (error: unknown) {
+      return errors.errorHandler(res, error as Error);
+    }
+  }
+
+  /**
+   * @swagger
+   * /api/v1/teams/{uid}:
+   *   delete:
+   *     summary: Delete team
+   *     tags: [Teams]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: uid
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: Team ID
+   *     responses:
+   *       200:
+   *         description: Team deleted successfully
+   *       404:
+   *         description: Team not found
+   */
   @Delete("/:uid")
   //@Decorators.auth.HasGroups(["Admin", "Partner"])
   public async delete(

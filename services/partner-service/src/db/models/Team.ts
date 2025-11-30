@@ -18,6 +18,7 @@ import { Shop } from "./Shop";
 export enum TeamStatus {
   ACTIVE = "active",
   INACTIVE = "inactive",
+  DELETED = "deleted",
 }
 
 @Entity({ name: "teams", schema: "partner" })
@@ -46,6 +47,9 @@ export class Team {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  @Column({ name: "deleted_at", type: "timestamp", nullable: true })
+  deletedAt: Date | null;
 
   // Relations
   @ManyToOne(() => Partner, (partner) => partner.uid)
