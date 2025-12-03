@@ -9,7 +9,7 @@ import {
   Index,
 } from "typeorm";
 import { TeamMember } from "./TeamMember";
-import { Service } from "./Service";
+import { Offering } from "./Offering";
 
 export enum AppointmentStatus {
   PENDING = "pending",
@@ -79,9 +79,9 @@ export class Appointment {
   //@JoinColumn({ name: "team_member_id" })
   //teamMember: TeamMember;
 
-  @ManyToOne(() => Service, (service) => service.appointments, {
+  @ManyToOne(() => Offering, (offering) => offering.appointments, {
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "service_id" })
-  service: Service;
+  service: Offering;
 }

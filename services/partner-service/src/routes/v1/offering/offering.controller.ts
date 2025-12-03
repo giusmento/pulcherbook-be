@@ -7,18 +7,17 @@ import {
   Delete,
   utils,
   errors,
-  Containers,
 } from "@giusmento/mangojs-core";
-import { ServiceService } from "../../../services/service.service";
+import { OfferingService } from "../../../services/offering.service";
 import { partnerContainer } from "../../../inversify.config";
 
 // Import API types from package
 import type * as PBTypes from "@giusmento/pulcherbook-types";
-type ServicePost = PBTypes.partner.entities.ServicePost;
-type ServicePut = PBTypes.partner.entities.ServicePut;
+type OfferingPost = PBTypes.partner.entities.OfferingPost;
+type OfferingPut = PBTypes.partner.entities.OfferingPut;
 
 // Resolve service from container
-const serviceService = partnerContainer.get<ServiceService>(ServiceService, {
+const offeringService = partnerContainer.get<OfferingService>(OfferingService, {
   autobind: true,
 });
 
@@ -28,12 +27,12 @@ const serviceService = partnerContainer.get<ServiceService>(ServiceService, {
  *   name: Services
  *   description: Service management endpoints
  */
-@Controller("/api/partner/v1/services")
-export class ServiceController {
-  private serviceService: ServiceService;
+@Controller("/api/partner/v1/partners/:partnerUid/offerings")
+export class OfferingController {
+  private offeringService: OfferingService;
 
   constructor() {
-    this.serviceService = serviceService;
+    this.offeringService = offeringService;
   }
 
   /**
@@ -78,15 +77,15 @@ export class ServiceController {
   @Post("/")
   public async create(
     req: Request<
-      PBTypes.partner.api.v1.services.POST.Params,
-      PBTypes.partner.api.v1.services.POST.RequestBody
+      PBTypes.partner.api.v1.offerings.POST.Params,
+      PBTypes.partner.api.v1.offerings.POST.RequestBody
     >,
-    res: Response<PBTypes.partner.api.v1.services.POST.ResponseBody>
-  ): Promise<Response<PBTypes.partner.api.v1.services.POST.ResponseBody>> {
+    res: Response<PBTypes.partner.api.v1.offerings.POST.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.offerings.POST.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const data: ServicePost = req.body;
-      const service = await this.serviceService.create(data);
+      const data: OfferingPost = req.body;
+      const service = await this.offeringService.create(data);
 
       const apiResponse = {
         ok: true,
@@ -124,25 +123,27 @@ export class ServiceController {
   @Get("/:uid")
   public async findById(
     req: Request<
-      PBTypes.partner.api.v1.services.GET.ParamsSingle,
-      PBTypes.partner.api.v1.services.GET.RequestBody
+      PBTypes.partner.api.v1.offerings.GET.ParamsSingle,
+      PBTypes.partner.api.v1.offerings.GET.RequestBody
     >,
-    res: Response<PBTypes.partner.api.v1.services.GET.ResponseBodySingle>
-  ): Promise<Response<PBTypes.partner.api.v1.services.GET.ResponseBodySingle>> {
+    res: Response<PBTypes.partner.api.v1.offerings.GET.ResponseBodySingle>
+  ): Promise<
+    Response<PBTypes.partner.api.v1.offerings.GET.ResponseBodySingle>
+  > {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const service = await this.serviceService.findById(uid);
+      const offering = await this.offeringService.findById(uid);
 
-      if (!service) {
-        throw new errors.APIError(404, "NOT_FOUND", "Service not found");
+      if (!offering) {
+        throw new errors.APIError(404, "NOT_FOUND", "Offering not found");
       }
 
       const apiResponse = {
         ok: true,
         timestamp: logRequest.timestamp,
         requestId: logRequest.requestId,
-        data: service,
+        data: offering,
       };
       return res.status(200).send(apiResponse);
     } catch (error: unknown) {
@@ -183,19 +184,19 @@ export class ServiceController {
   @Get("/")
   public async findAll(
     req: Request<
-      PBTypes.partner.api.v1.services.GET.Params,
-      PBTypes.partner.api.v1.services.GET.RequestBody
+      PBTypes.partner.api.v1.offerings.GET.Params,
+      PBTypes.partner.api.v1.offerings.GET.RequestBody
     >,
-    res: Response<PBTypes.partner.api.v1.services.GET.ResponseBody>
-  ): Promise<Response<PBTypes.partner.api.v1.services.GET.ResponseBody>> {
+    res: Response<PBTypes.partner.api.v1.offerings.GET.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.offerings.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const partnerId = req.query.partnerId as string | undefined;
+      const partnerUid = req.params.partnerUid;
       const limit = parseInt(req.query.limit as string) || 20;
       const offset = parseInt(req.query.offset as string) || 0;
 
-      const services = await this.serviceService.findAll(
-        partnerId,
+      const offerings = await this.offeringService.findAll(
+        partnerUid,
         limit,
         offset
       );
@@ -204,7 +205,7 @@ export class ServiceController {
         ok: true,
         timestamp: logRequest.timestamp,
         requestId: logRequest.requestId,
-        data: services,
+        data: offerings,
       };
       return res.status(200).send(apiResponse);
     } catch (error: unknown) {
@@ -255,26 +256,26 @@ export class ServiceController {
   @Put("/:uid")
   public async update(
     req: Request<
-      PBTypes.partner.api.v1.services.PUT.Params,
-      PBTypes.partner.api.v1.services.PUT.RequestBody
+      PBTypes.partner.api.v1.offerings.PUT.Params,
+      PBTypes.partner.api.v1.offerings.PUT.RequestBody
     >,
-    res: Response<PBTypes.partner.api.v1.services.PUT.ResponseBody>
-  ): Promise<Response<PBTypes.partner.api.v1.services.PUT.ResponseBody>> {
+    res: Response<PBTypes.partner.api.v1.offerings.PUT.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.offerings.PUT.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const data: ServicePut = req.body;
-      const service = await this.serviceService.update(uid, data);
+      const data: OfferingPut = req.body;
+      const offering = await this.offeringService.update(uid, data);
 
-      if (!service) {
-        throw new errors.APIError(404, "NOT_FOUND", "Service not found");
+      if (!offering) {
+        throw new errors.APIError(404, "NOT_FOUND", "Offering not found");
       }
 
       const apiResponse = {
         ok: true,
         timestamp: logRequest.timestamp,
         requestId: logRequest.requestId,
-        data: service,
+        data: offering,
       };
       return res.status(200).send(apiResponse);
     } catch (error: unknown) {
@@ -306,18 +307,18 @@ export class ServiceController {
   @Delete("/:uid")
   public async delete(
     req: Request<
-      PBTypes.partner.api.v1.services.DELETE.Params,
-      PBTypes.partner.api.v1.services.DELETE.RequestBody
+      PBTypes.partner.api.v1.offerings.DELETE.Params,
+      PBTypes.partner.api.v1.offerings.DELETE.RequestBody
     >,
-    res: Response<PBTypes.partner.api.v1.services.DELETE.ResponseBody>
-  ): Promise<Response<PBTypes.partner.api.v1.services.DELETE.ResponseBody>> {
+    res: Response<PBTypes.partner.api.v1.offerings.DELETE.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.offerings.DELETE.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
       const { uid } = req.params;
-      const success = await this.serviceService.delete(uid);
+      const success = await this.offeringService.delete(uid);
 
       if (!success) {
-        throw new errors.APIError(404, "NOT_FOUND", "Service not found");
+        throw new errors.APIError(404, "NOT_FOUND", "Offering not found");
       }
 
       const apiResponse = {

@@ -154,6 +154,7 @@ export class PartnerService {
           addressCountry: data.addressCountry,
           addressPostalCode: data.addressPostalCode,
           phoneNumber: data.phoneNumber,
+          taxCode: data.taxCode,
         };
         //  search and update partner by externalUid
         const partner = await em.findOne(models.Partner, {
@@ -163,9 +164,9 @@ export class PartnerService {
           throw new errors.APIError(404, "NOT_FOUND", "Partner not found");
         }
         const updatedPartner = Object.assign(partner, update);
-        await em.save(updatedPartner);
+        const saved = await em.save(models.Partner, updatedPartner);
 
-        return updatedPartner;
+        return saved;
       }
     );
     return response as PBTypes.partner.entities.Partner;

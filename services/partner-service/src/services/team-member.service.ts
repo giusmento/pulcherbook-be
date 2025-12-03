@@ -191,9 +191,9 @@ export class TeamMemberService {
             uid: team.uid,
             externalUid: team.externalUid,
             teams: team.teams.map((t) => ({ uid: t.uid, name: t.name })),
-            joinedAt: team.joinedAt,
-            createdAt: team.createdAt,
-            updatedAt: team.updatedAt,
+            joinedAt: team.joinedAt.toISOString(),
+            createdAt: team.createdAt.toISOString(),
+            updatedAt: team.updatedAt.toISOString(),
           };
         });
         return response;
@@ -308,17 +308,20 @@ export class TeamMemberService {
   }
 
   /**
-   * Delete Team Member - Remove a team member (hard delete)
+   * Soft Delete Team Member - Remove a team member (soft delete)
    *
    * @param uid - Team member ID
    * @returns Promise resolving to true if successful
    * @throws {APIError} 404 NOT_FOUND if team member doesn't exist
    */
-  public async delete(uid: string): Promise<boolean> {
-    const response = await this._persistenceContext.inTransaction(
+  public async softDelete(
+    uid: string
+  ): Promise<PBTypes.partner.entities.PartnerTeamMember> {
+    const response = (await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         const teamMember = await em.findOne(models.TeamMember, {
           where: { uid },
+          relations: ["partner"],
         });
         if (!teamMember) {
           throw new errors.APIError(404, "NOT_FOUND", "Team member not found");
@@ -326,32 +329,65 @@ export class TeamMemberService {
 
         // Store externalUid before deletion
         const externalUid = teamMember.externalUid;
+        teamMember.deletedAt = new Date();
+
+        // Delete team member from partner service
+        await em.save(teamMember);
+
+        const response = {
+          uid: teamMember.uid,
+          externalUid: externalUid,
+          teams: teamMember.teams,
+          joinedAt: teamMember.joinedAt.toISOString(),
+          createdAt: teamMember.createdAt.toISOString(),
+          updatedAt: teamMember.updatedAt.toISOString(),
+        };
+
+        return response;
+      }
+    )) as PBTypes.partner.entities.PartnerTeamMember;
+    return response;
+  }
+
+  /**
+   * Delete Team Member - Remove a team member (hard delete)
+   *
+   * @param uid - Team member ID
+   * @returns Promise resolving to true if successful
+   * @throws {APIError} 404 NOT_FOUND if team member doesn't exist
+   */
+  public async delete(
+    uid: string
+  ): Promise<PBTypes.partner.entities.PartnerTeamMember> {
+    const response = (await this._persistenceContext.inTransaction(
+      async (em: EntityManager) => {
+        const teamMember = await em.findOne(models.TeamMember, {
+          where: { uid },
+          relations: ["partner"],
+        });
+        if (!teamMember) {
+          throw new errors.APIError(404, "NOT_FOUND", "Team member not found");
+        }
+
+        // Store externalUid before deletion
+        const externalUid = teamMember.externalUid;
+        const partner_uid = teamMember.partner.externalUid;
 
         // Delete team member from partner service
         await em.remove(teamMember);
 
-        // TODO move to controller to get cookies from request
-        // Delete user from IAM service (best effort, log if fails)
-        if (externalUid) {
-          try {
-            const partner_uid = "";
-            await this._iamClient.deletePartnerUser(
-              partner_uid,
-              externalUid,
-              {}
-            );
-          } catch (error) {
-            console.error(
-              "[TeamMemberService] Failed to delete IAM user, but team member deleted:",
-              error
-            );
-            // Don't throw - team member is already deleted
-          }
-        }
+        const response = {
+          uid: teamMember.uid,
+          externalUid: externalUid,
+          teams: teamMember.teams,
+          joinedAt: teamMember.joinedAt.toISOString(),
+          createdAt: teamMember.createdAt.toISOString(),
+          updatedAt: teamMember.updatedAt.toISOString(),
+        };
 
-        return true;
+        return response;
       }
-    );
-    return response as boolean;
+    )) as PBTypes.partner.entities.PartnerTeamMember;
+    return response;
   }
 }

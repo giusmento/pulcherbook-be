@@ -90,10 +90,21 @@ export class TeamMemberController {
     try {
       const data = req.body;
       const partnerUid = req.params.partnerUid;
-
+      // call iam to create partner user
+      const iamUser = await this._iamClient.createPartnerUser(
+        partnerUid,
+        {
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          groups: [],
+        },
+        req.cookies
+      );
+      // create user in partner service
       const teamMember = await this.teamMemberService.create(
         partnerUid,
-        "",
+        iamUser.uid,
         data
       );
 
@@ -435,12 +446,23 @@ export class TeamMemberController {
   ): Promise<Response<PBTypes.partner.api.v1.teamMembers.DELETE.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { uid } = req.params;
-      const success = await this.teamMemberService.delete(uid);
+      const { partnerUid, uid } = req.params;
 
-      if (!success) {
+      // soft delete team member in partner service
+      const teamMember = await this.teamMemberService.softDelete(uid);
+
+      if (!teamMember) {
         throw new errors.APIError(404, "NOT_FOUND", "Team member not found");
       }
+      // delete user from iam is handled in service
+      await this._iamClient.deletePartnerUser(
+        partnerUid,
+        teamMember.externalUid,
+        req.cookies
+      );
+
+      // hard delete
+      await this.teamMemberService.delete(uid);
 
       const apiResponse = {
         ok: true,

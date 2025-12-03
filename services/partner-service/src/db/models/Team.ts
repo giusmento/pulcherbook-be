@@ -12,8 +12,8 @@ import {
 } from "typeorm";
 import { Partner } from "./Partner";
 import { TeamMember } from "./TeamMember";
-import { TeamService } from "./TeamService";
-import { Shop } from "./Shop";
+import { Offering } from "./Offering";
+import { off } from "process";
 
 export enum TeamStatus {
   ACTIVE = "active",
@@ -59,6 +59,6 @@ export class Team {
   @ManyToMany(() => TeamMember)
   members: TeamMember[];
 
-  @OneToMany(() => TeamService, (teamService) => teamService.team)
-  teamServices: TeamService[];
+  @ManyToMany(() => Offering, (offering) => offering.teams)
+  offerings: Offering[];
 }

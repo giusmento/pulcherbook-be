@@ -68,6 +68,9 @@ export class Partner {
   })
   addressPostalCode: string;
 
+  @Column({ type: "varchar", length: 50, nullable: true, name: "tax_code" })
+  taxCode: string;
+
   @Column({ type: "varchar", length: 50, nullable: true, name: "phone_number" })
   phoneNumber: string;
 

@@ -6,12 +6,12 @@
  */
 
 import { Types } from "@giusmento/mangojs-core";
-import { ServicePut } from "../../../../entities";
+import { OfferingPut } from "../../../../entities";
 import { ResponseBodyData } from "..";
 
 export type Params = { uid: string };
 
-export type RequestBody = ServicePut;
+export type RequestBody = OfferingPut;
 
 /**
  * RESPONSE

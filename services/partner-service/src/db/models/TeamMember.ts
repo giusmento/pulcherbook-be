@@ -22,7 +22,11 @@ export class TeamMember {
   @Index()
   externalUid: string;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", name: "joined_at" })
+  @Column({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+    name: "joined_at",
+  })
   joinedAt: Date;
 
   @CreateDateColumn({ name: "created_at" })
@@ -30,6 +34,9 @@ export class TeamMember {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  @Column({ type: "timestamp", name: "deleted_at", nullable: true })
+  deletedAt: Date | null;
 
   // Relations
   @ManyToOne(() => Partner, (partner) => partner.uid)

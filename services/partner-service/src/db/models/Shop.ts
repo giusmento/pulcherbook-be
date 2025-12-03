@@ -8,8 +8,9 @@ import {
   ManyToOne,
   JoinColumn,
   Index,
+  ManyToMany,
 } from "typeorm";
-import { Service } from "./Service";
+import { Offering } from "./Offering";
 import { Partner } from "./Partner";
 import { ShopStatus } from "../../catalog/enums";
 import { BusinessType } from "./BusinessType";
@@ -120,8 +121,8 @@ export class Shop {
   @JoinColumn({ name: "business_type_uid" })
   businessType: BusinessType;
 
-  @OneToMany(() => Service, (service) => service.shop)
-  services: Service[];
+  @ManyToMany(() => Offering, (offering) => offering.shops)
+  offerings: Offering[];
 
   @OneToMany(() => ShopWorkingHours, (hours) => hours.shop)
   workingHours: ShopWorkingHours[];

@@ -143,7 +143,13 @@ export class IAMClientService {
       const response = await this.client.post<
         IAMTypes.api.v1.users.POST.RequestBody,
         IAMTypes.api.v1.users.POST.ResponseBody
-      >(`/api/iam/v1/partners/${partnerUid}/users/`, payload);
+      >(`/api/iam/v1/partners/${partnerUid}/users/`, payload, {
+        headers: {
+          Cookie: Object.entries(cookies)
+            .map(([key, value]) => `${key}=${value}`)
+            .join("; "),
+        },
+      });
 
       return {
         uid: response.data.uid,
@@ -168,7 +174,16 @@ export class IAMClientService {
   ): Promise<boolean> {
     try {
       await this.retryRequest(async () => {
-        return await this.client.delete(`/api/v1/users/${uid}`);
+        return await this.client.delete(
+          `/api/iam/v1/partners/${partnerUid}/users/${uid}/delete/hard`,
+          {
+            headers: {
+              Cookie: Object.entries(cookies)
+                .map(([key, value]) => `${key}=${value}`)
+                .join("; "),
+            },
+          }
+        );
       });
       return true;
     } catch (error) {

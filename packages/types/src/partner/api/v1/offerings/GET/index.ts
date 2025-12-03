@@ -13,7 +13,7 @@ import { ResponseBodyData } from "..";
  */
 
 // For GET / (all services)
-export type Params = undefined;
+export type Params = { partnerUid: string };
 
 // For GET /:uid (single service)
 export type ParamsSingle = { uid: string };
@@ -31,4 +31,5 @@ export type ResponseBody = Types.v1.api.response.response<
 >;
 
 // For GET /:uid (single service)
-export type ResponseBodySingle = Types.v1.api.response.response<ResponseBodyData>;
+export type ResponseBodySingle =
+  Types.v1.api.response.response<ResponseBodyData>;

@@ -9,7 +9,7 @@ export * from "./working-hours.entity";
 export * from "./special-hours.entity";
 export * from "./team.entity";
 export * from "./team-member.entity";
-export * from "./service.entity";
+export * from "./offering.entity";
 export * from "./team-service.entity";
 export * from "./company-media.entity";
 export * from "./appointment.entity";
