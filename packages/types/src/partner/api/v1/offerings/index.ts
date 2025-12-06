@@ -8,7 +8,6 @@ export * as DELETE from "./DELETE";
 export type ResponseBodyData = Pick<
   Offering,
   | "uid"
-  | "partnerUId"
   | "name"
   | "description"
   | "durationMinutes"

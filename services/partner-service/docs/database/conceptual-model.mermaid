@@ -21,12 +21,11 @@ flowchart TD
         Team -->|contains| TeamMember
     end
 
-    subgraph ServiceDomain [Service Management Domain]
-        Service[Service]
-        TeamService[Team-Service Assignment]
-        Shop -->|offers| Service
-        Team -->|provides| TeamService
-        Service -->|assigned to| TeamService
+    subgraph OfferingDomain [Offering Management Domain]
+        Offering[Offering]
+        Partner -->|creates| Offering
+        Offering -->|available at| Shop
+        Offering -->|provided by| Team
     end
 
     subgraph SchedulingDomain [Scheduling Domain]
@@ -41,5 +40,5 @@ flowchart TD
         Availability[Team Member Availability]
         TeamMember -->|has| Availability
         TeamMember -->|assigned to| Appointment
-        Service -->|booked for| Appointment
+        Offering -->|booked for| Appointment
     end

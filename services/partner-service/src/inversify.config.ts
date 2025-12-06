@@ -30,7 +30,7 @@ console.log("[Partner Service] Initializing Inversify container...");
 
 // Get global IoC container
 //const containerRoot = Containers.getContainer();
-const partnerContainer = Containers.createChild(
+const partnerContainer: Container = Containers.createChild(
   services.iam_server.IAMContainerManager
 ).getContainer();
 

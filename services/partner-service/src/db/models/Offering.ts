@@ -7,12 +7,15 @@ import {
   OneToMany,
   Index,
   ManyToMany,
+  ManyToOne,
+  JoinColumn,
   JoinTable,
 } from "typeorm";
 import { Appointment } from "./Appointment";
 import { Shop } from "./Shop";
 import { BookingAlgorithm, OfferingStatus } from "../../catalog/enums";
 import { Team } from "./Team";
+import { OfferingCategory } from "./OfferingCategory";
 
 @Entity({ name: "offerings", schema: "partner" })
 export class Offering {
@@ -22,6 +25,10 @@ export class Offering {
   @Column({ type: "uuid", name: "partner_uid" })
   @Index()
   partnerUid: string;
+
+  @Column({ type: "uuid", name: "category_uid", nullable: true })
+  @Index()
+  categoryUid: string | null;
 
   @Column({ type: "varchar", length: 255 })
   name: string;
@@ -98,4 +105,10 @@ export class Offering {
 
   @OneToMany(() => Appointment, (appointment) => appointment.service)
   appointments: Appointment[];
+
+  @ManyToOne(() => OfferingCategory, (category) => category.offerings, {
+    nullable: true,
+  })
+  @JoinColumn({ name: "category_uid" })
+  category: OfferingCategory | null;
 }
