@@ -10,15 +10,16 @@ erDiagram
     partners ||--o{ teams : "partner_id"
     partners ||--o{ company_media : "partner_id"
 
-    shops ||--o{ services : "shop_uid"
     shops ||--o{ shop_working_hours : "shop_uid"
     shops ||--o{ shop_special_hours : "shop_uid"
+    shops ||--o{ offerings_shops : "shop_uid"
 
     teams ||--o{ team_members : "team_id"
-    teams ||--o{ team_services : "team_id"
+    teams ||--o{ offerings_teams : "team_uid"
 
-    services ||--o{ team_services : "service_id"
-    services ||--o{ appointments : "service_id"
+    offerings ||--o{ offerings_shops : "offering_uid"
+    offerings ||--o{ offerings_teams : "offering_uid"
+    offerings ||--o{ appointments : "offering_id"
 
     team_members ||--o{ appointments : "team_member_id"
     team_members ||--o{ team_member_availability : "team_member_id"
@@ -92,18 +93,22 @@ erDiagram
         timestamp updated_at
     }
 
-    services {
+    offerings {
         uuid uid PK "UUID"
-        uuid partner_id FK "Index"
-        uuid shop_uid FK
+        uuid partner_uid FK "Index"
         varchar name "NOT NULL"
         text description
+        enum booking_algorithm "direct_to_team_member/round_robin/load_balancing"
         integer duration_minutes "NOT NULL"
         decimal price "10,2 NOT NULL"
         varchar currency "USD"
+        boolean is_booked_online "true"
+        boolean is_required_confirmation "false"
+        boolean is_required_consulting "false"
         enum status "active/inactive"
         timestamp created_at
         timestamp updated_at
+        timestamp deleted_at
     }
 
     shop_working_hours {
@@ -133,10 +138,15 @@ erDiagram
         timestamp updated_at
     }
 
-    team_services {
-        uuid uid PK "UUID"
-        uuid team_id FK "Index, UNIQUE(team_id,service_id)"
-        uuid service_id FK "Index"
+    offerings_shops {
+        uuid offering_uid FK "PK, Index"
+        uuid shop_uid FK "PK, Index"
+        timestamp created_at
+    }
+
+    offerings_teams {
+        uuid offering_uid FK "PK, Index"
+        uuid team_uid FK "PK, Index"
         timestamp created_at
     }
 
@@ -155,7 +165,7 @@ erDiagram
         uuid uid PK "UUID"
         varchar customer_user_id "Index"
         uuid team_member_id FK "Index"
-        uuid service_id FK "Index"
+        uuid offering_id FK "Index"
         date appointment_date "Index"
         time start_time
         time end_time

@@ -78,23 +78,13 @@ Types are organized per entity in `src/types/entities/`. Each entity has:
 
 ---
 
-### service
+### offerings
 
-| Entity  | Type Name   | Description                       | File                                    |
-| ------- | ----------- | --------------------------------- | --------------------------------------- |
-| Service | Service     | Full service entity from database | `src/types/entities/service.type.ts`    |
-| Service | ServicePost | DTO for creating new services     | `src/types/entities/service.type.ts`    |
-| Service | ServicePut  | DTO for updating services         | `src/types/entities/service.type.ts`    |
-
----
-
-### team_service
-
-| Entity      | Type Name        | Description                            | File                                       |
-| ----------- | ---------------- | -------------------------------------- | ------------------------------------------ |
-| TeamService | TeamService      | Full team service entity from database | `src/types/entities/team-service.type.ts`  |
-| TeamService | TeamServicePost  | DTO for creating team-service links    | `src/types/entities/team-service.type.ts`  |
-| TeamService | TeamServicePut   | DTO for updating team-service links    | `src/types/entities/team-service.type.ts`  |
+| Entity   | Type Name    | Description                        | File                                       |
+| -------- | ------------ | ---------------------------------- | ------------------------------------------ |
+| Offering | Offering     | Full offering entity from database | `packages/types/src/partner/entities/`     |
+| Offering | OfferingPost | DTO for creating new offerings     | `packages/types/src/partner/entities/`     |
+| Offering | OfferingPut  | DTO for updating offerings         | `packages/types/src/partner/entities/`     |
 
 ---
 
@@ -142,7 +132,8 @@ Legacy types defined in `src/types/types.ts` for backward compatibility. New cod
 | PartnerStatus         | `ACTIVE`, `INACTIVE`, `SUSPENDED`                           | Partner account status |
 | ShopStatus            | `ONLINE`, `OFFLINE`, `MAINTENANCE`                          | Shop status            |
 | TeamStatus            | `ACTIVE`, `INACTIVE`                                        | Team status            |
-| ServiceStatus         | `ACTIVE`, `INACTIVE`                                        | Service status         |
+| OfferingStatus        | `ACTIVE`, `INACTIVE`                                        | Offering status        |
+| BookingAlgorithm      | `DIRECT_TO_TEAM_MEMBER`, `ROUND_ROBIN`, `LOAD_BALANCING`   | Booking assignment     |
 | MediaType             | `LOGO`, `COVER`, `GALLERY`                                  | Company media type     |
 | AppointmentStatus     | `PENDING`, `CONFIRMED`, `CANCELLED`, `COMPLETED`, `NO_SHOW` | Appointment status     |
 | DayOfWeek             | `0-6` (Sunday-Saturday)                                     | Shop recurring hours   |

@@ -11,14 +11,18 @@ import { Team } from "./team.entity";
  */
 export type Offering = {
   uid: string;
-  partnerUId: string;
   name: string;
   description: string | null;
   durationMinutes: number;
   price: number;
-  shops: Shop[];
-  teams: Team[];
   currency: string;
+  shops: { uid: string; name: string }[];
+  teams: { uid: string; name: string }[];
+  category: { uid: string; name: string } | null;
+  bookingAlgorithm: { name: string };
+  isBookedOnline: boolean;
+  isRequiredConfirmation: boolean;
+  isRequiredConsulting: boolean;
   status: string;
   createdAt: Date;
   updatedAt: Date;
@@ -29,18 +33,21 @@ export type Offering = {
  */
 export type OfferingPost = Pick<
   Offering,
-  | "partnerUId"
   | "name"
   | "description"
   | "durationMinutes"
   | "price"
   | "currency"
-> & {
-  shops?: string[]; // Array of Shop UIDs
-  teams?: string[]; // Array of Team UIDs
-};
+  | "shops"
+  | "teams"
+  | "category"
+  | "bookingAlgorithm"
+  | "isBookedOnline"
+  | "isRequiredConfirmation"
+  | "isRequiredConsulting"
+>;
 
 /**
  * Fields that can be updated on an existing offering (excluding partnerId)
  */
-export type OfferingPut = Partial<Omit<OfferingPost, "partnerId">>;
+export type OfferingPut = Partial<OfferingPost>;

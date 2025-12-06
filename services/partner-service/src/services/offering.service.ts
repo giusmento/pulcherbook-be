@@ -7,6 +7,7 @@ import {
 } from "@giusmento/mangojs-core";
 import * as models from "../db/models";
 import type * as PBTypes from "@giusmento/pulcherbook-types";
+import { OfferingMapper } from "../mappers";
 
 // Import service layer request types from shared package
 type CreateServiceRequest = PBTypes.partner.entities.OfferingPost;
@@ -17,6 +18,8 @@ export class OfferingService {
   @inject(new LazyServiceIdentifier(() => INVERSITY_TYPES.PersistenceContext))
   private _persistenceContext: IPersistenceContext;
 
+  private readonly offeringMapper = new OfferingMapper();
+
   constructor() {}
 
   /**
@@ -26,7 +29,9 @@ export class OfferingService {
    * @returns Promise resolving to the created service
    * @throws {APIError} 400 BAD_REQUEST if validation fails
    */
-  public async create(data: CreateServiceRequest): Promise<models.Offering> {
+  public async create(
+    data: CreateServiceRequest
+  ): Promise<PBTypes.partner.entities.Offering> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         // Validation
@@ -35,13 +40,6 @@ export class OfferingService {
             400,
             "BAD_REQUEST",
             "Service name is required"
-          );
-        }
-        if (!data.partnerUId) {
-          throw new errors.APIError(
-            400,
-            "BAD_REQUEST",
-            "Partner ID is required"
           );
         }
         if (!data.durationMinutes || data.durationMinutes <= 0) {
@@ -59,22 +57,45 @@ export class OfferingService {
           );
         }
         // append shops
+        const shopUids = data.shops?.map((s) => s.uid) || [];
         const shops = await em.find(models.Shop, {
-          where: { uid: In(data.shops || []) },
+          where: { uid: In(shopUids) },
         });
         // append teams
+        const teamUids = data.teams?.map((t) => t.uid) || [];
         const teams = await em.find(models.Team, {
-          where: { uid: In(data.teams || []) },
+          where: { uid: In(teamUids) },
         });
+        // append category if provided
+        let category = null;
+        if (data.category) {
+          category = await em.findOne(models.OfferingCategory, {
+            where: { uid: data.category.uid },
+          });
+          if (!category) {
+            throw new errors.APIError(
+              400,
+              "BAD_REQUEST",
+              "Invalid category UID"
+            );
+          }
+        }
 
-        const createOfferingObject = Object.assign(data, { shops, teams });
+        const createOfferingObject = {
+          ...data,
+          shops,
+          teams,
+          category,
+          bookingAlgorithm: data.bookingAlgorithm.name as any,
+        };
         // Create and save using em
         const offering = em.create(models.Offering, createOfferingObject);
-        await em.save(offering);
-        return offering;
+        const result = await em.save(offering);
+
+        return this.offeringMapper.toDTO(result);
       }
     );
-    return response as models.Offering;
+    return response as PBTypes.partner.entities.Offering;
   }
 
   /**
@@ -84,22 +105,24 @@ export class OfferingService {
    * @returns Promise resolving to the service with partner and teams
    * @throws {APIError} 404 NOT_FOUND if service doesn't exist
    */
-  public async findById(uid: string): Promise<models.Offering> {
+  public async findById(
+    uid: string
+  ): Promise<PBTypes.partner.entities.Offering> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         const offering = await em.findOne(models.Offering, {
           where: { uid },
-          relations: ["partner", "teamServices", "teamServices.team"],
+          relations: ["teams", "shops", "category"],
         });
 
         if (!offering) {
           throw new errors.APIError(404, "NOT_FOUND", "Service not found");
         }
 
-        return offering;
+        return this.offeringMapper.toDTO(offering);
       }
     );
-    return response as models.Offering;
+    return response as PBTypes.partner.entities.Offering;
   }
 
   /**
@@ -114,7 +137,7 @@ export class OfferingService {
     partner_id?: string,
     limit: number = 20,
     offset: number = 0
-  ): Promise<models.Offering[]> {
+  ): Promise<PBTypes.partner.entities.Offering[]> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
         // If no partner_id, return error
@@ -128,15 +151,15 @@ export class OfferingService {
 
         const offerings = await em.find(models.Offering, {
           where: { partnerUid: partner_id },
-          relations: ["teams", "shops"],
+          relations: ["teams", "shops", "category"],
           take: limit,
           skip: offset,
         });
 
-        return offerings;
+        return this.offeringMapper.toDTOList(offerings);
       }
     );
-    return response as models.Offering[];
+    return response as PBTypes.partner.entities.Offering[];
   }
 
   /**
@@ -150,20 +173,62 @@ export class OfferingService {
   public async update(
     uid: string,
     data: UpdateServiceRequest
-  ): Promise<models.Offering> {
+  ): Promise<PBTypes.partner.entities.Offering> {
     const response = await this._persistenceContext.inTransaction(
       async (em: EntityManager) => {
-        const offering = await em.findOne(models.Offering, { where: { uid } });
+        // Find existing offering
+        const offering = await em.findOne(models.Offering, {
+          where: { uid },
+          relations: ["teams", "shops", "category"],
+        });
         if (!offering) {
           throw new errors.APIError(404, "NOT_FOUND", "Service not found");
         }
+        // get category if provided
+        let category = null;
+        if (data.category) {
+          category = await em.findOne(models.OfferingCategory, {
+            where: { uid: data.category.uid },
+          });
+          if (!category) {
+            throw new errors.APIError(
+              400,
+              "BAD_REQUEST",
+              "Invalid category UID"
+            );
+          }
+          offering.category = category;
+          delete data.category;
+        }
+        // append shops
+        const shopUids = data.shops?.map((s) => s.uid) || [];
+        const shops = await em.find(models.Shop, {
+          where: { uid: In(shopUids) },
+        });
+        // append teams
+        const teamUids = data.teams?.map((t) => t.uid) || [];
+        const teams = await em.find(models.Team, {
+          where: { uid: In(teamUids) },
+        });
 
-        Object.assign(offering, data);
-        await em.save(offering);
-        return offering;
+        Object.assign(
+          offering,
+          data,
+          { shops },
+          { teams },
+          { category },
+          {
+            bookingAlgorithm: data.bookingAlgorithm
+              ? (data.bookingAlgorithm as any)
+              : offering.bookingAlgorithm,
+          }
+        );
+
+        const result = await em.save(offering);
+        return this.offeringMapper.toDTO(result);
       }
     );
-    return response as models.Offering;
+    return response as PBTypes.partner.entities.Offering;
   }
 
   /**

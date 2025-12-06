@@ -29,4 +29,21 @@ export class CatalogService {
     );
     return response as models.BusinessType[];
   }
+
+  /**
+   * Get all active offering categories
+   * @returns Array of offering categories from database
+   */
+  public async getOfferingCategories(): Promise<models.OfferingCategory[]> {
+    const response = await this._persistenceContext.inTransaction(
+      async (em: EntityManager) => {
+        const offeringCategories = await em.find(models.OfferingCategory, {
+          where: { isActive: true, deletedAt: null },
+          order: { name: "ASC" },
+        });
+        return offeringCategories;
+      }
+    );
+    return response as models.OfferingCategory[];
+  }
 }

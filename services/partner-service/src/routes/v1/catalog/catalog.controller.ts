@@ -85,4 +85,64 @@ export class CatalogController {
       return errors.errorHandler(res, error as Error);
     }
   }
+
+  /**
+   * @swagger
+   * /api/v1/catalog/offering-categories:
+   *   get:
+   *     summary: Get all offering categories
+   *     tags: [Catalog]
+   *     responses:
+   *       200:
+   *         description: List of offering categories
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 ok:
+   *                   type: boolean
+   *                 timestamp:
+   *                   type: string
+   *                 requestId:
+   *                   type: string
+   *                 data:
+   *                   type: array
+   *                   items:
+   *                     type: object
+   *                     properties:
+   *                       uid:
+   *                         type: string
+   *                       name:
+   *                         type: string
+   *                       description:
+   *                         type: string
+   *                       isActive:
+   *                         type: boolean
+   */
+  @Get("/offering-categories")
+  @Decorators.auth.NoAuth()
+  public async getOfferingCategories(
+    req: Request<
+      PBTypes.partner.api.v1.catalog.offeringCategories.GET.Params,
+      PBTypes.partner.api.v1.catalog.offeringCategories.GET.RequestBody
+    >,
+    res: Response<PBTypes.partner.api.v1.catalog.offeringCategories.GET.ResponseBody>
+  ): Promise<Response<PBTypes.partner.api.v1.catalog.offeringCategories.GET.ResponseBody>> {
+    const logRequest = new utils.LogRequest(res);
+    try {
+      const offeringCategories =
+        await this.catalogService.getOfferingCategories();
+
+      const apiResponse = {
+        ok: true,
+        timestamp: logRequest.timestamp,
+        requestId: logRequest.requestId,
+        data: offeringCategories,
+      };
+      return res.status(200).send(apiResponse);
+    } catch (error: unknown) {
+      return errors.errorHandler(res, error as Error);
+    }
+  }
 }

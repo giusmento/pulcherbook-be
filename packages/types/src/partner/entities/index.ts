@@ -10,6 +10,7 @@ export * from "./special-hours.entity";
 export * from "./team.entity";
 export * from "./team-member.entity";
 export * from "./offering.entity";
+export * from "./offering-category.entity";
 export * from "./team-service.entity";
 export * from "./company-media.entity";
 export * from "./appointment.entity";

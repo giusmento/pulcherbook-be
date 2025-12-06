@@ -2,6 +2,7 @@ export { Partner } from "./Partner";
 export { Team, TeamStatus } from "./Team";
 export { TeamMember } from "./TeamMember";
 export { Offering } from "./Offering";
+export { OfferingCategory } from "./OfferingCategory";
 export { CompanyMedia, MediaType } from "./CompanyMedia";
 export { Appointment, AppointmentStatus } from "./Appointment";
 export { TeamMemberAvailability } from "./TeamMemberAvailability";
@@ -14,6 +15,7 @@ import { Partner } from "./Partner";
 import { Team } from "./Team";
 import { TeamMember } from "./TeamMember";
 import { Offering } from "./Offering";
+import { OfferingCategory } from "./OfferingCategory";
 import { CompanyMedia } from "./CompanyMedia";
 import { Appointment } from "./Appointment";
 import { TeamMemberAvailability } from "./TeamMemberAvailability";
@@ -30,6 +32,7 @@ export const PartnerServiceEntities = [
   Team,
   TeamMember,
   Offering,
+  OfferingCategory,
   CompanyMedia,
   Appointment,
   TeamMemberAvailability,
