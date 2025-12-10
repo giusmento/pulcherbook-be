@@ -41,6 +41,6 @@
     "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@giusmento/mangojs-core": "^0.0.1-24"
+    "@giusmento/mangojs-core": "^0.0.1-25"
   }
 }

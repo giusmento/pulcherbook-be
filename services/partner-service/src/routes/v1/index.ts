@@ -9,6 +9,7 @@ import { CatalogController } from "./catalog/catalog.controller";
 import { ShopController } from "./shops/shop.controller";
 import { WorkingHoursController } from "./working-hours/working-hours.controller";
 import { SpecialHoursController } from "./special-hours/special-hours.controller";
+import { SearchController } from "./searches/search.controller";
 
 export const routes = [
   PartnerController,
@@ -22,4 +23,5 @@ export const routes = [
   ShopController,
   WorkingHoursController,
   SpecialHoursController,
+  SearchController,
 ];

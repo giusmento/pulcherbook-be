@@ -15,3 +15,4 @@ export * from "./team-service.entity";
 export * from "./company-media.entity";
 export * from "./appointment.entity";
 export * from "./availability.entity";
+export * from "./search.shop.entity";

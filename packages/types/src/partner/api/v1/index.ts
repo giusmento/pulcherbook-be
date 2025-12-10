@@ -10,3 +10,4 @@ export * as catalog from "./catalog";
 export * as shops from "./shops";
 export * as workingHours from "./working-hours";
 export * as specialHours from "./special-hours";
+export * as searches from "./searches";
