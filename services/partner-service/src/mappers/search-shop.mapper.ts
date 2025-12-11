@@ -31,7 +31,7 @@ export class SearchShopMapper extends mappers.BaseMapper<
       website: entity.website || null,
       instagram: entity.instagram || null,
       status: entity.status,
-      businessType: entity.businessType.name,
+      businessType: entity.businessType?.name || null,
       createdAt: entity.createdAt.toUTCString(),
       updatedAt: entity.updatedAt.toUTCString(),
     };

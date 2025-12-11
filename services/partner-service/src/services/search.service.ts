@@ -34,46 +34,75 @@ export class SearchService {
         // Calculate offset for pagination
         const offset = (page - 1) * limit;
 
-        // Build search query - search in multiple fields
-        const searchPattern = `%${query}%`;
+        // Build search query
+        const queryBuilder = em.createQueryBuilder(models.Shop, "shop");
 
-        // Create query builder for more complex search
-        const queryBuilder = em
-          .createQueryBuilder(models.Shop, "shop")
-          .leftJoinAndSelect("shop.businessType", "businessType")
-          .where(
-            "shop.shopName ILIKE :search OR " +
-              "shop.description ILIKE :search OR " +
-              "shop.addressStreet ILIKE :search OR " +
-              "shop.addressCity ILIKE :search OR " +
-              "shop.addressCountry ILIKE :search",
-            { search: searchPattern }
-          )
-          .andWhere("shop.status != :onLineStatus", {
-            onLineStatus: "online",
-          })
-          .skip(offset)
-          .take(limit);
-
-        // If location is provided, order by distance (simple implementation)
-        // For production, you might want to use PostGIS or similar for accurate geospatial queries
-        if (location) {
-          const [lat, lng] = location.split(",").map(Number);
-          if (!isNaN(lat) && !isNaN(lng)) {
-            // Add distance calculation (simplified - using Euclidean distance)
-            // For production, consider using ST_Distance with PostGIS
-            queryBuilder.addSelect(
-              `SQRT(POW(69.1 * (shop.latitude - :lat), 2) + POW(69.1 * (:lng - shop.longitude) * COS(shop.latitude / 57.3), 2))`,
-              "distance"
+        // search in multiple fields if query is not empty
+        if (!query && query !== undefined) {
+          const searchPattern = `%${query}%`;
+          // Create query builder for more complex search
+          queryBuilder
+            .leftJoinAndSelect("shop.businessType", "businessType")
+            .where(
+              "shop.shopName ILIKE :search OR " +
+                "shop.description ILIKE :search OR " +
+                "shop.addressStreet ILIKE :search OR " +
+                "shop.addressCity ILIKE :search OR " +
+                "shop.addressCountry ILIKE :search",
+              { search: searchPattern }
             );
-            queryBuilder.setParameter("lat", lat);
-            queryBuilder.setParameter("lng", lng);
-            queryBuilder.orderBy("distance", "ASC");
-          }
+        }
+        // search services if provided
+        //if (params.service) {
+        //  queryBuilder.andWhere("shop.businessType.name ILIKE :service", {
+        //    service: `%${params.service}%`,
+        //  });
+        //}
+
+        // Exclude shops with 'online' status
+        queryBuilder.andWhere("shop.status = :onLineStatus", {
+          onLineStatus: "online",
+        });
+
+        // add bounding box filter if provided
+        if (params.neLat && params.neLng && params.swLat && params.swLng) {
+          queryBuilder.andWhere(
+            "shop.latitude BETWEEN :swLat AND :neLat AND shop.longitude BETWEEN :swLng AND :neLng",
+            {
+              neLat: params.neLat,
+              neLng: params.neLng,
+              swLat: params.swLat,
+              swLng: params.swLng,
+            }
+          );
+        }
+        // Default ordering by the center of the bounding box if location provided
+        // calculate the center of the bounding box
+        const centerBounding =
+          params.neLat && params.neLng && params.swLat && params.swLng
+            ? {
+                lat: (Number(params.neLat) + Number(params.swLat)) / 2,
+                lng: (Number(params.neLng) + Number(params.swLng)) / 2,
+              }
+            : null;
+
+        if (centerBounding && centerBounding.lat && centerBounding.lng) {
+          queryBuilder.addSelect(
+            `SQRT(POWER((shop.latitude - :centerLat), 2) + POWER((shop.longitude - :centerLng), 2))`,
+            "distance"
+          );
+          queryBuilder.setParameters({
+            centerLat: centerBounding.lat,
+            centerLng: centerBounding.lng,
+          });
+          queryBuilder.orderBy("distance", "ASC");
         } else {
           // Default ordering by shop name
           queryBuilder.orderBy("shop.shopName", "ASC");
         }
+
+        // Apply pagination
+        queryBuilder.skip(offset).take(limit);
 
         // Execute query
         const [shops, total] = await queryBuilder.getManyAndCount();

@@ -82,22 +82,23 @@ export class SearchController {
   ): Promise<Response<PBTypes.partner.api.v1.searches.GET.ResponseBody>> {
     const logRequest = new utils.LogRequest(res);
     try {
-      const { query, page = 1, limit = 20, location } = req.query;
+      const { query, service } = req.query;
 
-      // Validate required query parameter
-      if (!query || query.trim() === "") {
-        throw new errors.APIError(
-          400,
-          "BAD_REQUEST",
-          "Search query is required"
-        );
-      }
+      // search limits
+      const { page = 1, limit = 20 } = req.query;
+
+      // get bounding for location if provided
+      const { neLat, neLng, swLat, swLng } = req.query;
 
       const result = await this.searchService.searchShops({
         query,
+        service,
         page: Number(page),
         limit: Number(limit),
-        location,
+        neLat,
+        neLng,
+        swLat,
+        swLng,
       });
 
       const apiResponse = {
